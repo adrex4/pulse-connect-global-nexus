@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,7 @@ import {
   Reply, Forward, Heart, ThumbsUp, Eye, EyeOff, Image,
   FileText, Download, Copy, Edit, Trash2, MessageSquare,
   UserPlus, Share, Bookmark, Flag, Mic, VolumeX, Volume2,
-  X, Check, Clock, Star, Archive, AlertTriangle
+  X, Check, Clock, Star, Archive, AlertTriangle, ArrowUp
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { User, Group, Message } from './ConnectPulse';
@@ -735,9 +734,9 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
                       <Button 
                         type="submit"
                         size="sm"
-                        className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                        className="bg-blue-500 hover:bg-blue-600 text-white rounded-full h-8 w-8 p-0"
                       >
-                        <Send className="h-4 w-4" />
+                        <ArrowUp className="h-4 w-4" />
                       </Button>
                     ) : (
                       <Button

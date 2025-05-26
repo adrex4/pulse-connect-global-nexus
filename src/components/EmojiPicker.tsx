@@ -49,7 +49,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({ onEmojiSelect, children }) =>
   const filteredEmojis = React.useMemo(() => {
     if (!searchTerm) return emojiCategories;
     
-    const filtered: typeof emojiCategories = {};
+    const filtered: Record<string, string[]> = {};
     Object.entries(emojiCategories).forEach(([category, emojis]) => {
       const matchingEmojis = emojis.filter(emoji => 
         // In a real app, you'd have emoji names to search against
