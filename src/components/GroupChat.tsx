@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -168,6 +169,29 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
     setNewMessage(prev => prev + emoji);
   };
 
+  const handleReaction = (messageId: string, emoji: string) => {
+    setReactions(prev => ({
+      ...prev,
+      [messageId]: [...(prev[messageId] || []), emoji]
+    }));
+    toast({
+      title: "Reaction added!",
+      description: `Added ${emoji} reaction to message.`,
+    });
+  };
+
+  const handlePinMessage = (messageId: string) => {
+    setPinnedMessages(prev => 
+      prev.includes(messageId) 
+        ? prev.filter(id => id !== messageId)
+        : [...prev, messageId]
+    );
+    toast({
+      title: pinnedMessages.includes(messageId) ? "Message unpinned" : "Message pinned",
+      description: pinnedMessages.includes(messageId) ? "Message removed from pinned." : "Message added to pinned.",
+    });
+  };
+
   const handleVoiceMessage = () => {
     if (isRecording) {
       setIsRecording(false);
@@ -286,7 +310,12 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
     <div className="max-w-7xl mx-auto h-[90vh] flex flex-col animate-fade-in">
       {/* Cool background */}
       <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 opacity-50 pointer-events-none" />
-      <div className="fixed inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] pointer-events-none" />
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        }}
+      />
       
       <Card className="flex-1 flex flex-col shadow-2xl border-0 bg-white/95 backdrop-blur-sm overflow-hidden relative z-10">
         {/* Enhanced Header */}
@@ -508,28 +537,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
                             </p>
                           )}
                           
-                          {editingMessage === message.id ? (
-                            <div className="space-y-2">
-                              <Textarea
-                                defaultValue={message.content}
-                                className="min-h-0 resize-none bg-white/10 border-white/20 text-current"
-                                rows={2}
-                              />
-                              <div className="flex gap-2">
-                                <Button size="sm" onClick={() => setEditingMessage(null)}>Save</Button>
-                                <Button size="sm" variant="outline" onClick={() => setEditingMessage(null)}>Cancel</Button>
-                              </div>
-                            </div>
-                          ) : (
-                            <div>
-                              <p className="text-sm leading-relaxed">{message.content}</p>
-                              {message.isEdited && (
-                                <span className="text-xs opacity-60 ml-2">(edited)</span>
-                              )}
-                            </div>
-                          )}
-                          
-                          {/* Message Reactions */}
+                          {/* Message Content */}
                           {message.type === 'image' ? (
                             <div className="space-y-2">
                               <img 
@@ -558,7 +566,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
                                 <div className="space-y-2">
                                   <Textarea
                                     defaultValue={message.content}
-                                    className="min-h-0 resize-none"
+                                    className="min-h-0 resize-none bg-white/10 border-white/20 text-current"
                                     rows={2}
                                   />
                                   <div className="flex gap-2">
@@ -567,9 +575,25 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
                                   </div>
                                 </div>
                               ) : (
-                                <p className="text-sm leading-relaxed">{message.content}</p>
+                                <div>
+                                  <p className="text-sm leading-relaxed">{message.content}</p>
+                                  {message.isEdited && (
+                                    <span className="text-xs opacity-60 ml-2">(edited)</span>
+                                  )}
+                                </div>
                               )}
                             </>
+                          )}
+                          
+                          {/* Message Reactions */}
+                          {messageReactions.length > 0 && (
+                            <div className="flex gap-1 mt-2">
+                              {messageReactions.map((reaction, idx) => (
+                                <span key={idx} className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                                  {reaction}
+                                </span>
+                              ))}
+                            </div>
                           )}
                           
                           {/* Message Info */}
