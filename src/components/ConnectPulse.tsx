@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,11 +6,18 @@ import {
   MessageSquare, Globe, MapPin, Users, Zap, Shield, 
   TrendingUp, Heart, Star, CheckCircle, Network, Building2, User, ArrowLeft
 } from 'lucide-react';
+
+// Enhanced components
+import UserTypeSelector from './enhanced/UserTypeSelector';
+import EnhancedLocationSelector from './enhanced/EnhancedLocationSelector';
+import ServiceSelector from './enhanced/ServiceSelector';
+import PublicProfileBrowser from './enhanced/PublicProfileBrowser';
+
+// Existing components
 import NicheSelector from './NicheSelector';
 import LocationSelector from './LocationSelector';
 import GroupChat from './GroupChat';
 import GroupList from './GroupList';
-import FreelancerNicheSelector from './FreelancerNicheSelector';
 
 export interface User {
   id: string;
@@ -41,13 +47,24 @@ export interface Message {
   groupId: string;
 }
 
+type Step = 
+  | 'welcome'
+  | 'browse'
+  | 'user-type'
+  | 'business-niche'
+  | 'service-selection'
+  | 'location'
+  | 'groups'
+  | 'chat';
+
 const ConnectPulse = () => {
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'user-type' | 'business-niche' | 'freelancer-niche' | 'location' | 'groups' | 'chat'>('welcome');
-  const [userType, setUserType] = useState<'business' | 'freelancer' | null>(null);
+  const [currentStep, setCurrentStep] = useState<Step>('welcome');
+  const [userType, setUserType] = useState<'business' | 'freelancer' | 'occupation_provider' | null>(null);
+  const [userAction, setUserAction] = useState<'join' | 'create' | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [freelancerData, setFreelancerData] = useState<any>(null);
+  const [profileData, setProfileData] = useState<any>(null);
 
   const handleUserRegistration = (userData: Omit<User, 'id'>) => {
     const newUser: User = {
@@ -109,6 +126,25 @@ const ConnectPulse = () => {
             <p className="text-green-700 text-sm">Industries</p>
           </div>
         </div>
+      </div>
+      
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <Button 
+          onClick={() => setCurrentStep('browse')} 
+          variant="outline"
+          className="px-8 py-3 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
+          size="lg"
+        >
+          🔍 Browse Profiles & Groups
+        </Button>
+        <Button 
+          onClick={() => setCurrentStep('user-type')} 
+          className="px-8 py-3 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          size="lg"
+        >
+          🚀 Join ConnectPulse - Free!
+        </Button>
       </div>
       
       {/* Main Welcome Card */}
@@ -215,89 +251,35 @@ const ConnectPulse = () => {
     </div>
   );
 
-  const renderUserTypeSelection = () => (
-    <div className="max-w-4xl mx-auto animate-fade-in">
-      <Card className="shadow-lg border-0 bg-white">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => setCurrentStep('welcome')} className="text-white hover:bg-white/20">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <CardTitle className="text-xl">Choose Your Path</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="p-8">
-          <div className="text-center space-y-6 mb-8">
-            <h3 className="text-2xl font-semibold text-gray-800">What brings you to ConnectPulse?</h3>
-            <p className="text-gray-600 text-lg">
-              Choose the option that best describes you to get personalized recommendations.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Business Option */}
-            <div 
-              className="p-8 border-2 border-gray-200 rounded-xl cursor-pointer transition-all duration-300 hover:border-blue-500 hover:bg-blue-50 hover:scale-105"
-              onClick={() => {
-                setUserType('business');
-                setCurrentStep('business-niche');
-              }}
-            >
-              <div className="text-center space-y-4">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto">
-                  <Building2 className="h-10 w-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-semibold text-gray-800">Business Owner</h3>
-                <p className="text-gray-600">
-                  I own or represent a business and want to connect with other businesses, find partners, and grow my network.
-                </p>
-                <div className="space-y-2 text-sm text-gray-500">
-                  <p>✓ Business networking groups</p>
-                  <p>✓ Industry-specific communities</p>
-                  <p>✓ Partnership opportunities</p>
-                  <p>✓ B2B connections</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Freelancer Option */}
-            <div 
-              className="p-8 border-2 border-gray-200 rounded-xl cursor-pointer transition-all duration-300 hover:border-green-500 hover:bg-green-50 hover:scale-105"
-              onClick={() => {
-                setUserType('freelancer');
-                setCurrentStep('freelancer-niche');
-              }}
-            >
-              <div className="text-center space-y-4">
-                <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto">
-                  <User className="h-10 w-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-semibold text-gray-800">Freelancer / Service Provider</h3>
-                <p className="text-gray-600">
-                  I offer services or skills and want to connect with potential clients and fellow professionals.
-                </p>
-                <div className="space-y-2 text-sm text-gray-500">
-                  <p>✓ Skill-based communities</p>
-                  <p>✓ Client opportunities</p>
-                  <p>✓ Professional networking</p>
-                  <p>✓ Local service groups</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-4">
       <div className="max-w-7xl mx-auto">
         {currentStep === 'welcome' && renderWelcome()}
         
-        {currentStep === 'user-type' && renderUserTypeSelection()}
+        {currentStep === 'browse' && (
+          <PublicProfileBrowser onGetStarted={() => setCurrentStep('user-type')} />
+        )}
         
-        {currentStep === 'business-niche' && (
+        {currentStep === 'user-type' && (
+          <UserTypeSelector 
+            onNext={(type, action) => {
+              setUserType(type);
+              setUserAction(action);
+              if (action === 'join') {
+                if (type === 'business') {
+                  setCurrentStep('business-niche');
+                } else {
+                  setCurrentStep('service-selection');
+                }
+              } else {
+                setCurrentStep('service-selection');
+              }
+            }}
+            onBack={() => setCurrentStep('welcome')}
+          />
+        )}
+        
+        {currentStep === 'business-niche' && userType === 'business' && (
           <NicheSelector 
             onNext={(name, niche) => {
               setCurrentUser(prev => prev ? { ...prev, name, niche } : { id: '', name, niche, country: '', preferredScope: 'local' });
@@ -307,22 +289,37 @@ const ConnectPulse = () => {
           />
         )}
 
-        {currentStep === 'freelancer-niche' && (
-          <FreelancerNicheSelector 
-            onNext={(data) => {
-              setFreelancerData(data);
-              setCurrentUser(prev => prev ? { ...prev, name: data.name, niche: data.primarySkill } : { id: '', name: data.name, niche: data.primarySkill, country: '', preferredScope: 'local' });
+        {currentStep === 'service-selection' && userType && userType !== 'business' && (
+          <ServiceSelector 
+            userType={userType}
+            onNext={(serviceData) => {
+              setProfileData(serviceData);
               setCurrentStep('location');
             }}
             onBack={() => setCurrentStep('user-type')}
           />
         )}
         
-        {currentStep === 'location' && currentUser && (
-          <LocationSelector
-            user={currentUser}
-            onComplete={handleUserRegistration}
-            onBack={() => setCurrentStep(userType === 'business' ? 'business-niche' : 'freelancer-niche')}
+        {currentStep === 'location' && (
+          <EnhancedLocationSelector
+            onNext={(locationData) => {
+              // Handle completion based on user action
+              if (userAction === 'join') {
+                setCurrentStep('groups');
+              } else {
+                // Create profile and redirect to appropriate next step
+                console.log('Profile data:', { profileData, locationData });
+                setCurrentStep('groups');
+              }
+            }}
+            onBack={() => {
+              if (userType === 'business') {
+                setCurrentStep('business-niche');
+              } else {
+                setCurrentStep('service-selection');
+              }
+            }}
+            showDetailedAddress={userType === 'occupation_provider'}
           />
         )}
         
