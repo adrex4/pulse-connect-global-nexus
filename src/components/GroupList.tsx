@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -236,42 +235,40 @@ const GroupList: React.FC<GroupListProps> = ({ user, onJoinGroup, onBack }) => {
             {filteredGroups.map((group) => (
               <Card key={group.id} className="hover:shadow-lg transition-all duration-300 transform hover:scale-105 border-2 hover:border-blue-300">
                 <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <h3 className="text-xl font-semibold text-gray-800">{group.name}</h3>
-                        <Badge 
-                          className={`${getScopeColor(group.scope)} text-white flex items-center gap-1 transition-colors`}
-                        >
-                          {getScopeIcon(group.scope)}
-                          {group.scope.charAt(0).toUpperCase() + group.scope.slice(1)}
-                        </Badge>
-                        {getRecommendedBadge(group)}
-                      </div>
-                      
-                      <p className="text-gray-600 mb-4 leading-relaxed">{group.description}</p>
-                      
-                      <div className="flex items-center gap-6 text-sm text-gray-500">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-3 mb-3">
+                      <h3 className="text-xl font-semibold text-gray-800">{group.name}</h3>
+                      <Badge 
+                        className={`${getScopeColor(group.scope)} text-white flex items-center gap-1 transition-colors`}
+                      >
+                        {getScopeIcon(group.scope)}
+                        {group.scope.charAt(0).toUpperCase() + group.scope.slice(1)}
+                      </Badge>
+                      {getRecommendedBadge(group)}
+                    </div>
+                    
+                    <p className="text-gray-600 mb-4 leading-relaxed">{group.description}</p>
+                    
+                    <div className="flex items-center justify-center gap-6 text-sm text-gray-500 mb-6">
+                      <span className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-blue-500" />
+                        <strong className="text-blue-600">{group.memberCount.toLocaleString()}</strong> members
+                      </span>
+                      <span className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4 text-green-500" />
+                        <span className="text-green-600">Active discussions</span>
+                      </span>
+                      {group.scope === 'local' && group.country && (
                         <span className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-blue-500" />
-                          <strong className="text-blue-600">{group.memberCount.toLocaleString()}</strong> members
+                          <MapPin className="h-4 w-4 text-orange-500" />
+                          <span className="text-orange-600">{group.country}</span>
                         </span>
-                        <span className="flex items-center gap-2">
-                          <MessageSquare className="h-4 w-4 text-green-500" />
-                          <span className="text-green-600">Active discussions</span>
-                        </span>
-                        {group.scope === 'local' && group.country && (
-                          <span className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-orange-500" />
-                            <span className="text-orange-600">{group.country}</span>
-                          </span>
-                        )}
-                      </div>
+                      )}
                     </div>
                     
                     <Button 
                       onClick={() => onJoinGroup(group)}
-                      className="ml-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
                       size="lg"
                     >
                       Join Group
