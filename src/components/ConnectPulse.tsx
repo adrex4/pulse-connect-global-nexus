@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   MessageSquare, Globe, MapPin, Users, Zap, Shield, 
-  TrendingUp, Heart, Star, CheckCircle, Network, Building2, User
+  TrendingUp, Heart, Star, CheckCircle, Network, Building2, User, ArrowLeft
 } from 'lucide-react';
 import NicheSelector from './NicheSelector';
 import LocationSelector from './LocationSelector';
