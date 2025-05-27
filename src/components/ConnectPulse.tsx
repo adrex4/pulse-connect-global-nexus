@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   MessageSquare, Globe, MapPin, Users, Zap, Shield, 
-  TrendingUp, Heart, Star, CheckCircle, Network
+  TrendingUp, Heart, Star, CheckCircle, Network, Building2, User
 } from 'lucide-react';
 import NicheSelector from './NicheSelector';
 import LocationSelector from './LocationSelector';
 import GroupChat from './GroupChat';
 import GroupList from './GroupList';
+import FreelancerNicheSelector from './FreelancerNicheSelector';
 
 export interface User {
   id: string;
@@ -41,10 +42,12 @@ export interface Message {
 }
 
 const ConnectPulse = () => {
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'niche' | 'location' | 'groups' | 'chat'>('welcome');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'user-type' | 'business-niche' | 'freelancer-niche' | 'location' | 'groups' | 'chat'>('welcome');
+  const [userType, setUserType] = useState<'business' | 'freelancer' | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [freelancerData, setFreelancerData] = useState<any>(null);
 
   const handleUserRegistration = (userData: Omit<User, 'id'>) => {
     const newUser: User = {
@@ -176,45 +179,17 @@ const ConnectPulse = () => {
             </div>
           </div>
 
-          {/* Testimonials */}
-          <div className="bg-gray-50 rounded-xl p-6">
-            <h3 className="text-center text-xl font-semibold text-gray-800 mb-6">What Our Members Say</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="flex items-center gap-1 mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-700 text-sm mb-2">
-                  "ConnectPulse helped me find amazing partners across 3 continents. The platform is intuitive and the community is incredibly supportive!"
-                </p>
-                <p className="text-xs text-gray-500">- Sarah K., Tech Entrepreneur</p>
-              </div>
-              
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="flex items-center gap-1 mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-700 text-sm mb-2">
-                  "Finally, a business network that truly understands global connections. I've made valuable contacts in my local market and internationally."
-                </p>
-                <p className="text-xs text-gray-500">- Mike R., Manufacturing</p>
-              </div>
-            </div>
-          </div>
-
           {/* Call to Action */}
-          <div className="text-center space-y-4">
-            <Button 
-              onClick={() => setCurrentStep('niche')} 
-              className="w-full md:w-auto px-12 py-4 text-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
-              size="lg"
-            >
-              🚀 Start Connecting Now - It's Free!
-            </Button>
+          <div className="text-center space-y-6">
+            <div className="flex justify-center">
+              <Button 
+                onClick={() => setCurrentStep('user-type')} 
+                className="px-12 py-4 text-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                size="lg"
+              >
+                🚀 Start Connecting Now - It's Free!
+              </Button>
+            </div>
             <p className="text-sm text-gray-500">
               Join thousands of businesses already growing their network with ConnectPulse
             </p>
@@ -240,18 +215,106 @@ const ConnectPulse = () => {
     </div>
   );
 
+  const renderUserTypeSelection = () => (
+    <div className="max-w-4xl mx-auto animate-fade-in">
+      <Card className="shadow-lg border-0 bg-white">
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => setCurrentStep('welcome')} className="text-white hover:bg-white/20">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <CardTitle className="text-xl">Choose Your Path</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="p-8">
+          <div className="text-center space-y-6 mb-8">
+            <h3 className="text-2xl font-semibold text-gray-800">What brings you to ConnectPulse?</h3>
+            <p className="text-gray-600 text-lg">
+              Choose the option that best describes you to get personalized recommendations.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Business Option */}
+            <div 
+              className="p-8 border-2 border-gray-200 rounded-xl cursor-pointer transition-all duration-300 hover:border-blue-500 hover:bg-blue-50 hover:scale-105"
+              onClick={() => {
+                setUserType('business');
+                setCurrentStep('business-niche');
+              }}
+            >
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto">
+                  <Building2 className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-2xl font-semibold text-gray-800">Business Owner</h3>
+                <p className="text-gray-600">
+                  I own or represent a business and want to connect with other businesses, find partners, and grow my network.
+                </p>
+                <div className="space-y-2 text-sm text-gray-500">
+                  <p>✓ Business networking groups</p>
+                  <p>✓ Industry-specific communities</p>
+                  <p>✓ Partnership opportunities</p>
+                  <p>✓ B2B connections</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Freelancer Option */}
+            <div 
+              className="p-8 border-2 border-gray-200 rounded-xl cursor-pointer transition-all duration-300 hover:border-green-500 hover:bg-green-50 hover:scale-105"
+              onClick={() => {
+                setUserType('freelancer');
+                setCurrentStep('freelancer-niche');
+              }}
+            >
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto">
+                  <User className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-2xl font-semibold text-gray-800">Freelancer / Service Provider</h3>
+                <p className="text-gray-600">
+                  I offer services or skills and want to connect with potential clients and fellow professionals.
+                </p>
+                <div className="space-y-2 text-sm text-gray-500">
+                  <p>✓ Skill-based communities</p>
+                  <p>✓ Client opportunities</p>
+                  <p>✓ Professional networking</p>
+                  <p>✓ Local service groups</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-4">
       <div className="max-w-7xl mx-auto">
         {currentStep === 'welcome' && renderWelcome()}
         
-        {currentStep === 'niche' && (
+        {currentStep === 'user-type' && renderUserTypeSelection()}
+        
+        {currentStep === 'business-niche' && (
           <NicheSelector 
             onNext={(name, niche) => {
               setCurrentUser(prev => prev ? { ...prev, name, niche } : { id: '', name, niche, country: '', preferredScope: 'local' });
               setCurrentStep('location');
             }}
-            onBack={() => setCurrentStep('welcome')}
+            onBack={() => setCurrentStep('user-type')}
+          />
+        )}
+
+        {currentStep === 'freelancer-niche' && (
+          <FreelancerNicheSelector 
+            onNext={(data) => {
+              setFreelancerData(data);
+              setCurrentUser(prev => prev ? { ...prev, name: data.name, niche: data.primarySkill } : { id: '', name: data.name, niche: data.primarySkill, country: '', preferredScope: 'local' });
+              setCurrentStep('location');
+            }}
+            onBack={() => setCurrentStep('user-type')}
           />
         )}
         
@@ -259,7 +322,7 @@ const ConnectPulse = () => {
           <LocationSelector
             user={currentUser}
             onComplete={handleUserRegistration}
-            onBack={() => setCurrentStep('niche')}
+            onBack={() => setCurrentStep(userType === 'business' ? 'business-niche' : 'freelancer-niche')}
           />
         )}
         

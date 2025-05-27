@@ -6,43 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Building2, Users, Globe, MapPin } from 'lucide-react';
-
-const BUSINESS_TYPES = [
-  'Accounting & Finance',
-  'Advertising & Marketing',
-  'Agriculture & Farming',
-  'Architecture & Construction',
-  'Art & Design',
-  'Automotive',
-  'Beauty & Wellness',
-  'Blockchain & Cryptocurrency',
-  'Consulting Services',
-  'E-commerce & Retail',
-  'Education & Training',
-  'Energy & Utilities',
-  'Entertainment & Media',
-  'Environmental Services',
-  'Fashion & Apparel',
-  'Finance & Fintech',
-  'Food & Beverage',
-  'Gaming & Entertainment',
-  'Healthcare & Medical',
-  'Human Resources',
-  'Insurance',
-  'Legal Services',
-  'Logistics & Transportation',
-  'Manufacturing',
-  'Music & Audio Production',
-  'Non-Profit Organizations',
-  'Photography & Videography',
-  'Real Estate',
-  'Security Services',
-  'Software & Technology',
-  'Sports & Fitness',
-  'Telecommunications',
-  'Travel & Tourism',
-  'Other'
-].sort();
+import { BUSINESS_TYPES } from '@/data/businessTypes';
 
 interface NicheSelectorProps {
   onNext: (name: string, niche: string) => void;
