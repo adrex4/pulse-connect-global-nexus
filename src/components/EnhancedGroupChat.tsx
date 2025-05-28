@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -58,7 +57,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
 
   // Enhanced mock messages with professional networking context
   const generateEnhancedMessages = (group: Group): ExtendedMessage[] => {
-    const mockMessages = [
+    const mockMessages: ExtendedMessage[] = [
       {
         id: '1',
         userId: 'admin',
@@ -66,7 +65,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
         content: '📋 Welcome to the Bookkeeping & Financial Services Professionals group! Please review our community guidelines pinned above.',
         timestamp: new Date(Date.now() - 86400000), // 1 day ago
         groupId: group.id,
-        type: 'announcement' as const,
+        type: 'announcement',
         isPinned: true,
         reactions: [
           { emoji: '👍', users: ['user1', 'user2', 'user3'] },
@@ -80,6 +79,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
         content: 'Good morning everyone! Has anyone worked with the new IFRS 17 implementation? I\'d love to connect and share experiences.',
         timestamp: new Date(Date.now() - 7200000),
         groupId: group.id,
+        type: 'text',
         reactions: [
           { emoji: '💼', users: ['user2', 'user3'] },
           { emoji: '🤝', users: ['user4'] }
@@ -92,6 +92,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
         content: '@Sarah Johnson, CPA Yes! I just completed a project with IFRS 17. Happy to share insights. Are you available for a quick call this week?',
         timestamp: new Date(Date.now() - 6000000),
         groupId: group.id,
+        type: 'text',
         repliedTo: {
           id: '2',
           userId: 'user1',
@@ -121,6 +122,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
         content: 'Networking Event Reminder: Local chapter meeting this Friday at 6 PM. Who\'s planning to attend? 📅',
         timestamp: new Date(Date.now() - 1800000),
         groupId: group.id,
+        type: 'text',
         isPinned: true,
         reactions: [
           { emoji: '✋', users: ['user1', 'user2', 'user3', 'user5'] },
