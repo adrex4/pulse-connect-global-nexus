@@ -93,7 +93,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       const { data } = await supabase
         .from('groups')
         .select('category')
-        .is('category', 'not.null')
+        .not('category', 'is', null)
         .eq('is_public', true);
       
       if (data) {
@@ -105,7 +105,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
         .from('user_profiles')
         .select('business_type')
         .eq('user_type', 'business')
-        .is('business_type', 'not.null')
+        .not('business_type', 'is', null)
         .eq('visibility', 'public');
       
       if (data) {
@@ -148,7 +148,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       .eq('visibility', 'public');
 
     if (activeTab === 'users') {
-      query = query.in('user_type', ['freelancer', 'occupation_provider', 'social_media_influencer']);
+      query = query.in('user_type', ['freelancer', 'occupation_provider']);
     } else if (activeTab === 'businesses') {
       query = query.eq('user_type', 'business');
     }
@@ -158,7 +158,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
     }
 
     if (selectedCategory) {
-      query = query.or(`business_type.eq.${selectedCategory},primary_skill.eq.${selectedCategory},occupation.eq.${selectedCategory}`);
+      query = query.or(`business_type.ilike.%${selectedCategory}%,primary_skill.ilike.%${selectedCategory}%,occupation.ilike.%${selectedCategory}%`);
     }
 
     if (selectedLocation) {
@@ -187,7 +187,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
     }
 
     if (selectedCategory) {
-      query = query.eq('category', selectedCategory);
+      query = query.ilike('category', `%${selectedCategory}%`);
     }
 
     if (selectedLocation) {
@@ -503,5 +503,120 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
     </div>
   );
 };
+
+const getProfileIcon = (profile: Profile) => {
+  switch (profile.user_type) {
+    case 'business':
+      return <Building2 className="h-4 w-4 mr-1" />;
+    case 'freelancer':
+      return <Globe className="h-4 w-4 mr-1" />;
+    case 'occupation_provider':
+      return <MapPin className="h-4 w-4 mr-1" />;
+    case 'social_media_influencer':
+      return <Star className="h-4 w-4 mr-1" />;
+    default:
+      return <User className="h-4 w-4 mr-1" />;
+  }
+};
+
+const renderProfileCard = (profile: Profile) => (
+  <Card key={profile.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+    <CardContent className="p-6">
+      <div className="flex items-start gap-4">
+        <Avatar className="h-16 w-16">
+          <AvatarImage src={profile.profile_image_url} />
+          <AvatarFallback>
+            {profile.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        
+        <div className="flex-1 space-y-2">
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold text-lg">{profile.name}</h3>
+            {profile.is_verified && (
+              <Badge variant="secondary" className="bg-green-100 text-green-800">
+                Verified
+              </Badge>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-1">
+            {getProfileIcon(profile)}
+            <p className="text-blue-600 font-medium">{getProfileType(profile)}</p>
+          </div>
+          
+          {profile.bio && (
+            <p className="text-gray-600 text-sm line-clamp-2">{profile.bio}</p>
+          )}
+          
+          <div className="flex items-center gap-4 text-sm text-gray-500">
+            <div className="flex items-center gap-1">
+              <MapPin className="h-4 w-4" />
+              {getLocationString(profile.location)}
+            </div>
+            
+            {profile.rating > 0 && (
+              <div className="flex items-center gap-1">
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                {profile.rating.toFixed(1)} ({profile.total_reviews})
+              </div>
+            )}
+            
+            {profile.hourly_rate && (
+              <span className="font-medium text-green-600">
+                ${profile.hourly_rate}/hr
+              </span>
+            )}
+          </div>
+          
+          {profile.service_type && (
+            <div className="flex gap-2">
+              <Badge variant="outline" className="text-xs flex items-center">
+                {profile.service_type === 'online' && <Globe className="h-3 w-3 mr-1" />}
+                {profile.service_type === 'in_person' && <MapPin className="h-3 w-3 mr-1" />}
+                {profile.service_type === 'both' && <Users className="h-3 w-3 mr-1" />}
+                {profile.service_type.replace('_', ' ')}
+              </Badge>
+            </div>
+          )}
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+const renderGroupCard = (group: Group) => (
+  <Card key={group.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+    <CardContent className="p-6">
+      <div className="space-y-3">
+        <div className="flex items-start justify-between">
+          <div>
+            <h3 className="font-semibold text-lg">{group.name}</h3>
+            <p className="text-blue-600 font-medium">{group.category}</p>
+          </div>
+          <Badge variant="outline">{group.scope}</Badge>
+        </div>
+        
+        {group.description && (
+          <p className="text-gray-600 text-sm line-clamp-2">{group.description}</p>
+        )}
+        
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <div className="flex items-center gap-1">
+            <Users className="h-4 w-4" />
+            {group.member_count} members
+          </div>
+          
+          {group.location && (
+            <div className="flex items-center gap-1">
+              <MapPin className="h-4 w-4" />
+              {group.location.name}
+            </div>
+          )}
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 export default PublicProfileBrowser;
