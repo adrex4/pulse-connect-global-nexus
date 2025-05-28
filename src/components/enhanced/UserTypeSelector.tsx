@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Building2, User, Users, Plus, Eye, Camera } from 'lucide-react';
+import { ArrowLeft, Building2, User, Users, Plus, Eye, Camera, MapPin, Star } from 'lucide-react';
 
 interface UserTypeSelectorProps {
   onNext: (userType: 'business' | 'freelancer' | 'occupation_provider' | 'social_media_influencer', action: 'join' | 'create' | 'view') => void;
@@ -125,7 +125,7 @@ const UserTypeSelector: React.FC<UserTypeSelectorProps> = ({ onNext, onBack }) =
               <div className="p-6 border-2 border-gray-200 rounded-xl">
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
-                    <User className="h-8 w-8 text-white" />
+                    <MapPin className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-800">Local Service Provider</h3>
                   <p className="text-gray-600 text-sm">

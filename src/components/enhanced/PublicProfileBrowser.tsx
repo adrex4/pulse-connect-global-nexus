@@ -15,7 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
 interface Profile {
   id: string;
   name: string;
-  user_type: 'business' | 'freelancer' | 'occupation_provider';
+  user_type: 'business' | 'freelancer' | 'occupation_provider' | 'social_media_influencer';
   business_type?: string;
   primary_skill?: string;
   occupation?: string;
@@ -51,16 +51,24 @@ interface Group {
 
 interface PublicProfileBrowserProps {
   onGetStarted: () => void;
+  initialFilter?: 'users' | 'businesses' | 'groups' | null;
 }
 
-const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarted }) => {
-  const [activeTab, setActiveTab] = useState<'users' | 'businesses' | 'groups'>('users');
+const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarted, initialFilter = null }) => {
+  const [activeTab, setActiveTab] = useState<'users' | 'businesses' | 'groups'>(initialFilter || 'users');
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(true);
+  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
+  const [availableLocations, setAvailableLocations] = useState<{id: string, name: string}[]>([]);
+
+  useEffect(() => {
+    fetchLocations();
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (activeTab === 'groups') {
@@ -69,6 +77,57 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       fetchProfiles();
     }
   }, [activeTab, searchTerm, selectedLocation, selectedCategory]);
+
+  const fetchLocations = async () => {
+    const { data } = await supabase
+      .from('locations')
+      .select('id, name')
+      .eq('type', 'country')
+      .order('name');
+    
+    setAvailableLocations(data || []);
+  };
+
+  const fetchCategories = async () => {
+    if (activeTab === 'groups') {
+      const { data } = await supabase
+        .from('groups')
+        .select('category')
+        .is('category', 'not.null')
+        .eq('is_public', true);
+      
+      if (data) {
+        const uniqueCategories = [...new Set(data.map(item => item.category))].sort();
+        setAvailableCategories(uniqueCategories);
+      }
+    } else if (activeTab === 'businesses') {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('business_type')
+        .eq('user_type', 'business')
+        .is('business_type', 'not.null')
+        .eq('visibility', 'public');
+      
+      if (data) {
+        const uniqueCategories = [...new Set(data.map(item => item.business_type))].filter(Boolean).sort();
+        setAvailableCategories(uniqueCategories);
+      }
+    } else {
+      // For users/freelancers/service providers
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('primary_skill, occupation')
+        .in('user_type', ['freelancer', 'occupation_provider'])
+        .eq('visibility', 'public');
+      
+      if (data) {
+        const skills = data.map(item => item.primary_skill).filter(Boolean);
+        const occupations = data.map(item => item.occupation).filter(Boolean);
+        const uniqueCategories = [...new Set([...skills, ...occupations])].sort();
+        setAvailableCategories(uniqueCategories);
+      }
+    }
+  };
 
   const fetchProfiles = async () => {
     setLoading(true);
@@ -89,13 +148,21 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       .eq('visibility', 'public');
 
     if (activeTab === 'users') {
-      query = query.in('user_type', ['freelancer', 'occupation_provider']);
+      query = query.in('user_type', ['freelancer', 'occupation_provider', 'social_media_influencer']);
     } else if (activeTab === 'businesses') {
       query = query.eq('user_type', 'business');
     }
 
     if (searchTerm) {
       query = query.or(`name.ilike.%${searchTerm}%,bio.ilike.%${searchTerm}%,business_type.ilike.%${searchTerm}%,primary_skill.ilike.%${searchTerm}%,occupation.ilike.%${searchTerm}%`);
+    }
+
+    if (selectedCategory) {
+      query = query.or(`business_type.eq.${selectedCategory},primary_skill.eq.${selectedCategory},occupation.eq.${selectedCategory}`);
+    }
+
+    if (selectedLocation) {
+      query = query.eq('location_id', selectedLocation);
     }
 
     const { data } = await query.limit(20);
@@ -119,6 +186,14 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       query = query.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,category.ilike.%${searchTerm}%`);
     }
 
+    if (selectedCategory) {
+      query = query.eq('category', selectedCategory);
+    }
+
+    if (selectedLocation) {
+      query = query.eq('location_id', selectedLocation);
+    }
+
     const { data } = await query.limit(20);
     setGroups(data || []);
     setLoading(false);
@@ -140,8 +215,25 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
         return profile.primary_skill || 'Freelancer';
       case 'occupation_provider':
         return profile.occupation || 'Service Provider';
+      case 'social_media_influencer':
+        return 'Social Media Influencer';
       default:
         return 'User';
+    }
+  };
+
+  const getProfileIcon = (profile: Profile) => {
+    switch (profile.user_type) {
+      case 'business':
+        return <Building2 className="h-4 w-4 mr-1" />;
+      case 'freelancer':
+        return <Globe className="h-4 w-4 mr-1" />;
+      case 'occupation_provider':
+        return <MapPin className="h-4 w-4 mr-1" />;
+      case 'social_media_influencer':
+        return <Star className="h-4 w-4 mr-1" />;
+      default:
+        return <User className="h-4 w-4 mr-1" />;
     }
   };
 
@@ -166,7 +258,10 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
               )}
             </div>
             
-            <p className="text-blue-600 font-medium">{getProfileType(profile)}</p>
+            <div className="flex items-center gap-1">
+              {getProfileIcon(profile)}
+              <p className="text-blue-600 font-medium">{getProfileType(profile)}</p>
+            </div>
             
             {profile.bio && (
               <p className="text-gray-600 text-sm line-clamp-2">{profile.bio}</p>
@@ -194,7 +289,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
             
             {profile.service_type && (
               <div className="flex gap-2">
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs flex items-center">
                   {profile.service_type === 'online' && <Globe className="h-3 w-3 mr-1" />}
                   {profile.service_type === 'in_person' && <MapPin className="h-3 w-3 mr-1" />}
                   {profile.service_type === 'both' && <Users className="h-3 w-3 mr-1" />}
@@ -256,7 +351,11 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       <div className="flex justify-center">
         <div className="flex bg-gray-100 rounded-lg p-1">
           <button
-            onClick={() => setActiveTab('users')}
+            onClick={() => {
+              setActiveTab('users');
+              setSelectedCategory('');
+              fetchCategories();
+            }}
             className={`px-6 py-2 rounded-md transition-colors ${
               activeTab === 'users' 
                 ? 'bg-white text-blue-600 shadow-sm' 
@@ -267,7 +366,11 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
             Service Providers
           </button>
           <button
-            onClick={() => setActiveTab('businesses')}
+            onClick={() => {
+              setActiveTab('businesses');
+              setSelectedCategory('');
+              fetchCategories();
+            }}
             className={`px-6 py-2 rounded-md transition-colors ${
               activeTab === 'businesses' 
                 ? 'bg-white text-blue-600 shadow-sm' 
@@ -278,7 +381,11 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
             Businesses
           </button>
           <button
-            onClick={() => setActiveTab('groups')}
+            onClick={() => {
+              setActiveTab('groups');
+              setSelectedCategory('');
+              fetchCategories();
+            }}
             className={`px-6 py-2 rounded-md transition-colors ${
               activeTab === 'groups' 
                 ? 'bg-white text-blue-600 shadow-sm' 
@@ -309,9 +416,25 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="">All Locations</SelectItem>
-            <SelectItem value="US">United States</SelectItem>
-            <SelectItem value="UK">United Kingdom</SelectItem>
-            <SelectItem value="CA">Canada</SelectItem>
+            {availableLocations.map(location => (
+              <SelectItem key={location.id} value={location.id}>
+                {location.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        
+        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <SelectTrigger className="w-full md:w-[200px] h-12">
+            <SelectValue placeholder="All Categories" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All Categories</SelectItem>
+            {availableCategories.map(category => (
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -346,6 +469,20 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
                 : profiles.map(renderProfileCard)
               }
             </div>
+
+            {(activeTab === 'groups' && groups.length === 0) || 
+             (activeTab !== 'groups' && profiles.length === 0) ? (
+              <div className="text-center p-10 bg-gray-50 rounded-lg border border-gray-200">
+                <p className="text-gray-600 mb-4">No results found matching your criteria.</p>
+                <Button variant="outline" onClick={() => {
+                  setSearchTerm('');
+                  setSelectedLocation('');
+                  setSelectedCategory('');
+                }}>
+                  Reset Filters
+                </Button>
+              </div>
+            ) : null}
           </div>
         )}
       </div>
