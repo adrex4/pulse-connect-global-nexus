@@ -2,16 +2,16 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Building2, User, Users, Plus } from 'lucide-react';
+import { ArrowLeft, Building2, User, Users, Plus, Eye, Camera } from 'lucide-react';
 
 interface UserTypeSelectorProps {
-  onNext: (userType: 'business' | 'freelancer' | 'occupation_provider', action: 'join' | 'create') => void;
+  onNext: (userType: 'business' | 'freelancer' | 'occupation_provider' | 'social_media_influencer', action: 'join' | 'create' | 'view') => void;
   onBack: () => void;
 }
 
 const UserTypeSelector: React.FC<UserTypeSelectorProps> = ({ onNext, onBack }) => {
   return (
-    <div className="max-w-6xl mx-auto animate-fade-in">
+    <div className="max-w-7xl mx-auto animate-fade-in">
       <Card className="shadow-lg border-0 bg-white">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
           <div className="flex items-center gap-4">
@@ -29,7 +29,7 @@ const UserTypeSelector: React.FC<UserTypeSelectorProps> = ({ onNext, onBack }) =
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8">
             {/* Business Owner */}
             <div className="space-y-4">
               <div className="p-6 border-2 border-gray-200 rounded-xl">
@@ -48,7 +48,7 @@ const UserTypeSelector: React.FC<UserTypeSelectorProps> = ({ onNext, onBack }) =
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-2">
                 <Button 
                   onClick={() => onNext('business', 'join')}
                   className="bg-blue-500 hover:bg-blue-600 text-white"
@@ -63,6 +63,14 @@ const UserTypeSelector: React.FC<UserTypeSelectorProps> = ({ onNext, onBack }) =
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Create Profile
+                </Button>
+                <Button 
+                  onClick={() => onNext('business', 'view')}
+                  variant="outline"
+                  className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Businesses
                 </Button>
               </div>
             </div>
@@ -85,7 +93,7 @@ const UserTypeSelector: React.FC<UserTypeSelectorProps> = ({ onNext, onBack }) =
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-2">
                 <Button 
                   onClick={() => onNext('freelancer', 'join')}
                   className="bg-green-500 hover:bg-green-600 text-white"
@@ -101,10 +109,18 @@ const UserTypeSelector: React.FC<UserTypeSelectorProps> = ({ onNext, onBack }) =
                   <Plus className="h-4 w-4 mr-2" />
                   Create Profile
                 </Button>
+                <Button 
+                  onClick={() => onNext('freelancer', 'view')}
+                  variant="outline"
+                  className="border-green-300 text-green-600 hover:bg-green-50"
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Freelancers
+                </Button>
               </div>
             </div>
 
-            {/* Occupation Provider */}
+            {/* Local Service Provider */}
             <div className="space-y-4">
               <div className="p-6 border-2 border-gray-200 rounded-xl">
                 <div className="text-center space-y-4">
@@ -122,7 +138,7 @@ const UserTypeSelector: React.FC<UserTypeSelectorProps> = ({ onNext, onBack }) =
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-2">
                 <Button 
                   onClick={() => onNext('occupation_provider', 'join')}
                   className="bg-purple-500 hover:bg-purple-600 text-white"
@@ -137,6 +153,59 @@ const UserTypeSelector: React.FC<UserTypeSelectorProps> = ({ onNext, onBack }) =
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Create Profile
+                </Button>
+                <Button 
+                  onClick={() => onNext('occupation_provider', 'view')}
+                  variant="outline"
+                  className="border-purple-300 text-purple-600 hover:bg-purple-50"
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Service Providers
+                </Button>
+              </div>
+            </div>
+
+            {/* Social Media Influencer */}
+            <div className="space-y-4">
+              <div className="p-6 border-2 border-gray-200 rounded-xl">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-pink-600 rounded-full flex items-center justify-center mx-auto">
+                    <Camera className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800">Social Media Influencer</h3>
+                  <p className="text-gray-600 text-sm">
+                    I create content and influence audiences across social media platforms.
+                  </p>
+                  <div className="space-y-2 text-sm text-gray-500">
+                    <p>✓ Brand partnerships</p>
+                    <p>✓ Content collaboration</p>
+                    <p>✓ Audience growth strategies</p>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-2">
+                <Button 
+                  onClick={() => onNext('social_media_influencer', 'join')}
+                  className="bg-pink-500 hover:bg-pink-600 text-white"
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  Join Groups
+                </Button>
+                <Button 
+                  onClick={() => onNext('social_media_influencer', 'create')}
+                  variant="outline"
+                  className="border-pink-500 text-pink-500 hover:bg-pink-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Profile
+                </Button>
+                <Button 
+                  onClick={() => onNext('social_media_influencer', 'view')}
+                  variant="outline"
+                  className="border-pink-300 text-pink-600 hover:bg-pink-50"
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Influencers
                 </Button>
               </div>
             </div>

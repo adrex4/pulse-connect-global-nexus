@@ -53,14 +53,15 @@ type Step =
   | 'user-type'
   | 'business-niche'
   | 'service-selection'
+  | 'social-media-profile'
   | 'location'
   | 'groups'
   | 'chat';
 
 const ConnectPulse = () => {
   const [currentStep, setCurrentStep] = useState<Step>('welcome');
-  const [userType, setUserType] = useState<'business' | 'freelancer' | 'occupation_provider' | null>(null);
-  const [userAction, setUserAction] = useState<'join' | 'create' | null>(null);
+  const [userType, setUserType] = useState<'business' | 'freelancer' | 'occupation_provider' | 'social_media_influencer' | null>(null);
+  const [userAction, setUserAction] = useState<'join' | 'create' | 'view' | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -265,7 +266,10 @@ const ConnectPulse = () => {
             onNext={(type, action) => {
               setUserType(type);
               setUserAction(action);
-              if (action === 'join') {
+              if (action === 'view') {
+                // Navigate to browse page filtered by user type
+                setCurrentStep('browse');
+              } else if (action === 'join') {
                 if (type === 'business') {
                   setCurrentStep('business-niche');
                 } else {
