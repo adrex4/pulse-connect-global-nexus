@@ -1,340 +1,55 @@
+
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  Search, MapPin, Star, Building2, User, Users, 
-  Globe, Filter, ArrowRight 
-} from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-
-interface Profile {
-  id: string;
-  name: string;
-  user_type: string;
-  business_type?: string;
-  primary_skill?: string;
-  occupation?: string;
-  service_type?: 'online' | 'in_person' | 'both';
-  bio?: string;
-  hourly_rate?: number;
-  rating: number;
-  total_reviews: number;
-  location?: {
-    name: string;
-    parent?: {
-      name: string;
-      parent?: {
-        name: string;
-      };
-    };
-  };
-  profile_image_url?: string;
-  is_verified: boolean;
-}
-
-interface Group {
-  id: string;
-  name: string;
-  description?: string;
-  category: string;
-  scope: string;
-  member_count: number;
-  location?: {
-    name: string;
-  };
-}
-
-interface PublicProfileBrowserProps {
-  onGetStarted: () => void;
-  initialFilter?: 'users' | 'businesses' | 'groups' | null;
-}
+import { ArrowRight } from 'lucide-react';
+import { PublicProfileBrowserProps } from '@/types/publicBrowser';
+import { usePublicBrowserData } from '@/hooks/usePublicBrowserData';
+import BrowserTabs from './browser/BrowserTabs';
+import SearchFilters from './browser/SearchFilters';
+import ResultsSection from './browser/ResultsSection';
 
 const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarted, initialFilter = null }) => {
   const [activeTab, setActiveTab] = useState<'users' | 'businesses' | 'groups'>(initialFilter || 'users');
-  const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [groups, setGroups] = useState<Group[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('all_locations');
   const [selectedCategory, setSelectedCategory] = useState('all_categories');
-  const [loading, setLoading] = useState(true);
-  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
-  const [availableLocations, setAvailableLocations] = useState<{id: string, name: string}[]>([]);
+
+  const {
+    profiles,
+    groups,
+    loading,
+    availableCategories,
+    availableLocations,
+    fetchLocations,
+    fetchCategories,
+    fetchProfiles,
+    fetchGroups
+  } = usePublicBrowserData();
 
   useEffect(() => {
     fetchLocations();
-    fetchCategories();
+    fetchCategories(activeTab);
   }, []);
 
   useEffect(() => {
     if (activeTab === 'groups') {
-      fetchGroups();
+      fetchGroups(searchTerm, selectedLocation, selectedCategory);
     } else {
-      fetchProfiles();
+      fetchProfiles(activeTab, searchTerm, selectedLocation, selectedCategory);
     }
   }, [activeTab, searchTerm, selectedLocation, selectedCategory]);
 
-  const fetchLocations = async () => {
-    const { data } = await supabase
-      .from('locations')
-      .select('id, name')
-      .eq('type', 'country')
-      .order('name');
-    
-    setAvailableLocations(data || []);
+  const handleTabChange = (tab: 'users' | 'businesses' | 'groups') => {
+    setActiveTab(tab);
+    setSelectedCategory('all_categories');
+    fetchCategories(tab);
   };
 
-  const fetchCategories = async () => {
-    if (activeTab === 'groups') {
-      const { data } = await supabase
-        .from('groups')
-        .select('category')
-        .not('category', 'is', null)
-        .eq('is_public', true);
-      
-      if (data) {
-        const uniqueCategories = [...new Set(data.map(item => item.category))].sort();
-        setAvailableCategories(uniqueCategories);
-      }
-    } else if (activeTab === 'businesses') {
-      const { data } = await supabase
-        .from('user_profiles')
-        .select('business_type')
-        .eq('user_type', 'business')
-        .not('business_type', 'is', null)
-        .eq('visibility', 'public');
-      
-      if (data) {
-        const uniqueCategories = [...new Set(data.map(item => item.business_type))].filter(Boolean).sort();
-        setAvailableCategories(uniqueCategories);
-      }
-    } else {
-      // For users/freelancers/service providers
-      const { data } = await supabase
-        .from('user_profiles')
-        .select('primary_skill, occupation')
-        .in('user_type', ['freelancer', 'occupation_provider', 'social_media_influencer'])
-        .eq('visibility', 'public');
-      
-      if (data) {
-        const skills = data.map(item => item.primary_skill).filter(Boolean);
-        const occupations = data.map(item => item.occupation).filter(Boolean);
-        const uniqueCategories = [...new Set([...skills, ...occupations])].sort();
-        setAvailableCategories(uniqueCategories);
-      }
-    }
+  const handleResetFilters = () => {
+    setSearchTerm('');
+    setSelectedLocation('all_locations');
+    setSelectedCategory('all_categories');
   };
-
-  const fetchProfiles = async () => {
-    setLoading(true);
-    let query = supabase
-      .from('user_profiles')
-      .select(`
-        *,
-        locations!user_profiles_location_id_fkey (
-          name,
-          parent:locations!locations_parent_id_fkey (
-            name,
-            parent:locations!locations_parent_id_fkey (
-              name
-            )
-          )
-        )
-      `)
-      .eq('visibility', 'public');
-
-    if (activeTab === 'users') {
-      query = query.in('user_type', ['freelancer', 'occupation_provider', 'social_media_influencer']);
-    } else if (activeTab === 'businesses') {
-      query = query.eq('user_type', 'business');
-    }
-
-    if (searchTerm) {
-      query = query.or(`name.ilike.%${searchTerm}%,bio.ilike.%${searchTerm}%,business_type.ilike.%${searchTerm}%,primary_skill.ilike.%${searchTerm}%,occupation.ilike.%${searchTerm}%`);
-    }
-
-    if (selectedCategory && selectedCategory !== 'all_categories') {
-      query = query.or(`business_type.ilike.%${selectedCategory}%,primary_skill.ilike.%${selectedCategory}%,occupation.ilike.%${selectedCategory}%`);
-    }
-
-    if (selectedLocation && selectedLocation !== 'all_locations') {
-      query = query.eq('location_id', selectedLocation);
-    }
-
-    const { data } = await query.limit(20);
-    setProfiles(data || []);
-    setLoading(false);
-  };
-
-  const fetchGroups = async () => {
-    setLoading(true);
-    let query = supabase
-      .from('groups')
-      .select(`
-        *,
-        locations!groups_location_id_fkey (
-          name
-        )
-      `)
-      .eq('is_public', true);
-
-    if (searchTerm) {
-      query = query.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,category.ilike.%${searchTerm}%`);
-    }
-
-    if (selectedCategory && selectedCategory !== 'all_categories') {
-      query = query.ilike('category', `%${selectedCategory}%`);
-    }
-
-    if (selectedLocation && selectedLocation !== 'all_locations') {
-      query = query.eq('location_id', selectedLocation);
-    }
-
-    const { data } = await query.limit(20);
-    setGroups(data || []);
-    setLoading(false);
-  };
-
-  const getLocationString = (location: any) => {
-    if (!location) return 'Location not specified';
-    const parts = [location.name];
-    if (location.parent?.name) parts.push(location.parent.name);
-    if (location.parent?.parent?.name) parts.push(location.parent.parent.name);
-    return parts.join(', ');
-  };
-
-  const getProfileType = (profile: Profile) => {
-    switch (profile.user_type) {
-      case 'business':
-        return profile.business_type || 'Business';
-      case 'freelancer':
-        return profile.primary_skill || 'Freelancer';
-      case 'occupation_provider':
-        return profile.occupation || 'Service Provider';
-      case 'social_media_influencer':
-        return 'Social Media Influencer';
-      default:
-        return 'User';
-    }
-  };
-
-  const getProfileIcon = (profile: Profile) => {
-    switch (profile.user_type) {
-      case 'business':
-        return <Building2 className="h-4 w-4 mr-1" />;
-      case 'freelancer':
-        return <Globe className="h-4 w-4 mr-1" />;
-      case 'occupation_provider':
-        return <MapPin className="h-4 w-4 mr-1" />;
-      case 'social_media_influencer':
-        return <Star className="h-4 w-4 mr-1" />;
-      default:
-        return <User className="h-4 w-4 mr-1" />;
-    }
-  };
-
-  const renderProfileCard = (profile: Profile) => (
-    <Card key={profile.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-      <CardContent className="p-6">
-        <div className="flex items-start gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={profile.profile_image_url} />
-            <AvatarFallback>
-              {profile.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          
-          <div className="flex-1 space-y-2">
-            <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-lg">{profile.name}</h3>
-              {profile.is_verified && (
-                <Badge variant="secondary" className="bg-green-100 text-green-800">
-                  Verified
-                </Badge>
-              )}
-            </div>
-            
-            <div className="flex items-center gap-1">
-              {getProfileIcon(profile)}
-              <p className="text-blue-600 font-medium">{getProfileType(profile)}</p>
-            </div>
-            
-            {profile.bio && (
-              <p className="text-gray-600 text-sm line-clamp-2">{profile.bio}</p>
-            )}
-            
-            <div className="flex items-center gap-4 text-sm text-gray-500">
-              <div className="flex items-center gap-1">
-                <MapPin className="h-4 w-4" />
-                {getLocationString(profile.location)}
-              </div>
-              
-              {profile.rating > 0 && (
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  {profile.rating.toFixed(1)} ({profile.total_reviews})
-                </div>
-              )}
-              
-              {profile.hourly_rate && (
-                <span className="font-medium text-green-600">
-                  ${profile.hourly_rate}/hr
-                </span>
-              )}
-            </div>
-            
-            {profile.service_type && (
-              <div className="flex gap-2">
-                <Badge variant="outline" className="text-xs flex items-center">
-                  {profile.service_type === 'online' && <Globe className="h-3 w-3 mr-1" />}
-                  {profile.service_type === 'in_person' && <MapPin className="h-3 w-3 mr-1" />}
-                  {profile.service_type === 'both' && <Users className="h-3 w-3 mr-1" />}
-                  {profile.service_type.replace('_', ' ')}
-                </Badge>
-              </div>
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
-  const renderGroupCard = (group: Group) => (
-    <Card key={group.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-      <CardContent className="p-6">
-        <div className="space-y-3">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="font-semibold text-lg">{group.name}</h3>
-              <p className="text-blue-600 font-medium">{group.category}</p>
-            </div>
-            <Badge variant="outline">{group.scope}</Badge>
-          </div>
-          
-          {group.description && (
-            <p className="text-gray-600 text-sm line-clamp-2">{group.description}</p>
-          )}
-          
-          <div className="flex items-center justify-between text-sm text-gray-500">
-            <div className="flex items-center gap-1">
-              <Users className="h-4 w-4" />
-              {group.member_count} members
-            </div>
-            
-            {group.location && (
-              <div className="flex items-center gap-1">
-                <MapPin className="h-4 w-4" />
-                {group.location.name}
-              </div>
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
 
   return (
     <div className="space-y-8">
@@ -347,143 +62,30 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       </div>
 
       {/* Tabs */}
-      <div className="flex justify-center">
-        <div className="flex bg-gray-100 rounded-lg p-1">
-          <button
-            onClick={() => {
-              setActiveTab('users');
-              setSelectedCategory('all_categories');
-              fetchCategories();
-            }}
-            className={`px-6 py-2 rounded-md transition-colors ${
-              activeTab === 'users' 
-                ? 'bg-white text-blue-600 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-          >
-            <User className="h-4 w-4 inline mr-2" />
-            Service Providers
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('businesses');
-              setSelectedCategory('all_categories');
-              fetchCategories();
-            }}
-            className={`px-6 py-2 rounded-md transition-colors ${
-              activeTab === 'businesses' 
-                ? 'bg-white text-blue-600 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-          >
-            <Building2 className="h-4 w-4 inline mr-2" />
-            Businesses
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('groups');
-              setSelectedCategory('all_categories');
-              fetchCategories();
-            }}
-            className={`px-6 py-2 rounded-md transition-colors ${
-              activeTab === 'groups' 
-                ? 'bg-white text-blue-600 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-          >
-            <Users className="h-4 w-4 inline mr-2" />
-            Groups
-          </button>
-        </div>
-      </div>
+      <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
       {/* Search and Filters */}
-      <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <Input
-            placeholder={`Search ${activeTab}...`}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 h-12"
-          />
-        </div>
-        
-        <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-          <SelectTrigger className="w-full md:w-[200px] h-12">
-            <SelectValue placeholder="All Locations" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all_locations">All Locations</SelectItem>
-            {availableLocations.map(location => (
-              <SelectItem key={location.id} value={location.id}>
-                {location.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="w-full md:w-[200px] h-12">
-            <SelectValue placeholder="All Categories" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all_categories">All Categories</SelectItem>
-            {availableCategories.map(category => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <SearchFilters
+        activeTab={activeTab}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        selectedLocation={selectedLocation}
+        onLocationChange={setSelectedLocation}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        availableLocations={availableLocations}
+        availableCategories={availableCategories}
+      />
 
       {/* Results */}
       <div className="max-w-6xl mx-auto">
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="p-6">
-                  <div className="h-32 bg-gray-200 rounded"></div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <p className="text-gray-600">
-                {activeTab === 'groups' ? groups.length : profiles.length} results found
-              </p>
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                More Filters
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {activeTab === 'groups' 
-                ? groups.map(renderGroupCard)
-                : profiles.map(renderProfileCard)
-              }
-            </div>
-
-            {(activeTab === 'groups' && groups.length === 0) || 
-             (activeTab !== 'groups' && profiles.length === 0) ? (
-              <div className="text-center p-10 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-gray-600 mb-4">No results found matching your criteria.</p>
-                <Button variant="outline" onClick={() => {
-                  setSearchTerm('');
-                  setSelectedLocation('all_locations');
-                  setSelectedCategory('all_categories');
-                }}>
-                  Reset Filters
-                </Button>
-              </div>
-            ) : null}
-          </div>
-        )}
+        <ResultsSection
+          activeTab={activeTab}
+          loading={loading}
+          profiles={profiles}
+          groups={groups}
+          onResetFilters={handleResetFilters}
+        />
       </div>
 
       {/* Call to Action */}
