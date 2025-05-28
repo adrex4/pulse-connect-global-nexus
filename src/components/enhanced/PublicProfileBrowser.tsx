@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 interface Profile {
   id: string;
   name: string;
-  user_type: 'business' | 'freelancer' | 'occupation_provider' | 'social_media_influencer';
+  user_type: string;
   business_type?: string;
   primary_skill?: string;
   occupation?: string;

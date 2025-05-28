@@ -308,7 +308,11 @@ export type Database = {
     Enums: {
       profile_visibility: "public" | "private" | "groups_only"
       service_type: "online" | "in_person" | "both"
-      user_type: "business" | "freelancer" | "occupation_provider"
+      user_type:
+        | "business"
+        | "freelancer"
+        | "occupation_provider"
+        | "social_media_influencer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -426,7 +430,12 @@ export const Constants = {
     Enums: {
       profile_visibility: ["public", "private", "groups_only"],
       service_type: ["online", "in_person", "both"],
-      user_type: ["business", "freelancer", "occupation_provider"],
+      user_type: [
+        "business",
+        "freelancer",
+        "occupation_provider",
+        "social_media_influencer",
+      ],
     },
   },
 } as const
