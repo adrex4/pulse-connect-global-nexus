@@ -58,8 +58,8 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('all_locations');
+  const [selectedCategory, setSelectedCategory] = useState('all_categories');
   const [loading, setLoading] = useState(true);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [availableLocations, setAvailableLocations] = useState<{id: string, name: string}[]>([]);
@@ -156,11 +156,11 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       query = query.or(`name.ilike.%${searchTerm}%,bio.ilike.%${searchTerm}%,business_type.ilike.%${searchTerm}%,primary_skill.ilike.%${searchTerm}%,occupation.ilike.%${searchTerm}%`);
     }
 
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== 'all_categories') {
       query = query.or(`business_type.ilike.%${selectedCategory}%,primary_skill.ilike.%${selectedCategory}%,occupation.ilike.%${selectedCategory}%`);
     }
 
-    if (selectedLocation) {
+    if (selectedLocation && selectedLocation !== 'all_locations') {
       query = query.eq('location_id', selectedLocation);
     }
 
@@ -185,11 +185,11 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       query = query.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,category.ilike.%${searchTerm}%`);
     }
 
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== 'all_categories') {
       query = query.ilike('category', `%${selectedCategory}%`);
     }
 
-    if (selectedLocation) {
+    if (selectedLocation && selectedLocation !== 'all_locations') {
       query = query.eq('location_id', selectedLocation);
     }
 
@@ -352,7 +352,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
           <button
             onClick={() => {
               setActiveTab('users');
-              setSelectedCategory('');
+              setSelectedCategory('all_categories');
               fetchCategories();
             }}
             className={`px-6 py-2 rounded-md transition-colors ${
@@ -367,7 +367,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
           <button
             onClick={() => {
               setActiveTab('businesses');
-              setSelectedCategory('');
+              setSelectedCategory('all_categories');
               fetchCategories();
             }}
             className={`px-6 py-2 rounded-md transition-colors ${
@@ -382,7 +382,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
           <button
             onClick={() => {
               setActiveTab('groups');
-              setSelectedCategory('');
+              setSelectedCategory('all_categories');
               fetchCategories();
             }}
             className={`px-6 py-2 rounded-md transition-colors ${
@@ -414,7 +414,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
             <SelectValue placeholder="All Locations" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Locations</SelectItem>
+            <SelectItem value="all_locations">All Locations</SelectItem>
             {availableLocations.map(location => (
               <SelectItem key={location.id} value={location.id}>
                 {location.name}
@@ -428,7 +428,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Categories</SelectItem>
+            <SelectItem value="all_categories">All Categories</SelectItem>
             {availableCategories.map(category => (
               <SelectItem key={category} value={category}>
                 {category}
@@ -475,8 +475,8 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
                 <p className="text-gray-600 mb-4">No results found matching your criteria.</p>
                 <Button variant="outline" onClick={() => {
                   setSearchTerm('');
-                  setSelectedLocation('');
-                  setSelectedCategory('');
+                  setSelectedLocation('all_locations');
+                  setSelectedCategory('all_categories');
                 }}>
                   Reset Filters
                 </Button>

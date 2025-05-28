@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,11 +14,11 @@ interface LocationSelectorProps {
 }
 
 const LocationSelector: React.FC<LocationSelectorProps> = ({ user, onComplete, onBack }) => {
-  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('default_country');
   const [preferredScope, setPreferredScope] = useState<'local' | 'regional' | 'global'>('local');
 
   const handleComplete = () => {
-    if (selectedCountry) {
+    if (selectedCountry && selectedCountry !== 'default_country') {
       onComplete({
         name: user.name,
         niche: user.niche,
@@ -63,6 +62,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({ user, onComplete, o
                 <SelectValue placeholder="Select your country..." />
               </SelectTrigger>
               <SelectContent className="max-h-80">
+                <SelectItem value="default_country">Select your country...</SelectItem>
                 {COUNTRIES.map((country) => (
                   <SelectItem key={country} value={country} className="text-base py-3">
                     {country}
@@ -136,7 +136,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({ user, onComplete, o
           </div>
 
           {/* Preview */}
-          {selectedCountry && (
+          {selectedCountry && selectedCountry !== 'default_country' && (
             <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200 animate-scale-in">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
@@ -152,7 +152,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({ user, onComplete, o
 
           <Button
             onClick={handleComplete}
-            disabled={!selectedCountry}
+            disabled={!selectedCountry || selectedCountry === 'default_country'}
             className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
             size="lg"
           >

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -80,10 +79,10 @@ const mockFreelancers = [
 
 const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [priceRange, setPriceRange] = useState('');
-  const [workArrangement, setWorkArrangement] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all_categories');
+  const [selectedCountry, setSelectedCountry] = useState('all_countries');
+  const [priceRange, setPriceRange] = useState('any_price');
+  const [workArrangement, setWorkArrangement] = useState('any_arrangement');
   const [selectedFreelancer, setSelectedFreelancer] = useState<any>(null);
   const [filteredFreelancers, setFilteredFreelancers] = useState(mockFreelancers);
 
@@ -98,18 +97,18 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
       );
     }
 
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== 'all_categories') {
       const categorySkills = FREELANCER_SKILL_CATEGORIES[selectedCategory as keyof typeof FREELANCER_SKILL_CATEGORIES];
       filtered = filtered.filter(freelancer =>
         categorySkills.includes(freelancer.primarySkill)
       );
     }
 
-    if (selectedCountry) {
+    if (selectedCountry && selectedCountry !== 'all_countries') {
       filtered = filtered.filter(freelancer => freelancer.country === selectedCountry);
     }
 
-    if (priceRange) {
+    if (priceRange && priceRange !== 'any_price') {
       const [min, max] = priceRange.split('-').map(Number);
       filtered = filtered.filter(freelancer => {
         if (!freelancer.hourlyRate) return true;
@@ -117,7 +116,7 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
       });
     }
 
-    if (workArrangement) {
+    if (workArrangement && workArrangement !== 'any_arrangement') {
       filtered = filtered.filter(freelancer => freelancer.workArrangement === workArrangement);
     }
 
@@ -192,7 +191,7 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
+                <SelectItem value="all_categories">All Categories</SelectItem>
                 {Object.keys(FREELANCER_SKILL_CATEGORIES).map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}
@@ -206,7 +205,7 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
                 <SelectValue placeholder="Location" />
               </SelectTrigger>
               <SelectContent className="max-h-60">
-                <SelectItem value="">All Countries</SelectItem>
+                <SelectItem value="all_countries">All Countries</SelectItem>
                 {COUNTRIES.map((country) => (
                   <SelectItem key={country} value={country}>
                     {country}
@@ -220,7 +219,7 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
                 <SelectValue placeholder="Price Range" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Price</SelectItem>
+                <SelectItem value="any_price">Any Price</SelectItem>
                 <SelectItem value="0-25">$0 - $25/hr</SelectItem>
                 <SelectItem value="25-50">$25 - $50/hr</SelectItem>
                 <SelectItem value="50-75">$50 - $75/hr</SelectItem>
@@ -234,7 +233,7 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
                 <SelectValue placeholder="Work Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Arrangement</SelectItem>
+                <SelectItem value="any_arrangement">Any Arrangement</SelectItem>
                 <SelectItem value="Remote Only">Remote Only</SelectItem>
                 <SelectItem value="On-site Only">On-site Only</SelectItem>
                 <SelectItem value="Hybrid (Remote + On-site)">Hybrid</SelectItem>

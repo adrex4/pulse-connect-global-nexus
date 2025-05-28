@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,10 +14,10 @@ interface NicheSelectorProps {
 
 const NicheSelector: React.FC<NicheSelectorProps> = ({ onNext, onBack }) => {
   const [name, setName] = useState('');
-  const [selectedNiche, setSelectedNiche] = useState('');
+  const [selectedNiche, setSelectedNiche] = useState('default_niche');
 
   const handleNext = () => {
-    if (name.trim() && selectedNiche) {
+    if (name.trim() && selectedNiche && selectedNiche !== 'default_niche') {
       onNext(name.trim(), selectedNiche);
     }
   };
@@ -73,6 +72,7 @@ const NicheSelector: React.FC<NicheSelectorProps> = ({ onNext, onBack }) => {
                 <SelectValue placeholder="Choose your business category..." />
               </SelectTrigger>
               <SelectContent className="max-h-80">
+                <SelectItem value="default_niche">Choose your business category...</SelectItem>
                 {BUSINESS_TYPES.map((business) => (
                   <SelectItem key={business} value={business} className="text-base py-3">
                     {business}
@@ -86,7 +86,7 @@ const NicheSelector: React.FC<NicheSelectorProps> = ({ onNext, onBack }) => {
           </div>
 
           {/* Selected Business Preview */}
-          {selectedNiche && (
+          {selectedNiche && selectedNiche !== 'default_niche' && (
             <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200 animate-scale-in">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
@@ -121,7 +121,7 @@ const NicheSelector: React.FC<NicheSelectorProps> = ({ onNext, onBack }) => {
 
           <Button
             onClick={handleNext}
-            disabled={!name.trim() || !selectedNiche}
+            disabled={!name.trim() || !selectedNiche || selectedNiche === 'default_niche'}
             className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
             size="lg"
           >
