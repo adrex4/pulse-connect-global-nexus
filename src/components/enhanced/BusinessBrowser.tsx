@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Building2, Search, Globe, MapPin, Play } from 'lucide-react';
 
@@ -15,15 +16,40 @@ interface Business {
   videos: string[];
   location: string;
   verified: boolean;
+  category: string;
 }
 
 interface BusinessBrowserProps {
   onBack: () => void;
   onCreateBusiness: () => void;
+  showFilters?: boolean;
+  searchTerm?: string;
+  onSearchChange?: (term: string) => void;
+  selectedLocation?: string;
+  onLocationChange?: (location: string) => void;
+  selectedCategory?: string;
+  onCategoryChange?: (category: string) => void;
+  availableLocations?: {id: string, name: string}[];
+  availableCategories?: string[];
 }
 
-const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ onBack, onCreateBusiness }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ 
+  onBack, 
+  onCreateBusiness,
+  showFilters = false,
+  searchTerm = '',
+  onSearchChange,
+  selectedLocation = 'all_locations',
+  onLocationChange,
+  selectedCategory = 'all_categories',
+  onCategoryChange,
+  availableLocations = [],
+  availableCategories = []
+}) => {
+  const [internalSearchTerm, setInternalSearchTerm] = useState('');
+  
+  const currentSearchTerm = showFilters ? searchTerm : internalSearchTerm;
+  const handleSearchChange = showFilters ? onSearchChange : setInternalSearchTerm;
 
   // Sample businesses for demonstration
   const sampleBusinesses: Business[] = [
@@ -35,7 +61,8 @@ const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ onBack, onCreateBusin
       images: ['https://images.unsplash.com/photo-1498050108023-c5249f4df085'],
       videos: ['https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4'],
       location: 'New York, USA',
-      verified: true
+      verified: true,
+      category: 'Technology'
     },
     {
       id: '2',
@@ -44,7 +71,8 @@ const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ onBack, onCreateBusin
       images: ['https://images.unsplash.com/photo-1488590528505-98d2b5aba04b'],
       videos: [],
       location: 'California, USA',
-      verified: true
+      verified: true,
+      category: 'Energy'
     },
     {
       id: '3',
@@ -53,29 +81,41 @@ const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ onBack, onCreateBusin
       images: ['https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d'],
       videos: ['https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4'],
       location: 'London, UK',
-      verified: false
+      verified: false,
+      category: 'Design'
     }
   ];
 
-  const filteredBusinesses = sampleBusinesses.filter(business =>
-    business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    business.products.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredBusinesses = sampleBusinesses.filter(business => {
+    const matchesSearch = business.name.toLowerCase().includes(currentSearchTerm.toLowerCase()) ||
+      business.products.toLowerCase().includes(currentSearchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategory === 'all_categories' || 
+      business.category.toLowerCase().includes(selectedCategory.toLowerCase());
+    
+    // For location, we'll do a simple match for now
+    const matchesLocation = selectedLocation === 'all_locations' || 
+      business.location.toLowerCase().includes(selectedLocation.toLowerCase());
+    
+    return matchesSearch && matchesCategory && matchesLocation;
+  });
 
   return (
     <div className="max-w-6xl mx-auto animate-fade-in">
       <Card className="shadow-lg border-0 bg-white">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div className="flex items-center gap-3">
-              <Building2 className="h-6 w-6" />
-              <CardTitle className="text-xl">Browse Businesses</CardTitle>
+        {!showFilters && (
+          <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <div className="flex items-center gap-3">
+                <Building2 className="h-6 w-6" />
+                <CardTitle className="text-xl">Browse Businesses</CardTitle>
+              </div>
             </div>
-          </div>
-        </CardHeader>
+          </CardHeader>
+        )}
         <CardContent className="p-8">
           <div className="space-y-6">
             {/* Header with Create Business Button */}
@@ -94,15 +134,55 @@ const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ onBack, onCreateBusin
               </Button>
             </div>
 
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                placeholder="Search businesses, products, or services..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-12 text-lg"
-              />
+            {/* Search and Filters */}
+            <div className="space-y-4">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Input
+                  placeholder="Search businesses, products, or services..."
+                  value={currentSearchTerm}
+                  onChange={(e) => handleSearchChange?.(e.target.value)}
+                  className="pl-10 h-12 text-lg"
+                />
+              </div>
+
+              {/* Filters - only show if showFilters is true */}
+              {showFilters && (
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex-1 min-w-[200px]">
+                    <Select value={selectedLocation} onValueChange={onLocationChange}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="All Locations" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all_locations">All Locations</SelectItem>
+                        {availableLocations.map((location) => (
+                          <SelectItem key={location.id} value={location.id}>
+                            {location.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex-1 min-w-[200px]">
+                    <Select value={selectedCategory} onValueChange={onCategoryChange}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="All Categories" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all_categories">All Categories</SelectItem>
+                        {availableCategories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Demo Video Section */}

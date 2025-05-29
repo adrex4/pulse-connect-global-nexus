@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +15,6 @@ import PublicProfileBrowser from './enhanced/PublicProfileBrowser';
 import PortfolioUploader from './enhanced/PortfolioUploader';
 import BusinessProfileCreator from './enhanced/BusinessProfileCreator';
 import BusinessProfileView from './enhanced/BusinessProfileView';
-import BusinessBrowser from './enhanced/BusinessBrowser';
 
 // Existing components
 import NicheSelector from './NicheSelector';
@@ -58,7 +56,7 @@ type Step =
   | 'user-type'
   | 'business-niche'
   | 'business-profile'
-  | 'business-browser'
+  | 'business-profile-view'
   | 'service-selection'
   | 'social-media-profile'
   | 'portfolio'
@@ -75,6 +73,7 @@ const ConnectPulse = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [profileData, setProfileData] = useState<any>(null);
   const [businessData, setBusinessData] = useState<any>(null);
+  const [locationData, setLocationData] = useState<any>(null);
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
   const [browsingFilter, setBrowsingFilter] = useState<'users' | 'businesses' | 'groups' | null>(null);
 
@@ -115,6 +114,24 @@ const ConnectPulse = () => {
   const handleBusinessProfileSave = (data: any) => {
     setBusinessData(data);
     setCurrentStep('location');
+  };
+
+  const handleLocationSave = (data: any) => {
+    setLocationData(data);
+    
+    // For business owners who created a profile, show the profile view
+    if (userType === 'business' && userAction === 'create' && businessData) {
+      setCurrentStep('business-profile-view');
+    } else if (userAction === 'join') {
+      setCurrentStep('groups');
+    } else {
+      console.log('Profile data:', { profileData, businessData, locationData, portfolioItems });
+      setCurrentStep('groups');
+    }
+  };
+
+  const handleBusinessProfileEdit = () => {
+    setCurrentStep('business-profile');
   };
 
   const renderWelcome = () => (
@@ -292,13 +309,8 @@ const ConnectPulse = () => {
               setUserAction(action);
               
               if (action === 'view') {
-                // Set appropriate filter and navigate to browse page
-                if (type === 'business') {
-                  setCurrentStep('business-browser');
-                } else {
-                  setBrowsingFilter('users');
-                  setCurrentStep('browse');
-                }
+                setBrowsingFilter('businesses');
+                setCurrentStep('browse');
               } else if (action === 'join') {
                 if (type === 'business') {
                   setCurrentStep('business-niche');
@@ -318,18 +330,20 @@ const ConnectPulse = () => {
             onBack={() => setCurrentStep('welcome')}
           />
         )}
-        
-        {currentStep === 'business-browser' && (
-          <BusinessBrowser
-            onBack={() => setCurrentStep('user-type')}
-            onCreateBusiness={() => setCurrentStep('business-profile')}
-          />
-        )}
 
         {currentStep === 'business-profile' && userType === 'business' && (
           <BusinessProfileCreator
             onNext={handleBusinessProfileSave}
             onBack={() => setCurrentStep('user-type')}
+          />
+        )}
+
+        {currentStep === 'business-profile-view' && businessData && locationData && (
+          <BusinessProfileView
+            businessData={businessData}
+            locationData={locationData}
+            onEdit={handleBusinessProfileEdit}
+            onBack={() => setCurrentStep('location')}
           />
         )}
         
@@ -348,7 +362,6 @@ const ConnectPulse = () => {
             userType={userType}
             onNext={(serviceData) => {
               setProfileData(serviceData);
-              // For freelancers and service providers with portfolio
               if (userType === 'freelancer' || userType === 'occupation_provider') {
                 setCurrentStep('portfolio');
               } else {
@@ -360,7 +373,6 @@ const ConnectPulse = () => {
         )}
         
         {currentStep === 'social-media-profile' && userType === 'social_media_influencer' && (
-          // Simplified form for now - would expand in a real implementation
           <Card className="max-w-4xl mx-auto animate-fade-in shadow-lg">
             <CardHeader className="bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-t-lg">
               <div className="flex items-center gap-4">
@@ -400,16 +412,7 @@ const ConnectPulse = () => {
         {currentStep === 'location' && userType && (
           <EnhancedLocationSelector
             userType={userType}
-            onNext={(locationData) => {
-              // Handle completion based on user action
-              if (userAction === 'join') {
-                setCurrentStep('groups');
-              } else {
-                // Create profile and redirect to appropriate next step
-                console.log('Profile data:', { profileData, businessData, locationData, portfolioItems });
-                setCurrentStep('groups');
-              }
-            }}
+            onNext={handleLocationSave}
             onBack={() => {
               if (userType === 'business') {
                 if (userAction === 'create') {
