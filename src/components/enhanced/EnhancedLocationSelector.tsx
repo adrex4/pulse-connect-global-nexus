@@ -66,18 +66,18 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
   const getLocationDepthByUserType = () => {
     switch(userType) {
       case 'occupation_provider':
-        return { needsNeighborhood: true, needsDetailedAddress: true };
+        return { needsState: true, needsCity: true, needsNeighborhood: true, needsDetailedAddress: true };
       case 'business':
-        return { needsNeighborhood: false, needsDetailedAddress: false };
+        return { needsState: true, needsCity: false, needsNeighborhood: false, needsDetailedAddress: false };
       case 'freelancer':
       case 'social_media_influencer':
-        return { needsNeighborhood: false, needsDetailedAddress: false };
+        return { needsState: true, needsCity: false, needsNeighborhood: false, needsDetailedAddress: false };
       default:
-        return { needsNeighborhood: false, needsDetailedAddress: false };
+        return { needsState: false, needsCity: false, needsNeighborhood: false, needsDetailedAddress: false };
     }
   };
 
-  const { needsNeighborhood, needsDetailedAddress } = getLocationDepthByUserType();
+  const { needsState, needsCity, needsNeighborhood, needsDetailedAddress } = getLocationDepthByUserType();
 
   useEffect(() => {
     fetchCountries();
@@ -180,9 +180,6 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
     setCities([]);
     setNeighborhoods([]);
     setShowCustomCity(false);
-    
-    // For demonstration, we'll allow custom city input for all states
-    // In a real app, you might want to fetch cities from your database
   };
 
   const handleCityChange = async (cityId: string) => {
@@ -258,15 +255,17 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
 
   // Determine if we've collected enough location data based on user type
   const isLocationComplete = () => {
-    if (userType === 'occupation_provider') {
-      return !!selectedCountryName && !!selectedState && !!selectedCityName && 
-        (needsNeighborhood ? !!selectedNeighborhood : true);
-    } else if (userType === 'business') {
-      return !!selectedCountryName && !!selectedState;
-    } else {
-      // For freelancers and social media influencers
-      return !!selectedCountryName;
+    if (!selectedCountryName) return false;
+    
+    if (needsState && (!selectedState || states.length === 0)) {
+      // If we need state but country has no states, that's okay
+      return states.length === 0 || selectedState;
     }
+    
+    if (needsCity && !selectedCityName && !showCustomCity) return false;
+    if (needsNeighborhood && !selectedNeighborhood) return false;
+    
+    return true;
   };
 
   const getLocationIcon = () => {
@@ -334,8 +333,8 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
             </Select>
           </div>
 
-          {/* State/Province Selection - show for businesses and in-person services */}
-          {(userType === 'business' || userType === 'occupation_provider') && selectedCountryName && states.length > 0 && (
+          {/* State/Province Selection - show when needed and available */}
+          {needsState && selectedCountryName && states.length > 0 && (
             <div className="space-y-3">
               <Label className="text-lg font-medium">State/Province</Label>
               <Select value={selectedState} onValueChange={handleStateChange}>
@@ -353,8 +352,8 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
             </div>
           )}
 
-          {/* City Selection - show for in-person services */}
-          {(userType === 'business' || userType === 'occupation_provider') && selectedState && (
+          {/* City Selection - show when needed */}
+          {needsCity && selectedCountryName && (selectedState || states.length === 0) && (
             <div className="space-y-3">
               <Label className="text-lg font-medium">City</Label>
               {showCustomCity ? (

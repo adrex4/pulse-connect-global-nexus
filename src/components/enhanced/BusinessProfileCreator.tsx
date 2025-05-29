@@ -139,9 +139,9 @@ const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext,
             />
           </div>
 
-          {/* Image Upload */}
+          {/* Product/Service Images */}
           <div className="space-y-3">
-            <Label className="text-lg font-medium">Business Images</Label>
+            <Label className="text-lg font-medium">Product/Service Images</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
               <input
                 type="file"
@@ -153,7 +153,7 @@ const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext,
               />
               <label htmlFor="image-upload" className="cursor-pointer">
                 <Upload className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                <p className="text-gray-600">Click to upload business images</p>
+                <p className="text-gray-600">Click to upload product/service images</p>
                 <p className="text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
               </label>
             </div>
@@ -162,7 +162,7 @@ const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext,
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {images.map((image, index) => (
                   <div key={index} className="relative">
-                    <img src={image} alt={`Business ${index + 1}`} className="w-full h-32 object-cover rounded-lg" />
+                    <img src={image} alt={`Product/Service ${index + 1}`} className="w-full h-32 object-cover rounded-lg" />
                     <Button
                       variant="destructive"
                       size="sm"
@@ -177,9 +177,9 @@ const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext,
             )}
           </div>
 
-          {/* Video Upload */}
+          {/* Product/Service Videos */}
           <div className="space-y-3">
-            <Label className="text-lg font-medium">Business Videos</Label>
+            <Label className="text-lg font-medium">Product/Service Videos</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
               <input
                 type="file"
@@ -191,7 +191,7 @@ const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext,
               />
               <label htmlFor="video-upload" className="cursor-pointer">
                 <Upload className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                <p className="text-gray-600">Click to upload business videos</p>
+                <p className="text-gray-600">Click to upload product/service videos</p>
                 <p className="text-sm text-gray-500">MP4, MOV, AVI up to 50MB</p>
               </label>
             </div>

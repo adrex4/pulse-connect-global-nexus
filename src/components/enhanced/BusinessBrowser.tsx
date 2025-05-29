@@ -33,7 +33,7 @@ const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ onBack, onCreateBusin
       products: 'Web development, mobile apps, and digital marketing services',
       website: 'https://techstart.com',
       images: ['https://images.unsplash.com/photo-1498050108023-c5249f4df085'],
-      videos: [],
+      videos: ['https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4'],
       location: 'New York, USA',
       verified: true
     },
@@ -51,7 +51,7 @@ const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ onBack, onCreateBusin
       name: 'Creative Design Studio',
       products: 'Graphic design, branding, and creative marketing solutions',
       images: ['https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d'],
-      videos: [],
+      videos: ['https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4'],
       location: 'London, UK',
       verified: false
     }
@@ -148,6 +148,23 @@ const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ onBack, onCreateBusin
                           </div>
                         )}
 
+                        {/* Business Video - placed below image */}
+                        {business.videos.length > 0 && (
+                          <div className="relative">
+                            <video
+                              src={business.videos[0]}
+                              className="w-full h-32 object-cover rounded-lg"
+                              controls
+                              poster={business.images[0]}
+                            />
+                            <div className="absolute top-2 left-2">
+                              <Badge className="bg-purple-500">
+                                Product Video
+                              </Badge>
+                            </div>
+                          </div>
+                        )}
+
                         <div className="space-y-2">
                           <h5 className="font-semibold text-lg">{business.name}</h5>
                           <p className="text-gray-600 text-sm line-clamp-2">{business.products}</p>
@@ -166,10 +183,6 @@ const BusinessBrowser: React.FC<BusinessBrowserProps> = ({ onBack, onCreateBusin
                             </div>
                           )}
                         </div>
-
-                        <Button variant="outline" className="w-full">
-                          View Full Profile
-                        </Button>
                       </div>
                     </CardContent>
                   </Card>
