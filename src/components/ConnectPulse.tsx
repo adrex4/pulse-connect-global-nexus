@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,7 @@ import ServiceSelector from './enhanced/ServiceSelector';
 import PublicProfileBrowser from './enhanced/PublicProfileBrowser';
 import PortfolioUploader from './enhanced/PortfolioUploader';
 import BusinessProfileCreator from './enhanced/BusinessProfileCreator';
+import BusinessProfileView from './enhanced/BusinessProfileView';
 import BusinessBrowser from './enhanced/BusinessBrowser';
 
 // Existing components
