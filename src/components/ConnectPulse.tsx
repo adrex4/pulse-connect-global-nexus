@@ -13,6 +13,8 @@ import EnhancedLocationSelector from './enhanced/EnhancedLocationSelector';
 import ServiceSelector from './enhanced/ServiceSelector';
 import PublicProfileBrowser from './enhanced/PublicProfileBrowser';
 import PortfolioUploader from './enhanced/PortfolioUploader';
+import BusinessProfileCreator from './enhanced/BusinessProfileCreator';
+import BusinessBrowser from './enhanced/BusinessBrowser';
 
 // Existing components
 import NicheSelector from './NicheSelector';
@@ -53,6 +55,8 @@ type Step =
   | 'browse'
   | 'user-type'
   | 'business-niche'
+  | 'business-profile'
+  | 'business-browser'
   | 'service-selection'
   | 'social-media-profile'
   | 'portfolio'
@@ -68,6 +72,7 @@ const ConnectPulse = () => {
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [profileData, setProfileData] = useState<any>(null);
+  const [businessData, setBusinessData] = useState<any>(null);
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
   const [browsingFilter, setBrowsingFilter] = useState<'users' | 'businesses' | 'groups' | null>(null);
 
@@ -102,6 +107,11 @@ const ConnectPulse = () => {
 
   const handlePortfolioSave = (items: any[]) => {
     setPortfolioItems(items);
+    setCurrentStep('location');
+  };
+
+  const handleBusinessProfileSave = (data: any) => {
+    setBusinessData(data);
     setCurrentStep('location');
   };
 
@@ -282,11 +292,11 @@ const ConnectPulse = () => {
               if (action === 'view') {
                 // Set appropriate filter and navigate to browse page
                 if (type === 'business') {
-                  setBrowsingFilter('businesses');
+                  setCurrentStep('business-browser');
                 } else {
                   setBrowsingFilter('users');
+                  setCurrentStep('browse');
                 }
-                setCurrentStep('browse');
               } else if (action === 'join') {
                 if (type === 'business') {
                   setCurrentStep('business-niche');
@@ -295,7 +305,7 @@ const ConnectPulse = () => {
                 }
               } else { // action === 'create'
                 if (type === 'business') {
-                  setCurrentStep('business-niche');
+                  setCurrentStep('business-profile');
                 } else if (type === 'social_media_influencer') {
                   setCurrentStep('social-media-profile');
                 } else {
@@ -304,6 +314,20 @@ const ConnectPulse = () => {
               }
             }}
             onBack={() => setCurrentStep('welcome')}
+          />
+        )}
+        
+        {currentStep === 'business-browser' && (
+          <BusinessBrowser
+            onBack={() => setCurrentStep('user-type')}
+            onCreateBusiness={() => setCurrentStep('business-profile')}
+          />
+        )}
+
+        {currentStep === 'business-profile' && userType === 'business' && (
+          <BusinessProfileCreator
+            onNext={handleBusinessProfileSave}
+            onBack={() => setCurrentStep('user-type')}
           />
         )}
         
@@ -334,7 +358,7 @@ const ConnectPulse = () => {
         )}
         
         {currentStep === 'social-media-profile' && userType === 'social_media_influencer' && (
-          // Specialized form for social media influencers
+          // Simplified form for now - would expand in a real implementation
           <Card className="max-w-4xl mx-auto animate-fade-in shadow-lg">
             <CardHeader className="bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-t-lg">
               <div className="flex items-center gap-4">
@@ -345,7 +369,6 @@ const ConnectPulse = () => {
               </div>
             </CardHeader>
             <CardContent className="p-8 space-y-6">
-              {/* Simplified form for now - would expand in a real implementation */}
               <div className="text-center p-6">
                 <h3 className="text-2xl font-semibold mb-4">Coming Soon!</h3>
                 <p className="text-gray-600 mb-6">
@@ -381,13 +404,17 @@ const ConnectPulse = () => {
                 setCurrentStep('groups');
               } else {
                 // Create profile and redirect to appropriate next step
-                console.log('Profile data:', { profileData, locationData, portfolioItems });
+                console.log('Profile data:', { profileData, businessData, locationData, portfolioItems });
                 setCurrentStep('groups');
               }
             }}
             onBack={() => {
               if (userType === 'business') {
-                setCurrentStep('business-niche');
+                if (userAction === 'create') {
+                  setCurrentStep('business-profile');
+                } else {
+                  setCurrentStep('business-niche');
+                }
               } else if (userType === 'freelancer' || userType === 'occupation_provider') {
                 setCurrentStep('portfolio');
               } else {

@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, MapPin, Plus, Home, Building, Globe, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { WORLD_COUNTRIES } from '@/data/worldCountries';
+import { WORLD_COUNTRIES, getStatesForCountry } from '@/data/worldCountries';
 
 interface Location {
   id: string;
@@ -39,25 +39,22 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
   showDetailedAddress = false 
 }) => {
   const [countries, setCountries] = useState<Location[]>([]);
-  const [states, setStates] = useState<Location[]>([]);
+  const [states, setStates] = useState<string[]>([]);
   const [cities, setCities] = useState<Location[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<Location[]>([]);
 
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCountryName, setSelectedCountryName] = useState('');
   const [selectedState, setSelectedState] = useState('');
-  const [selectedStateName, setSelectedStateName] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedCityName, setSelectedCityName] = useState('');
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
   const [selectedNeighborhoodName, setSelectedNeighborhoodName] = useState('');
   const [detailedAddress, setDetailedAddress] = useState('');
   
-  const [customState, setCustomState] = useState('');
   const [customCity, setCustomCity] = useState('');
   const [customNeighborhood, setCustomNeighborhood] = useState('');
   
-  const [showCustomState, setShowCustomState] = useState(false);
   const [showCustomCity, setShowCustomCity] = useState(false);
   const [showCustomNeighborhood, setShowCustomNeighborhood] = useState(false);
 
@@ -126,16 +123,6 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
     }
   };
 
-  const fetchStates = async (countryId: string) => {
-    const { data } = await supabase
-      .from('locations')
-      .select('*')
-      .eq('type', 'state')
-      .eq('parent_id', countryId)
-      .order('name');
-    setStates(data || []);
-  };
-
   const fetchCities = async (stateId: string) => {
     const { data } = await supabase
       .from('locations')
@@ -170,34 +157,32 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
     return data;
   };
 
-  const handleCountryChange = async (countryId: string) => {
-    const selectedCountry = countries.find(c => c.id === countryId);
-    setSelectedCountry(countryId);
-    setSelectedCountryName(selectedCountry?.name || '');
+  const handleCountryChange = async (countryName: string) => {
+    const selectedCountry = countries.find(c => c.name === countryName);
+    setSelectedCountry(selectedCountry?.id || '');
+    setSelectedCountryName(countryName);
     setSelectedState('');
     setSelectedCity('');
     setSelectedNeighborhood('');
-    setStates([]);
+    
+    // Get states/provinces for the selected country
+    const countryStates = getStatesForCountry(countryName);
+    setStates(countryStates);
     setCities([]);
     setNeighborhoods([]);
-    setShowCustomState(false);
-    await fetchStates(countryId);
+    setShowCustomCity(false);
   };
 
-  const handleStateChange = async (stateId: string) => {
-    if (stateId === 'custom') {
-      setShowCustomState(true);
-      return;
-    }
-    const selectedState = states.find(s => s.id === stateId);
-    setSelectedState(stateId);
-    setSelectedStateName(selectedState?.name || '');
+  const handleStateChange = async (stateName: string) => {
+    setSelectedState(stateName);
     setSelectedCity('');
     setSelectedNeighborhood('');
     setCities([]);
     setNeighborhoods([]);
     setShowCustomCity(false);
-    await fetchCities(stateId);
+    
+    // For demonstration, we'll allow custom city input for all states
+    // In a real app, you might want to fetch cities from your database
   };
 
   const handleCityChange = async (cityId: string) => {
@@ -227,21 +212,9 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
     setSelectedNeighborhoodName(selectedNeighborhood?.name || '');
   };
 
-  const handleAddCustomState = async () => {
-    if (!customState.trim()) return;
-    const newState = await createLocation(customState.trim(), 'state', selectedCountry);
-    if (newState) {
-      setStates(prev => [...prev, newState]);
-      setSelectedState(newState.id);
-      setSelectedStateName(newState.name);
-      setShowCustomState(false);
-      setCustomState('');
-    }
-  };
-
   const handleAddCustomCity = async () => {
     if (!customCity.trim()) return;
-    const newCity = await createLocation(customCity.trim(), 'city', selectedState);
+    const newCity = await createLocation(customCity.trim(), 'city', selectedCountry);
     if (newCity) {
       setCities(prev => [...prev, newCity]);
       setSelectedCity(newCity.id);
@@ -266,11 +239,11 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
   const handleNext = () => {
     onNext({
       country: selectedCountryName,
-      state: selectedStateName,
+      state: selectedState,
       city: selectedCityName,
       neighborhood: selectedNeighborhoodName,
       detailedAddress: needsDetailedAddress ? detailedAddress : undefined,
-      locationId: selectedNeighborhood || selectedCity || selectedState || selectedCountry
+      locationId: selectedNeighborhood || selectedCity || selectedCountry
     });
   };
 
@@ -278,7 +251,7 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
     const parts = [];
     if (selectedNeighborhoodName) parts.push(selectedNeighborhoodName);
     if (selectedCityName) parts.push(selectedCityName);
-    if (selectedStateName) parts.push(selectedStateName);
+    if (selectedState) parts.push(selectedState);
     if (selectedCountryName) parts.push(selectedCountryName);
     return parts.join(', ');
   };
@@ -286,13 +259,13 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
   // Determine if we've collected enough location data based on user type
   const isLocationComplete = () => {
     if (userType === 'occupation_provider') {
-      return !!selectedCountry && !!selectedState && !!selectedCity && 
+      return !!selectedCountryName && !!selectedState && !!selectedCityName && 
         (needsNeighborhood ? !!selectedNeighborhood : true);
     } else if (userType === 'business') {
-      return !!selectedCountry && !!selectedState;
+      return !!selectedCountryName && !!selectedState;
     } else {
       // For freelancers and social media influencers
-      return !!selectedCountry;
+      return !!selectedCountryName;
     }
   };
 
@@ -347,14 +320,14 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
           {/* Country Selection */}
           <div className="space-y-3">
             <Label className="text-lg font-medium">Country</Label>
-            <Select value={selectedCountry} onValueChange={handleCountryChange}>
+            <Select value={selectedCountryName} onValueChange={handleCountryChange}>
               <SelectTrigger className="h-12 text-lg">
                 <SelectValue placeholder="Select your country..." />
               </SelectTrigger>
               <SelectContent className="max-h-80">
-                {countries.map((country) => (
-                  <SelectItem key={country.id} value={country.id}>
-                    {country.name}
+                {WORLD_COUNTRIES.map((country) => (
+                  <SelectItem key={country} value={country}>
+                    {country}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -362,47 +335,26 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
           </div>
 
           {/* State/Province Selection - show for businesses and in-person services */}
-          {(userType === 'business' || userType === 'occupation_provider') && selectedCountry && (
+          {(userType === 'business' || userType === 'occupation_provider') && selectedCountryName && states.length > 0 && (
             <div className="space-y-3">
               <Label className="text-lg font-medium">State/Province</Label>
-              {showCustomState ? (
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Enter state/province name"
-                    value={customState}
-                    onChange={(e) => setCustomState(e.target.value)}
-                    className="h-12"
-                  />
-                  <Button onClick={handleAddCustomState} className="h-12">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" onClick={() => setShowCustomState(false)} className="h-12">
-                    Cancel
-                  </Button>
-                </div>
-              ) : (
-                <Select value={selectedState} onValueChange={handleStateChange}>
-                  <SelectTrigger className="h-12 text-lg">
-                    <SelectValue placeholder="Select your state/province..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {states.map((state) => (
-                      <SelectItem key={state.id} value={state.id}>
-                        {state.name}
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="custom">
-                      <Plus className="h-4 w-4 mr-2 inline" />
-                      Add new state/province
+              <Select value={selectedState} onValueChange={handleStateChange}>
+                <SelectTrigger className="h-12 text-lg">
+                  <SelectValue placeholder="Select your state/province..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {states.map((state) => (
+                    <SelectItem key={state} value={state}>
+                      {state}
                     </SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           )}
 
           {/* City Selection - show for in-person services */}
-          {(userType === 'business' || userType === 'occupation_provider') && selectedState && !showCustomState && (
+          {(userType === 'business' || userType === 'occupation_provider') && selectedState && (
             <div className="space-y-3">
               <Label className="text-lg font-medium">City</Label>
               {showCustomCity ? (
@@ -421,84 +373,21 @@ const EnhancedLocationSelector: React.FC<EnhancedLocationSelectorProps> = ({
                   </Button>
                 </div>
               ) : (
-                <Select value={selectedCity} onValueChange={handleCityChange}>
-                  <SelectTrigger className="h-12 text-lg">
-                    <SelectValue placeholder="Select your city..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {cities.map((city) => (
-                      <SelectItem key={city.id} value={city.id}>
-                        {city.name}
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="custom">
-                      <Plus className="h-4 w-4 mr-2 inline" />
-                      Add new city
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
-          )}
-
-          {/* Neighborhood Selection - only for local services */}
-          {needsNeighborhood && selectedCity && !showCustomCity && (
-            <div className="space-y-3">
-              <Label className="text-lg font-medium">Neighborhood/Area</Label>
-              {showCustomNeighborhood ? (
-                <div className="flex gap-2">
+                <div className="space-y-2">
                   <Input
-                    placeholder="Enter neighborhood name"
-                    value={customNeighborhood}
-                    onChange={(e) => setCustomNeighborhood(e.target.value)}
+                    placeholder="Enter your city name"
+                    value={selectedCityName}
+                    onChange={(e) => setSelectedCityName(e.target.value)}
                     className="h-12"
                   />
-                  <Button onClick={handleAddCustomNeighborhood} className="h-12">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" onClick={() => setShowCustomNeighborhood(false)} className="h-12">
-                    Cancel
-                  </Button>
+                  <p className="text-sm text-gray-500">Type your city name and continue</p>
                 </div>
-              ) : (
-                <Select value={selectedNeighborhood} onValueChange={handleNeighborhoodChange}>
-                  <SelectTrigger className="h-12 text-lg">
-                    <SelectValue placeholder="Select your neighborhood..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {neighborhoods.map((neighborhood) => (
-                      <SelectItem key={neighborhood.id} value={neighborhood.id}>
-                        {neighborhood.name}
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="custom">
-                      <Plus className="h-4 w-4 mr-2 inline" />
-                      Add new neighborhood
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
               )}
-            </div>
-          )}
-
-          {/* Detailed Address for Local Services */}
-          {needsDetailedAddress && selectedCity && (
-            <div className="space-y-3">
-              <Label className="text-lg font-medium">Detailed Address (Optional)</Label>
-              <Input
-                placeholder="Street address, apartment number, etc."
-                value={detailedAddress}
-                onChange={(e) => setDetailedAddress(e.target.value)}
-                className="h-12"
-              />
-              <p className="text-sm text-gray-500">
-                This helps local clients find your services more easily.
-              </p>
             </div>
           )}
 
           {/* Service Delivery Options - only for service providers */}
-          {(userType === 'freelancer' || userType === 'occupation_provider') && selectedCountry && (
+          {(userType === 'freelancer' || userType === 'occupation_provider') && selectedCountryName && (
             <div className="space-y-3 border border-gray-200 p-4 rounded-lg">
               <Label className="text-lg font-medium">Service Delivery Options</Label>
               
