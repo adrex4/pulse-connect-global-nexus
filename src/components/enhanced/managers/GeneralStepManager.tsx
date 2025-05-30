@@ -6,10 +6,10 @@ import PublicProfileBrowser from '../PublicProfileBrowser';
 
 interface GeneralStepManagerProps {
   currentStep: Step;
-  browsingFilter: 'users' | 'businesses' | 'groups' | null;
+  browsingFilter: 'users' | 'businesses' | 'freelancers' | 'groups' | null;
   onStepChange: (step: Step) => void;
   onUserTypeSelect: (type: UserType, action: UserAction) => void;
-  setBrowsingFilter: (filter: 'users' | 'businesses' | 'groups' | null) => void;
+  setBrowsingFilter: (filter: 'users' | 'businesses' | 'freelancers' | 'groups' | null) => void;
 }
 
 const GeneralStepManager: React.FC<GeneralStepManagerProps> = ({

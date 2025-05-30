@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Step, UserType } from '@/types/connectPulse';
+import { Step, UserType, UserAction } from '@/types/connectPulse';
 import FreelancerGigCreator from '../FreelancerGigCreator';
 import FreelancerLocationSelector from '../FreelancerLocationSelector';
 import FreelancerGroupList from '../FreelancerGroupList';
@@ -9,7 +9,7 @@ import { Group } from '@/types/connectPulse';
 interface FreelancerStepManagerProps {
   currentStep: Step;
   userType: UserType;
-  userAction: 'join' | 'create';
+  userAction: UserAction;
   profileData: any;
   onStepChange: (step: Step) => void;
   onLocationSave: (data: any) => void;

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
 import WelcomeSection from './enhanced/WelcomeSection';

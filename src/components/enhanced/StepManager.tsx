@@ -94,7 +94,7 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
   }
 
   // Handle freelancer-specific steps
-  if (userType && userType !== 'business' && userAction) {
+  if (userType && userType !== 'business' && userAction && userAction !== 'view') {
     const freelancerStepResult = (
       <FreelancerStepManager
         currentStep={currentStep}
@@ -113,7 +113,7 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
   }
 
   // Handle shared steps (location, groups, chat, etc.)
-  if (userType && userAction) {
+  if (userType && userAction && userAction !== 'view') {
     return (
       <SharedStepManager
         currentStep={currentStep}
