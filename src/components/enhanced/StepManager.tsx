@@ -90,7 +90,7 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
   }
 
   // Handle freelancer-specific steps (only for non-view actions)
-  if (userType && userType !== 'business' && userAction && userAction !== 'view') {
+  if (userType && userAction && userAction !== 'view') {
     const freelancerSteps = ['freelancer-gig', 'freelancer-location', 'freelancer-groups'];
     if (freelancerSteps.includes(currentStep)) {
       return (
