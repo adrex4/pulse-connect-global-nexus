@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Users, MessageSquare, Globe, MapPin, Search, Filter, Star } from 'lucide-react';
-import { User, Group } from './ConnectPulse';
+import { User, Group } from '@/types/connectPulse';
 
 // Enhanced mock data for groups with more realistic data
 const generateGroups = (user: User): Group[] => {

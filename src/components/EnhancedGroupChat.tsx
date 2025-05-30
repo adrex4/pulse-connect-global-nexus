@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,7 @@ import {
   Hash, Calendar, Link, Zap
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { User, Group, Message } from './ConnectPulse';
+import { User, Group, Message } from '@/types/connectPulse';
 import GlobalNavigation from './GlobalNavigation';
 
 interface EnhancedGroupChatProps {

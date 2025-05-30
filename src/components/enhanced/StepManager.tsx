@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -133,7 +134,14 @@ const StepManager: React.FC<StepManagerProps> = ({
     return (
       <NicheSelector 
         onNext={(name, niche) => {
-          setCurrentUser(prev => prev ? { ...prev, name, niche } : { id: '', name, niche, country: '', preferredScope: 'local' });
+          const newUser: User = {
+            id: Date.now().toString(),
+            name,
+            niche,
+            country: '',
+            preferredScope: 'local'
+          };
+          setCurrentUser(newUser);
           onStepChange('location');
         }}
         onBack={() => onStepChange('user-type')}

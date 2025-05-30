@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,7 +16,7 @@ import {
   X, Check, Clock, Star, Archive, AlertTriangle, ArrowUp
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { User, Group, Message } from './ConnectPulse';
+import { User, Group, Message } from '@/types/connectPulse';
 import VideoCallModal from './VideoCallModal';
 import SearchModal from './SearchModal';
 import GroupSettingsModal from './GroupSettingsModal';

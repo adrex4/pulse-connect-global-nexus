@@ -3,142 +3,203 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Building2, Globe, MapPin, Edit, Share } from 'lucide-react';
+import { ArrowLeft, Edit, MapPin, Globe, Users, Building, Mail, Phone, Calendar, CheckCircle } from 'lucide-react';
 
 interface BusinessProfileViewProps {
-  businessData: {
-    businessName: string;
-    products: string;
-    website?: string;
-    images: string[];
-    videos: string[];
-  };
-  locationData?: {
-    country: string;
-    state?: string;
-  };
+  businessData: any;
+  locationData: any;
   onEdit: () => void;
-  onBack: () => void;
+  onPublish?: () => void;
+  showPublishButton?: boolean;
 }
 
 const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({ 
   businessData, 
   locationData, 
   onEdit, 
-  onBack 
+  onPublish,
+  showPublishButton = false 
 }) => {
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
       <Card className="shadow-lg border-0 bg-white">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <div className="flex items-center gap-3">
-                <Building2 className="h-6 w-6" />
-                <CardTitle className="text-xl">Your Business Profile</CardTitle>
-              </div>
+            <div>
+              <CardTitle className="text-2xl flex items-center gap-3">
+                <Building className="h-8 w-8" />
+                Your Business Profile
+              </CardTitle>
+              <p className="text-blue-100 mt-2">Review your profile before publishing</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="ghost" size="sm" onClick={onEdit} className="text-white hover:bg-white/20">
+              <Button 
+                variant="ghost" 
+                onClick={onEdit}
+                className="text-white hover:bg-white/20 border border-white/30"
+              >
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Profile
               </Button>
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                <Share className="h-4 w-4 mr-2" />
-                Share
-              </Button>
+              {showPublishButton && onPublish && (
+                <Button 
+                  onClick={onPublish}
+                  className="bg-white text-blue-600 hover:bg-blue-50"
+                >
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Publish Profile
+                </Button>
+              )}
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-8">
+        
+        <CardContent className="p-8 space-y-8">
+          {/* Business Information */}
           <div className="space-y-6">
-            {/* Success Message */}
-            <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
-              <div className="text-center">
-                <h3 className="text-2xl font-semibold text-green-900 mb-2">🎉 Profile Created Successfully!</h3>
-                <p className="text-green-700">Your business is now part of the ConnectPulse community.</p>
+            <div className="text-center">
+              <div className="w-24 h-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Building className="h-12 w-12 text-white" />
               </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">{businessData?.businessName}</h2>
+              <Badge className="bg-blue-100 text-blue-800 px-4 py-2 text-lg">
+                {businessData?.category}
+              </Badge>
             </div>
 
-            {/* Business Profile Card */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  {/* Business Images */}
-                  {businessData.images.length > 0 && (
-                    <div className="relative">
-                      <img
-                        src={businessData.images[0]}
-                        alt={businessData.businessName}
-                        className="w-full h-48 object-cover rounded-lg"
-                      />
-                      <Badge className="absolute top-2 right-2 bg-green-500">
-                        Your Business
+            {/* Business Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">Business Details</h3>
+                
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Building className="h-5 w-5 text-blue-600 mt-1" />
+                    <div>
+                      <p className="font-medium text-gray-700">Business Name</p>
+                      <p className="text-gray-600">{businessData?.businessName}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <Users className="h-5 w-5 text-blue-600 mt-1" />
+                    <div>
+                      <p className="font-medium text-gray-700">Category</p>
+                      <p className="text-gray-600">{businessData?.category}</p>
+                    </div>
+                  </div>
+                  
+                  {businessData?.website && (
+                    <div className="flex items-start gap-3">
+                      <Globe className="h-5 w-5 text-blue-600 mt-1" />
+                      <div>
+                        <p className="font-medium text-gray-700">Website</p>
+                        <p className="text-blue-600 hover:underline cursor-pointer">{businessData?.website}</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {businessData?.email && (
+                    <div className="flex items-start gap-3">
+                      <Mail className="h-5 w-5 text-blue-600 mt-1" />
+                      <div>
+                        <p className="font-medium text-gray-700">Email</p>
+                        <p className="text-gray-600">{businessData?.email}</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {businessData?.phone && (
+                    <div className="flex items-start gap-3">
+                      <Phone className="h-5 w-5 text-blue-600 mt-1" />
+                      <div>
+                        <p className="font-medium text-gray-700">Phone</p>
+                        <p className="text-gray-600">{businessData?.phone}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">Location & Scope</h3>
+                
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-5 w-5 text-green-600 mt-1" />
+                    <div>
+                      <p className="font-medium text-gray-700">Country</p>
+                      <p className="text-gray-600">{locationData?.country}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <Globe className="h-5 w-5 text-green-600 mt-1" />
+                    <div>
+                      <p className="font-medium text-gray-700">Business Scope</p>
+                      <Badge className={`${
+                        locationData?.preferredScope === 'local' ? 'bg-green-100 text-green-800' :
+                        locationData?.preferredScope === 'regional' ? 'bg-blue-100 text-blue-800' :
+                        'bg-purple-100 text-purple-800'
+                      }`}>
+                        {locationData?.preferredScope?.charAt(0).toUpperCase() + locationData?.preferredScope?.slice(1)}
                       </Badge>
                     </div>
-                  )}
-
-                  {/* Business Videos */}
-                  {businessData.videos.length > 0 && (
-                    <div className="relative">
-                      <video
-                        src={businessData.videos[0]}
-                        className="w-full h-40 object-cover rounded-lg"
-                        controls
-                        poster={businessData.images[0]}
-                      />
-                      <div className="absolute top-2 left-2">
-                        <Badge className="bg-purple-500">
-                          Product/Service Video
-                        </Badge>
+                  </div>
+                  
+                  {businessData?.foundedYear && (
+                    <div className="flex items-start gap-3">
+                      <Calendar className="h-5 w-5 text-green-600 mt-1" />
+                      <div>
+                        <p className="font-medium text-gray-700">Founded</p>
+                        <p className="text-gray-600">{businessData?.foundedYear}</p>
                       </div>
                     </div>
                   )}
-
-                  <div className="space-y-3">
-                    <h3 className="font-semibold text-xl text-blue-900">{businessData.businessName}</h3>
-                    <p className="text-gray-600">{businessData.products}</p>
-                    
-                    {locationData && (
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
-                        <MapPin className="h-4 w-4" />
-                        {locationData.state ? `${locationData.state}, ${locationData.country}` : locationData.country}
-                      </div>
-                    )}
-
-                    {businessData.website && (
-                      <div className="flex items-center gap-1 text-sm text-blue-600">
-                        <Globe className="h-4 w-4" />
-                        <a href={businessData.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                          Visit Website
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Next Steps */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
-              <h4 className="text-xl font-semibold text-blue-900 mb-4">What's Next?</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h5 className="font-semibold text-gray-800 mb-2">Join Business Groups</h5>
-                  <p className="text-sm text-gray-600 mb-3">Connect with other businesses in your industry</p>
-                  <Button size="sm" className="w-full">Explore Groups</Button>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h5 className="font-semibold text-gray-800 mb-2">Network & Connect</h5>
-                  <p className="text-sm text-gray-600 mb-3">Start building valuable business relationships</p>
-                  <Button size="sm" variant="outline" className="w-full">Start Networking</Button>
                 </div>
               </div>
             </div>
+
+            {/* Business Description */}
+            {businessData?.description && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">About Our Business</h3>
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <p className="text-gray-700 leading-relaxed">{businessData?.description}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Services */}
+            {businessData?.services && businessData?.services.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">Our Services</h3>
+                <div className="flex flex-wrap gap-2">
+                  {businessData.services.map((service: string, index: number) => (
+                    <Badge key={index} variant="outline" className="px-3 py-1">
+                      {service}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+
+          {showPublishButton && onPublish && (
+            <div className="text-center pt-6 border-t">
+              <p className="text-gray-600 mb-4">
+                Ready to publish your business profile and connect with professionals?
+              </p>
+              <Button 
+                onClick={onPublish}
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
+              >
+                <CheckCircle className="h-5 w-5 mr-2" />
+                Publish Profile & Continue
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
