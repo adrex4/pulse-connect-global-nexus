@@ -27,7 +27,7 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
   onGroupJoin,
   setProfileData
 }) => {
-  // This component only handles non-business freelancer steps for join/create actions
+  // Only handle freelancer-specific steps for non-business types
   if (userType === 'business' || userAction === 'view') {
     return null;
   }
@@ -64,7 +64,10 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
         userType={userType}
         userAction={userAction as 'join' | 'create'}
         profileData={profileData}
-        onJoinGroup={onGroupJoin}
+        onJoinGroup={(group) => {
+          onGroupJoin(group);
+          onStepChange('chat');
+        }}
         onBack={() => onStepChange('freelancer-location')}
       />
     );

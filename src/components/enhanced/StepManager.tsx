@@ -89,7 +89,7 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
     );
   }
 
-  // Handle freelancer-specific steps (only for non-view actions)
+  // Handle freelancer-specific steps for create and join actions
   if (userType && userAction && userAction !== 'view') {
     const freelancerSteps = ['freelancer-gig', 'freelancer-location', 'freelancer-groups'];
     if (freelancerSteps.includes(currentStep)) {
@@ -108,31 +108,25 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
     }
   }
 
-  // Handle shared steps (location, groups, chat, etc.)
-  if (userType && userAction && userAction !== 'view') {
-    return (
-      <SharedStepManager
-        currentStep={currentStep}
-        userType={userType}
-        userAction={userAction}
-        currentUser={currentUser}
-        selectedGroup={selectedGroup}
-        messages={messages}
-        portfolioItems={portfolioItems}
-        onStepChange={onStepChange}
-        onUserRegistration={onUserRegistration}
-        onGroupJoin={onGroupJoin}
-        onSendMessage={onSendMessage}
-        onPortfolioSave={onPortfolioSave}
-        onLocationSave={onLocationSave}
-        setProfileData={setProfileData}
-      />
-    );
-  }
-
-  // Fallback: if no component is found, return to browse
-  console.log('No matching step manager found, returning to browse');
-  return null;
+  // Handle all shared steps (service selection, portfolio, location, groups, chat, etc.)
+  return (
+    <SharedStepManager
+      currentStep={currentStep}
+      userType={userType}
+      userAction={userAction}
+      currentUser={currentUser}
+      selectedGroup={selectedGroup}
+      messages={messages}
+      portfolioItems={portfolioItems}
+      onStepChange={onStepChange}
+      onUserRegistration={onUserRegistration}
+      onGroupJoin={onGroupJoin}
+      onSendMessage={onSendMessage}
+      onPortfolioSave={onPortfolioSave}
+      onLocationSave={onLocationSave}
+      setProfileData={setProfileData}
+    />
+  );
 };
 
 export default StepManager;

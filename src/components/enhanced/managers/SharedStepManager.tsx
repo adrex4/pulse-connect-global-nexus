@@ -12,8 +12,8 @@ import GroupList from '../../GroupList';
 
 interface SharedStepManagerProps {
   currentStep: Step;
-  userType: UserType;
-  userAction: UserAction;
+  userType: UserType | null;
+  userAction: UserAction | null;
   currentUser: User | null;
   selectedGroup: Group | null;
   messages: Message[];
@@ -124,20 +124,38 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
     );
   }
   
-  if (currentStep === 'groups' && currentUser) {
+  if (currentStep === 'groups') {
+    // Create a mock user if none exists for groups display
+    const user = currentUser || {
+      id: 'temp-user',
+      name: 'New User',
+      niche: userType || 'general',
+      country: 'United States',
+      preferredScope: 'global' as const
+    };
+    
     return (
       <GroupList
-        user={currentUser}
+        user={user}
         onJoinGroup={onGroupJoin}
         onBack={() => onStepChange('location')}
       />
     );
   }
   
-  if (currentStep === 'chat' && currentUser && selectedGroup) {
+  if (currentStep === 'chat' && selectedGroup) {
+    // Create a mock user if none exists for chat
+    const user = currentUser || {
+      id: 'temp-user',
+      name: 'New User',
+      niche: userType || 'general',
+      country: 'United States',
+      preferredScope: 'global' as const
+    };
+    
     return (
       <GroupChat
-        user={currentUser}
+        user={user}
         group={selectedGroup}
         messages={messages.filter(m => m.groupId === selectedGroup.id)}
         onSendMessage={onSendMessage}

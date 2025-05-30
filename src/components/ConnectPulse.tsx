@@ -27,6 +27,18 @@ const ConnectPulse = () => {
   };
 
   const handleGroupJoin = (group: Group) => {
+    // Create user if doesn't exist
+    if (!currentUser) {
+      const newUser: User = {
+        id: Date.now().toString(),
+        name: 'New User',
+        niche: userType || 'general',
+        country: 'United States',
+        preferredScope: 'global'
+      };
+      setCurrentUser(newUser);
+    }
+    
     setSelectedGroup(group);
     setCurrentStep('chat');
   };
@@ -62,10 +74,8 @@ const ConnectPulse = () => {
     // For business owners who created a profile, show the profile preview
     if (userType === 'business' && userAction === 'create' && businessData) {
       setCurrentStep('business-profile-preview');
-    } else if (userAction === 'join') {
-      setCurrentStep('groups');
     } else {
-      console.log('Profile data:', { profileData, businessData, locationData, portfolioItems });
+      // For all other cases, go to groups
       setCurrentStep('groups');
     }
   };
@@ -77,6 +87,21 @@ const ConnectPulse = () => {
   const handleUserTypeSelect = (type: UserType, action: UserAction) => {
     setUserType(type);
     setUserAction(action);
+    
+    // Determine next step based on user type and action
+    if (type === 'business') {
+      if (action === 'create') {
+        setCurrentStep('business-niche');
+      } else {
+        setCurrentStep('location');
+      }
+    } else if (type === 'freelancer' && action === 'create') {
+      setCurrentStep('freelancer-gig');
+    } else if (action === 'join') {
+      setCurrentStep('service-selection');
+    } else {
+      setCurrentStep('service-selection');
+    }
   };
 
   return (
