@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
 import WelcomeSection from './enhanced/WelcomeSection';
@@ -15,7 +14,7 @@ const ConnectPulse = () => {
   const [businessData, setBusinessData] = useState<any>(null);
   const [locationData, setLocationData] = useState<any>(null);
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
-  const [browsingFilter, setBrowsingFilter] = useState<'users' | 'businesses' | 'groups' | null>(null);
+  const [browsingFilter, setBrowsingFilter] = useState<'users' | 'businesses' | 'freelancers' | 'groups' | null>(null);
 
   const handleUserRegistration = (userData: Omit<User, 'id'>) => {
     const newUser: User = {

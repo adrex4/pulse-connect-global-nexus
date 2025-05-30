@@ -9,6 +9,7 @@ import { Group } from '@/types/connectPulse';
 interface FreelancerStepManagerProps {
   currentStep: Step;
   userType: UserType;
+  userAction: 'join' | 'create';
   profileData: any;
   onStepChange: (step: Step) => void;
   onLocationSave: (data: any) => void;
@@ -19,6 +20,7 @@ interface FreelancerStepManagerProps {
 const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
   currentStep,
   userType,
+  userAction,
   profileData,
   onStepChange,
   onLocationSave,
@@ -55,6 +57,7 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
     return (
       <FreelancerGroupList
         userType={userType}
+        userAction={userAction}
         profileData={profileData}
         onJoinGroup={onGroupJoin}
         onBack={() => onStepChange('freelancer-location')}

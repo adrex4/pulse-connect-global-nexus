@@ -17,7 +17,7 @@ interface StepManagerProps {
   businessData: any;
   locationData: any;
   portfolioItems: any[];
-  browsingFilter: 'users' | 'businesses' | 'groups' | null;
+  browsingFilter: 'users' | 'businesses' | 'freelancers' | 'groups' | null;
   onStepChange: (step: Step) => void;
   onUserTypeSelect: (type: UserType, action: UserAction) => void;
   onUserRegistration: (userData: Omit<User, 'id'>) => void;
@@ -29,7 +29,7 @@ interface StepManagerProps {
   onBusinessProfileEdit: () => void;
   setProfileData: (data: any) => void;
   setCurrentUser: (user: User | null) => void;
-  setBrowsingFilter: (filter: 'users' | 'businesses' | 'groups' | null) => void;
+  setBrowsingFilter: (filter: 'users' | 'businesses' | 'freelancers' | 'groups' | null) => void;
 }
 
 const StepManager: React.FC<StepManagerProps> = (props) => {
@@ -94,11 +94,12 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
   }
 
   // Handle freelancer-specific steps
-  if (userType && userType !== 'business') {
+  if (userType && userType !== 'business' && userAction) {
     const freelancerStepResult = (
       <FreelancerStepManager
         currentStep={currentStep}
         userType={userType}
+        userAction={userAction}
         profileData={profileData}
         onStepChange={onStepChange}
         onLocationSave={onLocationSave}

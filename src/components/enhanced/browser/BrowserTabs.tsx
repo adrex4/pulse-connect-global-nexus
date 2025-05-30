@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { User, Building2, Users } from 'lucide-react';
+import { User, Building2, Users, Briefcase } from 'lucide-react';
 
 interface BrowserTabsProps {
-  activeTab: 'users' | 'businesses' | 'groups';
-  onTabChange: (tab: 'users' | 'businesses' | 'groups') => void;
+  activeTab: 'users' | 'businesses' | 'freelancers' | 'groups';
+  onTabChange: (tab: 'users' | 'businesses' | 'freelancers' | 'groups') => void;
 }
 
 const BrowserTabs: React.FC<BrowserTabsProps> = ({ activeTab, onTabChange }) => {
@@ -32,6 +32,17 @@ const BrowserTabs: React.FC<BrowserTabsProps> = ({ activeTab, onTabChange }) => 
         >
           <Building2 className="h-4 w-4 inline mr-2" />
           Businesses
+        </button>
+        <button
+          onClick={() => onTabChange('freelancers')}
+          className={`px-6 py-2 rounded-md transition-colors ${
+            activeTab === 'freelancers' 
+              ? 'bg-white text-blue-600 shadow-sm' 
+              : 'text-gray-600 hover:text-gray-800'
+          }`}
+        >
+          <Briefcase className="h-4 w-4 inline mr-2" />
+          Freelancers
         </button>
         <button
           onClick={() => onTabChange('groups')}

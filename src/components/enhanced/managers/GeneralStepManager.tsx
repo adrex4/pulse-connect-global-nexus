@@ -35,7 +35,11 @@ const GeneralStepManager: React.FC<GeneralStepManagerProps> = ({
           onUserTypeSelect(type, action);
           
           if (action === 'view') {
-            setBrowsingFilter('businesses');
+            if (type === 'business') {
+              setBrowsingFilter('businesses');
+            } else {
+              setBrowsingFilter('freelancers');
+            }
             onStepChange('browse');
           } else if (action === 'join') {
             if (type === 'business') {

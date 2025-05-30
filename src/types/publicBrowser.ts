@@ -38,5 +38,5 @@ export interface Group {
 
 export interface PublicProfileBrowserProps {
   onGetStarted: () => void;
-  initialFilter?: 'users' | 'businesses' | 'groups' | null;
+  initialFilter?: 'users' | 'businesses' | 'freelancers' | 'groups' | null;
 }
