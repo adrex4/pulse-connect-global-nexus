@@ -60,22 +60,21 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
   } = props;
 
   // Handle general steps (browse, user-type)
-  const generalStepResult = (
-    <GeneralStepManager
-      currentStep={currentStep}
-      browsingFilter={browsingFilter}
-      onStepChange={onStepChange}
-      onUserTypeSelect={onUserTypeSelect}
-      setBrowsingFilter={setBrowsingFilter}
-    />
-  );
-  if (generalStepResult && React.isValidElement(generalStepResult)) {
-    return generalStepResult;
+  if (currentStep === 'browse' || currentStep === 'user-type') {
+    return (
+      <GeneralStepManager
+        currentStep={currentStep}
+        browsingFilter={browsingFilter}
+        onStepChange={onStepChange}
+        onUserTypeSelect={onUserTypeSelect}
+        setBrowsingFilter={setBrowsingFilter}
+      />
+    );
   }
 
   // Handle business-specific steps
   if (userType === 'business') {
-    const businessStepResult = (
+    return (
       <BusinessStepManager
         currentStep={currentStep}
         userType={userType}
@@ -88,27 +87,24 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
         setCurrentUser={setCurrentUser}
       />
     );
-    if (businessStepResult && React.isValidElement(businessStepResult)) {
-      return businessStepResult;
-    }
   }
 
-  // Handle freelancer-specific steps
+  // Handle freelancer-specific steps (only for non-view actions)
   if (userType && userType !== 'business' && userAction && userAction !== 'view') {
-    const freelancerStepResult = (
-      <FreelancerStepManager
-        currentStep={currentStep}
-        userType={userType}
-        userAction={userAction}
-        profileData={profileData}
-        onStepChange={onStepChange}
-        onLocationSave={onLocationSave}
-        onGroupJoin={onGroupJoin}
-        setProfileData={setProfileData}
-      />
-    );
-    if (freelancerStepResult && React.isValidElement(freelancerStepResult)) {
-      return freelancerStepResult;
+    const freelancerSteps = ['freelancer-gig', 'freelancer-location', 'freelancer-groups'];
+    if (freelancerSteps.includes(currentStep)) {
+      return (
+        <FreelancerStepManager
+          currentStep={currentStep}
+          userType={userType}
+          userAction={userAction}
+          profileData={profileData}
+          onStepChange={onStepChange}
+          onLocationSave={onLocationSave}
+          onGroupJoin={onGroupJoin}
+          setProfileData={setProfileData}
+        />
+      );
     }
   }
 
@@ -134,6 +130,8 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
     );
   }
 
+  // Fallback: if no component is found, return to browse
+  console.log('No matching step manager found, returning to browse');
   return null;
 };
 

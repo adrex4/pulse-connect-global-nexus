@@ -27,7 +27,7 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
   onGroupJoin,
   setProfileData
 }) => {
-  // Only handle non-business, non-view actions
+  // This component only handles non-business freelancer steps for join/create actions
   if (userType === 'business' || userAction === 'view') {
     return null;
   }
