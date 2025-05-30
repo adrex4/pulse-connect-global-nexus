@@ -30,7 +30,10 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
 
   useEffect(() => {
     fetchLocations();
-    fetchCategories(activeTab);
+    // Only fetch categories for tabs that support them (not freelancers)
+    if (activeTab !== 'freelancers') {
+      fetchCategories(activeTab as 'users' | 'businesses' | 'groups');
+    }
   }, []);
 
   useEffect(() => {
@@ -45,7 +48,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
     setActiveTab(tab);
     setSelectedCategory('all_categories');
     if (tab !== 'freelancers') {
-      fetchCategories(tab);
+      fetchCategories(tab as 'users' | 'businesses' | 'groups');
     }
   };
 

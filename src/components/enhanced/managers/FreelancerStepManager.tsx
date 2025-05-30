@@ -27,7 +27,12 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
   onGroupJoin,
   setProfileData
 }) => {
-  if (currentStep === 'freelancer-gig' && userType && userType !== 'business') {
+  // Only handle non-business, non-view actions
+  if (userType === 'business' || userAction === 'view') {
+    return null;
+  }
+
+  if (currentStep === 'freelancer-gig') {
     return (
       <FreelancerGigCreator 
         userType={userType}
@@ -40,7 +45,7 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
     );
   }
   
-  if (currentStep === 'freelancer-location' && userType && userType !== 'business') {
+  if (currentStep === 'freelancer-location') {
     return (
       <FreelancerLocationSelector
         userType={userType}
@@ -53,11 +58,11 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
     );
   }
 
-  if (currentStep === 'freelancer-groups' && userType && userType !== 'business') {
+  if (currentStep === 'freelancer-groups') {
     return (
       <FreelancerGroupList
         userType={userType}
-        userAction={userAction}
+        userAction={userAction as 'join' | 'create'}
         profileData={profileData}
         onJoinGroup={onGroupJoin}
         onBack={() => onStepChange('freelancer-location')}
