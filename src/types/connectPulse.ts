@@ -39,7 +39,10 @@ export type Step =
   | 'portfolio'
   | 'location'
   | 'groups'
-  | 'chat';
+  | 'chat'
+  | 'freelancer-gig'
+  | 'freelancer-location'
+  | 'freelancer-groups';
 
 export type UserType = 'business' | 'freelancer' | 'occupation_provider' | 'social_media_influencer';
 export type UserAction = 'join' | 'create' | 'view';

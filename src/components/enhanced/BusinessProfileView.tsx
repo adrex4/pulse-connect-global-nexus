@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Edit, MapPin, Globe, Users, Building, Mail, Phone, Calendar, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Edit, MapPin, Globe, Users, Building, Mail, Phone, Calendar, Home } from 'lucide-react';
 
 interface BusinessProfileViewProps {
   businessData: any;
@@ -11,6 +11,7 @@ interface BusinessProfileViewProps {
   onEdit: () => void;
   onPublish?: () => void;
   showPublishButton?: boolean;
+  publishButtonText?: string;
 }
 
 const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({ 
@@ -18,8 +19,11 @@ const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({
   locationData, 
   onEdit, 
   onPublish,
-  showPublishButton = false 
+  showPublishButton = false,
+  publishButtonText = "Publish Profile"
 }) => {
+  const isReturnHome = publishButtonText === "Return Home";
+  
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
       <Card className="shadow-lg border-0 bg-white">
@@ -30,7 +34,9 @@ const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({
                 <Building className="h-8 w-8" />
                 Your Business Profile
               </CardTitle>
-              <p className="text-blue-100 mt-2">Review your profile before publishing</p>
+              <p className="text-blue-100 mt-2">
+                {isReturnHome ? "Profile created successfully!" : "Review your profile before publishing"}
+              </p>
             </div>
             <div className="flex gap-2">
               <Button 
@@ -46,8 +52,17 @@ const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({
                   onClick={onPublish}
                   className="bg-white text-blue-600 hover:bg-blue-50"
                 >
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Publish Profile
+                  {isReturnHome ? (
+                    <>
+                      <Home className="h-4 w-4 mr-2" />
+                      Return Home
+                    </>
+                  ) : (
+                    <>
+                      <Building className="h-4 w-4 mr-2" />
+                      {publishButtonText}
+                    </>
+                  )}
                 </Button>
               )}
             </div>
@@ -188,15 +203,27 @@ const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({
           {showPublishButton && onPublish && (
             <div className="text-center pt-6 border-t">
               <p className="text-gray-600 mb-4">
-                Ready to publish your business profile and connect with professionals?
+                {isReturnHome 
+                  ? "Your business profile has been created successfully! You can now browse other businesses or return to the main page."
+                  : "Ready to publish your business profile and connect with professionals?"
+                }
               </p>
               <Button 
                 onClick={onPublish}
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
               >
-                <CheckCircle className="h-5 w-5 mr-2" />
-                Publish Profile & Continue
+                {isReturnHome ? (
+                  <>
+                    <Home className="h-5 w-5 mr-2" />
+                    Return Home
+                  </>
+                ) : (
+                  <>
+                    <Building className="h-5 w-5 mr-2" />
+                    {publishButtonText}
+                  </>
+                )}
               </Button>
             </div>
           )}

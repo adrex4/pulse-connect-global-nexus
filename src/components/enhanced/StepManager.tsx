@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,6 +12,9 @@ import PublicProfileBrowser from './PublicProfileBrowser';
 import PortfolioUploader from './PortfolioUploader';
 import BusinessProfileCreator from './BusinessProfileCreator';
 import BusinessProfileView from './BusinessProfileView';
+import FreelancerGigCreator from './FreelancerGigCreator';
+import FreelancerLocationSelector from './FreelancerLocationSelector';
+import FreelancerGroupList from './FreelancerGroupList';
 
 // Existing components
 import NicheSelector from '../NicheSelector';
@@ -92,15 +94,13 @@ const StepManager: React.FC<StepManagerProps> = ({
             if (type === 'business') {
               onStepChange('business-niche');
             } else {
-              onStepChange('service-selection');
+              onStepChange('freelancer-gig');
             }
           } else { // action === 'create'
             if (type === 'business') {
               onStepChange('business-profile');
-            } else if (type === 'social_media_influencer') {
-              onStepChange('social-media-profile');
             } else {
-              onStepChange('service-selection');
+              onStepChange('freelancer-gig');
             }
           }
         }}
@@ -124,8 +124,9 @@ const StepManager: React.FC<StepManagerProps> = ({
         businessData={businessData}
         locationData={locationData}
         onEdit={onBusinessProfileEdit}
-        onPublish={() => onStepChange('groups')}
+        onPublish={() => onStepChange('welcome')}
         showPublishButton={true}
+        publishButtonText="Return Home"
       />
     );
   }
@@ -145,6 +146,43 @@ const StepManager: React.FC<StepManagerProps> = ({
           onStepChange('location');
         }}
         onBack={() => onStepChange('user-type')}
+      />
+    );
+  }
+
+  if (currentStep === 'freelancer-gig' && userType && userType !== 'business') {
+    return (
+      <FreelancerGigCreator 
+        userType={userType}
+        onNext={(gigData) => {
+          setProfileData(gigData);
+          onStepChange('freelancer-location');
+        }}
+        onBack={() => onStepChange('user-type')}
+      />
+    );
+  }
+  
+  if (currentStep === 'freelancer-location' && userType && userType !== 'business') {
+    return (
+      <FreelancerLocationSelector
+        userType={userType}
+        onNext={(locationData) => {
+          onLocationSave(locationData);
+          onStepChange('freelancer-groups');
+        }}
+        onBack={() => onStepChange('freelancer-gig')}
+      />
+    );
+  }
+
+  if (currentStep === 'freelancer-groups' && userType && userType !== 'business') {
+    return (
+      <FreelancerGroupList
+        userType={userType}
+        profileData={profileData}
+        onJoinGroup={onGroupJoin}
+        onBack={() => onStepChange('freelancer-location')}
       />
     );
   }
