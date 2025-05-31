@@ -81,7 +81,17 @@ const ConnectPulse = () => {
         setCurrentStep('business-groups');
       }
     } else if (userType === 'freelancer') {
-      setCurrentStep('freelancer-groups');
+      if (userAction === 'create') {
+        setCurrentStep('freelancer-profile-preview');
+      } else {
+        setCurrentStep('freelancer-groups');
+      }
+    } else if (userType === 'occupation_provider') {
+      if (userAction === 'create') {
+        setCurrentStep('local-service-profile-preview');
+      } else {
+        setCurrentStep('groups');
+      }
     } else {
       setCurrentStep('groups');
     }

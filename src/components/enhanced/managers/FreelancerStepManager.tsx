@@ -4,6 +4,7 @@ import { Step, UserType, UserAction } from '@/types/connectPulse';
 import FreelancerGigCreator from '../FreelancerGigCreator';
 import FreelancerLocationSelector from '../FreelancerLocationSelector';
 import FreelancerGroupList from '../FreelancerGroupList';
+import SimpleFreelancerSelector from '../SimpleFreelancerSelector';
 import { Group } from '@/types/connectPulse';
 
 interface FreelancerStepManagerProps {
@@ -29,6 +30,20 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
 }) => {
   // Handle freelancer-specific steps
   if (currentStep === 'freelancer-gig') {
+    // Use simplified selector for join action
+    if (userAction === 'join') {
+      return (
+        <SimpleFreelancerSelector 
+          onNext={(profileData) => {
+            setProfileData(profileData);
+            onStepChange('freelancer-location');
+          }}
+          onBack={() => onStepChange('user-type')}
+        />
+      );
+    }
+    
+    // Use full creator for create action
     return (
       <FreelancerGigCreator 
         userType={userType}
@@ -47,7 +62,10 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
         userType={userType}
         onNext={(locationData) => {
           onLocationSave(locationData);
-          onStepChange('freelancer-groups');
+          if (userAction === 'join') {
+            onStepChange('freelancer-groups');
+          }
+          // For create action, the location save handler will route to profile preview
         }}
         onBack={() => onStepChange('freelancer-gig')}
       />

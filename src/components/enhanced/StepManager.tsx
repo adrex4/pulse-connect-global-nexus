@@ -7,6 +7,8 @@ import GeneralStepManager from './managers/GeneralStepManager';
 import SharedStepManager from './managers/SharedStepManager';
 import SocialMediaGroupList from './SocialMediaGroupList';
 import LocalServiceGroupList from './LocalServiceGroupList';
+import FreelancerProfilePreview from './FreelancerProfilePreview';
+import LocalServiceProfilePreview from './LocalServiceProfilePreview';
 
 interface StepManagerProps {
   currentStep: Step;
@@ -70,6 +72,34 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
         onStepChange={onStepChange}
         onUserTypeSelect={onUserTypeSelect}
         setBrowsingFilter={setBrowsingFilter}
+      />
+    );
+  }
+
+  // Handle freelancer profile preview
+  if (currentStep === 'freelancer-profile-preview' && userType === 'freelancer') {
+    return (
+      <FreelancerProfilePreview
+        profileData={profileData}
+        locationData={locationData}
+        portfolioItems={portfolioItems}
+        onEdit={() => onStepChange('freelancer-gig')}
+        onPublish={() => onStepChange('welcome')}
+        onHome={() => onStepChange('welcome')}
+      />
+    );
+  }
+
+  // Handle local service profile preview
+  if (currentStep === 'local-service-profile-preview' && userType === 'occupation_provider') {
+    return (
+      <LocalServiceProfilePreview
+        profileData={profileData}
+        locationData={locationData}
+        portfolioItems={portfolioItems}
+        onEdit={() => onStepChange('service-selection')}
+        onPublish={() => onStepChange('welcome')}
+        onHome={() => onStepChange('welcome')}
       />
     );
   }

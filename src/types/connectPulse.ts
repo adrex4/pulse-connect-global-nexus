@@ -34,6 +34,7 @@ export type Step =
   | 'business-niche'
   | 'business-profile'
   | 'business-profile-preview'
+  | 'business-groups'
   | 'service-selection'
   | 'social-media-profile'
   | 'portfolio'
@@ -42,7 +43,9 @@ export type Step =
   | 'chat'
   | 'freelancer-gig'
   | 'freelancer-location'
-  | 'freelancer-groups';
+  | 'freelancer-groups'
+  | 'freelancer-profile-preview'
+  | 'local-service-profile-preview';
 
 export type UserType = 'business' | 'freelancer' | 'occupation_provider' | 'social_media_influencer';
 export type UserAction = 'join' | 'create' | 'view';
