@@ -34,7 +34,7 @@ const ConnectPulse = () => {
       const newUser: User = {
         id: Date.now().toString(),
         name: 'New User',
-        niche: profileData?.primarySkill || userType || 'general',
+        niche: profileData?.primarySkill || profileData?.niche || userType || 'general',
         country: locationData?.country || 'United States',
         preferredScope: 'global'
       };
@@ -74,8 +74,12 @@ const ConnectPulse = () => {
     setLocationData(data);
     
     // Different routing based on user type and action
-    if (userType === 'business' && userAction === 'create' && businessData) {
-      setCurrentStep('business-profile-preview');
+    if (userType === 'business') {
+      if (userAction === 'create' && businessData) {
+        setCurrentStep('business-profile-preview');
+      } else if (userAction === 'join') {
+        setCurrentStep('business-groups');
+      }
     } else if (userType === 'freelancer') {
       setCurrentStep('freelancer-groups');
     } else {

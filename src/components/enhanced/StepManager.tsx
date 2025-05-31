@@ -5,6 +5,8 @@ import BusinessStepManager from './managers/BusinessStepManager';
 import FreelancerStepManager from './managers/FreelancerStepManager';
 import GeneralStepManager from './managers/GeneralStepManager';
 import SharedStepManager from './managers/SharedStepManager';
+import SocialMediaGroupList from './SocialMediaGroupList';
+import LocalServiceGroupList from './LocalServiceGroupList';
 
 interface StepManagerProps {
   currentStep: Step;
@@ -74,7 +76,7 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
 
   // Handle business-specific steps
   if (userType === 'business') {
-    const businessSteps = ['business-niche', 'business-profile', 'business-profile-preview'];
+    const businessSteps = ['business-niche', 'business-profile', 'business-profile-preview', 'business-groups'];
     if (businessSteps.includes(currentStep)) {
       return (
         <BusinessStepManager
@@ -83,9 +85,11 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
           userAction={userAction!}
           businessData={businessData}
           locationData={locationData}
+          currentUser={currentUser}
           onStepChange={onStepChange}
           onBusinessProfileSave={onBusinessProfileSave}
           onBusinessProfileEdit={onBusinessProfileEdit}
+          onGroupJoin={onGroupJoin}
           setCurrentUser={setCurrentUser}
         />
       );
@@ -109,6 +113,48 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
         />
       );
     }
+  }
+
+  // Handle social media influencer groups
+  if (userType === 'social_media_influencer' && currentStep === 'groups') {
+    const user = currentUser || {
+      id: 'temp-social-user',
+      name: 'Content Creator',
+      niche: profileData?.niche || 'Social Media',
+      country: locationData?.country || 'United States',
+      preferredScope: 'global' as const
+    };
+
+    return (
+      <SocialMediaGroupList
+        user={user}
+        userType={userType}
+        userAction={userAction as 'join' | 'create'}
+        onJoinGroup={onGroupJoin}
+        onBack={() => onStepChange('location')}
+      />
+    );
+  }
+
+  // Handle local service provider groups
+  if (userType === 'occupation_provider' && currentStep === 'groups') {
+    const user = currentUser || {
+      id: 'temp-service-user',
+      name: 'Service Provider',
+      niche: profileData?.primarySkill || 'Local Services',
+      country: locationData?.country || 'United States',
+      preferredScope: 'local' as const
+    };
+
+    return (
+      <LocalServiceGroupList
+        user={user}
+        userType={userType}
+        userAction={userAction as 'join' | 'create'}
+        onJoinGroup={onGroupJoin}
+        onBack={() => onStepChange('location')}
+      />
+    );
   }
 
   // Handle all shared steps (service selection, portfolio, location, groups, chat, etc.)

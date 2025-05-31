@@ -4,6 +4,7 @@ import { Step, UserType, UserAction, User } from '@/types/connectPulse';
 import BusinessProfileCreator from '../BusinessProfileCreator';
 import BusinessProfileView from '../BusinessProfileView';
 import NicheSelector from '../../NicheSelector';
+import BusinessGroupList from '../BusinessGroupList';
 
 interface BusinessStepManagerProps {
   currentStep: Step;
@@ -11,9 +12,11 @@ interface BusinessStepManagerProps {
   userAction: UserAction;
   businessData: any;
   locationData: any;
+  currentUser: User | null;
   onStepChange: (step: Step) => void;
   onBusinessProfileSave: (data: any) => void;
   onBusinessProfileEdit: () => void;
+  onGroupJoin: (group: any) => void;
   setCurrentUser: (user: User | null) => void;
 }
 
@@ -23,9 +26,11 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
   userAction,
   businessData,
   locationData,
+  currentUser,
   onStepChange,
   onBusinessProfileSave,
   onBusinessProfileEdit,
+  onGroupJoin,
   setCurrentUser
 }) => {
   if (currentStep === 'business-profile' && userType === 'business') {
@@ -65,6 +70,29 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
           onStepChange('location');
         }}
         onBack={() => onStepChange('user-type')}
+      />
+    );
+  }
+
+  if (currentStep === 'business-groups' && userType === 'business') {
+    const user = currentUser || {
+      id: 'temp-business-user',
+      name: 'Business Owner',
+      niche: 'business',
+      country: locationData?.country || 'United States',
+      preferredScope: 'local' as const
+    };
+
+    return (
+      <BusinessGroupList
+        user={user}
+        userType={userType}
+        userAction={userAction as 'join' | 'create'}
+        onJoinGroup={(group) => {
+          onGroupJoin(group);
+          onStepChange('chat');
+        }}
+        onBack={() => onStepChange('location')}
       />
     );
   }
