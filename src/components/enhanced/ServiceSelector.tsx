@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Briefcase, Plus, Globe, MapPin, Users, Upload, Film, Music } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { FREELANCER_SKILL_CATEGORIES } from '@/data/freelancerSkills';
+import { getLocalServicesByCategory } from '@/data/localServiceJobs';
 
 interface Service {
   id: string;
@@ -22,7 +23,6 @@ interface ServiceSelectorProps {
   onNext: (serviceData: {
     primaryService: string;
     serviceType: 'online' | 'in_person' | 'both';
-    hourlyRate?: number;
     description: string;
     portfolioFiles?: File[];
   }) => void;
@@ -35,12 +35,22 @@ const ServiceSelector: React.FC<ServiceSelectorProps> = ({ userType, onNext, onB
   const [customService, setCustomService] = useState('');
   const [showCustomService, setShowCustomService] = useState(false);
   const [serviceType, setServiceType] = useState<'online' | 'in_person' | 'both'>('both');
-  const [hourlyRate, setHourlyRate] = useState('');
   const [description, setDescription] = useState('');
   const [portfolioFiles, setPortfolioFiles] = useState<File[]>([]);
+  const [serviceList, setServiceList] = useState<string[]>([]);
 
   useEffect(() => {
-    fetchServices();
+    if (userType === 'occupation_provider') {
+      // Initialize with local services
+      const localServices = getLocalServicesByCategory();
+      const allServices: string[] = [];
+      Object.values(localServices).forEach(jobs => {
+        allServices.push(...jobs);
+      });
+      setServiceList(allServices.sort());
+    } else {
+      fetchServices();
+    }
   }, [userType]);
 
   const fetchServices = async () => {
@@ -48,18 +58,32 @@ const ServiceSelector: React.FC<ServiceSelectorProps> = ({ userType, onNext, onB
     
     if (userType === 'freelancer' || userType === 'social_media_influencer') {
       query = query.eq('is_online_capable', true);
-    } else if (userType === 'occupation_provider') {
-      // For local services, we want both online capable and non-online services
-      // but primarily show local services
     }
     
     const { data } = await query;
     setServices(data || []);
   };
 
-  const createCustomService = async () => {
+  const createCustomService = () => {
     if (!customService.trim()) return;
     
+    if (userType === 'occupation_provider') {
+      // For local services, just add to the list
+      const newService = customService.trim();
+      if (!serviceList.includes(newService)) {
+        setServiceList(prev => [...prev, newService].sort());
+        setSelectedService(newService);
+      }
+    } else {
+      // For other types, add to database
+      addToDatabase();
+    }
+    
+    setShowCustomService(false);
+    setCustomService('');
+  };
+
+  const addToDatabase = async () => {
     const { data, error } = await supabase
       .from('services')
       .insert({
@@ -77,8 +101,6 @@ const ServiceSelector: React.FC<ServiceSelectorProps> = ({ userType, onNext, onB
     
     setServices(prev => [...prev, data]);
     setSelectedService(data.id);
-    setShowCustomService(false);
-    setCustomService('');
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,12 +115,18 @@ const ServiceSelector: React.FC<ServiceSelectorProps> = ({ userType, onNext, onB
   };
 
   const handleNext = () => {
-    const selectedServiceData = services.find(s => s.id === selectedService);
+    let primaryService = '';
+    
+    if (userType === 'occupation_provider') {
+      primaryService = selectedService;
+    } else {
+      const selectedServiceData = services.find(s => s.id === selectedService);
+      primaryService = selectedServiceData?.name || '';
+    }
     
     onNext({
-      primaryService: selectedServiceData?.name || '',
+      primaryService,
       serviceType,
-      hourlyRate: hourlyRate ? parseFloat(hourlyRate) : undefined,
       description,
       portfolioFiles
     });
@@ -132,7 +160,6 @@ const ServiceSelector: React.FC<ServiceSelectorProps> = ({ userType, onNext, onB
 
   const getServicesForUserType = () => {
     if (userType === 'freelancer') {
-      // Return all freelancing skills from our comprehensive list
       const categories: { [key: string]: Service[] } = {};
       Object.entries(FREELANCER_SKILL_CATEGORIES).forEach(([category, skills]) => {
         categories[category] = skills.map((skill, index) => ({
@@ -174,8 +201,11 @@ const ServiceSelector: React.FC<ServiceSelectorProps> = ({ userType, onNext, onB
         }));
       });
       return categories;
+    } else if (userType === 'occupation_provider') {
+      // Use local services data
+      return getLocalServicesByCategory();
     } else {
-      // Return services from database for occupation providers
+      // Return services from database for other types
       const categories: { [key: string]: Service[] } = {};
       services.forEach(service => {
         if (!categories[service.category]) {
@@ -235,26 +265,55 @@ const ServiceSelector: React.FC<ServiceSelectorProps> = ({ userType, onNext, onB
               </div>
             ) : (
               <div className="space-y-3">
-                <Select value={selectedService} onValueChange={setSelectedService}>
-                  <SelectTrigger className="h-12 text-lg">
-                    <SelectValue placeholder={`Select your ${userType === 'freelancer' ? 'skill' : 
-                                                           userType === 'social_media_influencer' ? 'content type' : 'occupation'}...`} />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-80">
-                    {Object.entries(serviceCategories).map(([category, categoryServices]) => (
-                      <div key={category}>
-                        <div className="px-2 py-1 text-sm font-semibold text-gray-500 bg-gray-50">
-                          {category}
+                {userType === 'occupation_provider' ? (
+                  <Select value={selectedService} onValueChange={setSelectedService}>
+                    <SelectTrigger className="h-12 text-lg">
+                      <SelectValue placeholder="Select your occupation..." />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-80">
+                      {Object.entries(serviceCategories).map(([category, jobs]) => (
+                        <div key={category}>
+                          <div className="px-2 py-1 text-sm font-semibold text-gray-500 bg-gray-50">
+                            {category}
+                          </div>
+                          {(jobs as string[]).map((job) => (
+                            <SelectItem key={job} value={job} className="pl-4">
+                              {job}
+                            </SelectItem>
+                          ))}
                         </div>
-                        {categoryServices.map((service) => (
-                          <SelectItem key={service.id} value={service.id} className="pl-4">
-                            {service.name}
-                          </SelectItem>
-                        ))}
-                      </div>
-                    ))}
-                  </SelectContent>
-                </Select>
+                      ))}
+                      {serviceList.filter(job => 
+                        !Object.values(serviceCategories).flat().includes(job)
+                      ).map((job) => (
+                        <SelectItem key={job} value={job}>
+                          {job}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Select value={selectedService} onValueChange={setSelectedService}>
+                    <SelectTrigger className="h-12 text-lg">
+                      <SelectValue placeholder={`Select your ${userType === 'freelancer' ? 'skill' : 
+                                                               userType === 'social_media_influencer' ? 'content type' : 'occupation'}...`} />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-80">
+                      {Object.entries(serviceCategories).map(([category, categoryServices]) => (
+                        <div key={category}>
+                          <div className="px-2 py-1 text-sm font-semibold text-gray-500 bg-gray-50">
+                            {category}
+                          </div>
+                          {(categoryServices as Service[]).map((service) => (
+                            <SelectItem key={service.id} value={service.id} className="pl-4">
+                              {service.name}
+                            </SelectItem>
+                          ))}
+                        </div>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
                 <Button 
                   variant="outline" 
                   onClick={() => setShowCustomService(true)}
@@ -321,30 +380,6 @@ const ServiceSelector: React.FC<ServiceSelectorProps> = ({ userType, onNext, onB
             </div>
           )}
 
-          {/* Hourly Rate */}
-          <div className="space-y-3">
-            <Label className="text-lg font-medium">
-              {userType === 'social_media_influencer' ? 'Rate per Post/Campaign (Optional)' : 'Hourly Rate (Optional)'}
-            </Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-              <Input
-                type="number"
-                placeholder={userType === 'social_media_influencer' ? '250' : '25'}
-                value={hourlyRate}
-                onChange={(e) => setHourlyRate(e.target.value)}
-                className="h-12 pl-8"
-                min="0"
-                step="0.01"
-              />
-            </div>
-            <p className="text-sm text-gray-500">
-              {userType === 'social_media_influencer' 
-                ? 'This helps brands understand your pricing range for collaborations.'
-                : 'This helps clients understand your pricing range.'}
-            </p>
-          </div>
-
           {/* Portfolio Upload */}
           <div className="space-y-3">
             <Label className="text-lg font-medium">Show Your Best Work</Label>
@@ -400,14 +435,23 @@ const ServiceSelector: React.FC<ServiceSelectorProps> = ({ userType, onNext, onB
             />
           </div>
 
-          <Button
-            onClick={handleNext}
-            disabled={!selectedService || !description.trim()}
-            className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-            size="lg"
-          >
-            Continue →
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              variant="outline"
+              onClick={onBack}
+              className="flex-1"
+            >
+              ← Back
+            </Button>
+            <Button
+              onClick={handleNext}
+              disabled={!selectedService || !description.trim()}
+              className="flex-1 h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              size="lg"
+            >
+              Continue →
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -4,8 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, MapPin, Users, Wrench, Search, Clock, Star, Shield } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { ArrowLeft, MapPin, Users, Wrench, Search, Clock, Star, Shield, Plus } from 'lucide-react';
 import { User, Group, UserType, UserAction } from '@/types/connectPulse';
+import { getLocalServicesByCategory } from '@/data/localServiceJobs';
 
 const generateLocalServiceGroups = (user: User): Group[] => {
   const groups: Group[] = [
@@ -73,11 +76,42 @@ const LocalServiceGroupList: React.FC<LocalServiceGroupListProps> = ({
 }) => {
   const [groups] = useState(generateLocalServiceGroups(user));
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedOccupation, setSelectedOccupation] = useState('');
+  const [customOccupation, setCustomOccupation] = useState('');
+  const [showCustomOccupation, setShowCustomOccupation] = useState(false);
+  const [occupationList, setOccupationList] = useState<string[]>([]);
+  
+  const serviceCategories = getLocalServicesByCategory();
+
+  React.useEffect(() => {
+    // Initialize occupation list with all services
+    const allOccupations: string[] = [];
+    Object.values(serviceCategories).forEach(jobs => {
+      allOccupations.push(...jobs);
+    });
+    setOccupationList(allOccupations.sort());
+  }, []);
+
+  const addCustomOccupation = () => {
+    if (customOccupation.trim() && !occupationList.includes(customOccupation.trim())) {
+      const newOccupation = customOccupation.trim();
+      setOccupationList(prev => [...prev, newOccupation].sort());
+      setSelectedOccupation(newOccupation);
+      setCustomOccupation('');
+      setShowCustomOccupation(false);
+    }
+  };
 
   const filteredGroups = groups.filter(group => 
     group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     group.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleJoinGroup = (group: Group) => {
+    if (selectedOccupation) {
+      onJoinGroup(group);
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto animate-fade-in">
@@ -90,7 +124,7 @@ const LocalServiceGroupList: React.FC<LocalServiceGroupListProps> = ({
             <div>
               <CardTitle className="text-xl flex items-center gap-2">
                 <Wrench className="h-6 w-6" />
-                Local Service Provider Networks
+                Join Local Service Provider Networks
               </CardTitle>
               <p className="text-orange-100 mt-1">Connect with fellow service providers and grow your local business</p>
             </div>
@@ -98,17 +132,88 @@ const LocalServiceGroupList: React.FC<LocalServiceGroupListProps> = ({
         </CardHeader>
         
         <CardContent className="p-6 space-y-6">
+          {/* Quick Setup Section */}
           <div className="p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border border-orange-200">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center">
-                <Wrench className="h-8 w-8 text-white" />
+            <h3 className="text-lg font-semibold text-orange-900 mb-4">Quick Setup - Select Your Occupation</h3>
+            
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <Label className="text-base font-medium text-orange-800">Your Primary Occupation/Service</Label>
+                {showCustomOccupation ? (
+                  <div className="space-y-3">
+                    <Input
+                      placeholder="Enter your occupation/service"
+                      value={customOccupation}
+                      onChange={(e) => setCustomOccupation(e.target.value)}
+                      className="h-12"
+                    />
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={addCustomOccupation} 
+                        disabled={!customOccupation.trim()}
+                        className="bg-orange-600 hover:bg-orange-700"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Occupation
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setShowCustomOccupation(false);
+                          setCustomOccupation('');
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <Select value={selectedOccupation} onValueChange={setSelectedOccupation}>
+                      <SelectTrigger className="h-12 text-base">
+                        <SelectValue placeholder="Select your occupation/service..." />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-80">
+                        {Object.entries(serviceCategories).map(([category, jobs]) => (
+                          <div key={category}>
+                            <div className="px-2 py-1 text-sm font-semibold text-gray-500 bg-gray-50">
+                              {category}
+                            </div>
+                            {jobs.map((job) => (
+                              <SelectItem key={job} value={job} className="pl-4">
+                                {job}
+                              </SelectItem>
+                            ))}
+                          </div>
+                        ))}
+                        {occupationList.filter(job => 
+                          !Object.values(serviceCategories).flat().includes(job)
+                        ).map((job) => (
+                          <SelectItem key={job} value={job}>
+                            {job}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setShowCustomOccupation(true)}
+                      className="w-full border-dashed border-2 border-orange-300 hover:border-orange-400 hover:bg-orange-50"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add custom occupation
+                    </Button>
+                  </div>
+                )}
               </div>
-              <div>
-                <h3 className="text-xl font-semibold text-orange-900">Welcome, Service Professional!</h3>
-                <p className="text-orange-700">
-                  Join networks of trusted local service providers. Build referrals, share expertise, and grow your business.
-                </p>
-              </div>
+              
+              {selectedOccupation && (
+                <div className="p-3 bg-orange-100 rounded-lg">
+                  <p className="text-orange-800">
+                    <strong>Selected:</strong> {selectedOccupation}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -155,11 +260,12 @@ const LocalServiceGroupList: React.FC<LocalServiceGroupListProps> = ({
                     </div>
                     
                     <Button 
-                      onClick={() => onJoinGroup(group)}
-                      className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300"
+                      onClick={() => handleJoinGroup(group)}
+                      disabled={!selectedOccupation}
+                      className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300 disabled:opacity-50"
                       size="lg"
                     >
-                      Join Network
+                      {selectedOccupation ? 'Join Network' : 'Select Occupation First'}
                     </Button>
                   </div>
                 </CardContent>
