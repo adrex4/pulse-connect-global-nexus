@@ -1,12 +1,10 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
 import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
 import EnhancedLocationSelector from '../EnhancedLocationSelector';
 import ServiceSelector from '../ServiceSelector';
 import PortfolioUploader from '../PortfolioUploader';
+import SocialMediaProfileCreator from '../SocialMediaProfileCreator';
 import GroupChat from '../../GroupChat';
 import GroupList from '../../GroupList';
 
@@ -43,7 +41,7 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
   onLocationSave,
   setProfileData
 }) => {
-  if (currentStep === 'service-selection' && userType && userType !== 'business') {
+  if (currentStep === 'service-selection' && userType && userType !== 'business' && userType !== 'social_media_influencer') {
     return (
       <ServiceSelector 
         userType={userType}
@@ -62,31 +60,13 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
   
   if (currentStep === 'social-media-profile' && userType === 'social_media_influencer') {
     return (
-      <Card className="max-w-4xl mx-auto animate-fade-in shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-t-lg">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => onStepChange('user-type')} className="text-white hover:bg-white/20">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <CardTitle className="text-xl">Create Your Influencer Profile</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="p-8 space-y-6">
-          <div className="text-center p-6">
-            <h3 className="text-2xl font-semibold mb-4">Coming Soon!</h3>
-            <p className="text-gray-600 mb-6">
-              We're building a specialized social media influencer profile creator. 
-              For now, let's continue with the standard profile setup.
-            </p>
-            <Button 
-              onClick={() => onStepChange('portfolio')} 
-              className="bg-gradient-to-r from-pink-500 to-purple-600"
-            >
-              Continue to Portfolio
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <SocialMediaProfileCreator
+        onNext={(profileData) => {
+          setProfileData(profileData);
+          onStepChange('portfolio');
+        }}
+        onBack={() => onStepChange('user-type')}
+      />
     );
   }
   
@@ -113,7 +93,11 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
             } else {
               onStepChange('business-niche');
             }
-          } else if (userType === 'freelancer' || userType === 'occupation_provider') {
+          } else if (userType === 'freelancer') {
+            onStepChange('freelancer-gig');
+          } else if (userType === 'social_media_influencer') {
+            onStepChange('portfolio');
+          } else if (userType === 'occupation_provider') {
             onStepChange('portfolio');
           } else {
             onStepChange('service-selection');

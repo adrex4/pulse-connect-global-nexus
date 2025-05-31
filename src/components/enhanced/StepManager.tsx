@@ -74,30 +74,33 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
 
   // Handle business-specific steps
   if (userType === 'business') {
-    return (
-      <BusinessStepManager
-        currentStep={currentStep}
-        userType={userType}
-        userAction={userAction!}
-        businessData={businessData}
-        locationData={locationData}
-        onStepChange={onStepChange}
-        onBusinessProfileSave={onBusinessProfileSave}
-        onBusinessProfileEdit={onBusinessProfileEdit}
-        setCurrentUser={setCurrentUser}
-      />
-    );
+    const businessSteps = ['business-niche', 'business-profile', 'business-profile-preview'];
+    if (businessSteps.includes(currentStep)) {
+      return (
+        <BusinessStepManager
+          currentStep={currentStep}
+          userType={userType}
+          userAction={userAction!}
+          businessData={businessData}
+          locationData={locationData}
+          onStepChange={onStepChange}
+          onBusinessProfileSave={onBusinessProfileSave}
+          onBusinessProfileEdit={onBusinessProfileEdit}
+          setCurrentUser={setCurrentUser}
+        />
+      );
+    }
   }
 
   // Handle freelancer-specific steps for create and join actions
-  if (userType && userAction && userAction !== 'view') {
+  if (userType === 'freelancer') {
     const freelancerSteps = ['freelancer-gig', 'freelancer-location', 'freelancer-groups'];
     if (freelancerSteps.includes(currentStep)) {
       return (
         <FreelancerStepManager
           currentStep={currentStep}
           userType={userType}
-          userAction={userAction}
+          userAction={userAction!}
           profileData={profileData}
           onStepChange={onStepChange}
           onLocationSave={onLocationSave}

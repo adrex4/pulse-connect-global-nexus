@@ -37,23 +37,14 @@ const GeneralStepManager: React.FC<GeneralStepManagerProps> = ({
           if (action === 'view') {
             if (type === 'business') {
               setBrowsingFilter('businesses');
-            } else {
+            } else if (type === 'freelancer') {
               setBrowsingFilter('freelancers');
+            } else {
+              setBrowsingFilter('users');
             }
             onStepChange('browse');
-          } else if (action === 'join') {
-            if (type === 'business') {
-              onStepChange('business-niche');
-            } else {
-              onStepChange('freelancer-gig');
-            }
-          } else { // action === 'create'
-            if (type === 'business') {
-              onStepChange('business-profile');
-            } else {
-              onStepChange('freelancer-gig');
-            }
           }
+          // Let the main StepManager handle the routing for create/join actions
         }}
         onBack={() => onStepChange('welcome')}
       />

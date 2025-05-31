@@ -73,11 +73,12 @@ const ConnectPulse = () => {
   const handleLocationSave = (data: any) => {
     setLocationData(data);
     
-    // For business owners who created a profile, show the profile preview
+    // Different routing based on user type and action
     if (userType === 'business' && userAction === 'create' && businessData) {
       setCurrentStep('business-profile-preview');
+    } else if (userType === 'freelancer') {
+      setCurrentStep('freelancer-groups');
     } else {
-      // For all other cases, go to groups
       setCurrentStep('groups');
     }
   };
@@ -91,19 +92,32 @@ const ConnectPulse = () => {
     setUserType(type);
     setUserAction(action);
     
+    // Don't handle view actions here - let GeneralStepManager handle them
+    if (action === 'view') {
+      return;
+    }
+    
     // Determine next step based on user type and action
     if (type === 'business') {
       if (action === 'create') {
+        setCurrentStep('business-profile');
+      } else if (action === 'join') {
         setCurrentStep('business-niche');
-      } else {
-        setCurrentStep('location');
       }
-    } else if (type === 'freelancer' && action === 'create') {
+    } else if (type === 'freelancer') {
       setCurrentStep('freelancer-gig');
-    } else if (action === 'join') {
-      setCurrentStep('service-selection');
-    } else {
-      setCurrentStep('service-selection');
+    } else if (type === 'occupation_provider') {
+      if (action === 'create') {
+        setCurrentStep('service-selection');
+      } else {
+        setCurrentStep('service-selection');
+      }
+    } else if (type === 'social_media_influencer') {
+      if (action === 'create') {
+        setCurrentStep('social-media-profile');
+      } else {
+        setCurrentStep('service-selection');
+      }
     }
   };
 
