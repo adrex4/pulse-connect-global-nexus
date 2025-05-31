@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,11 +7,9 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Users, MessageSquare, Globe, MapPin, Search, Filter, Star } from 'lucide-react';
 import { User, Group } from '@/types/connectPulse';
 
-// Enhanced mock data for groups with more realistic data
 const generateGroups = (user: User): Group[] => {
   const groups: Group[] = [];
   
-  // Local group
   groups.push({
     id: `local-${user.niche}`,
     name: `${user.niche} Professionals - ${user.country}`,
@@ -21,29 +20,14 @@ const generateGroups = (user: User): Group[] => {
     description: `Local ${user.niche.toLowerCase()} businesses and professionals in ${user.country}. Daily discussions, networking events, and local partnerships.`
   });
 
-  // Regional groups
   const regions: { [key: string]: string } = {
     'United States': 'North America',
     'Canada': 'North America',
-    'Mexico': 'North America',
     'United Kingdom': 'Europe',
     'Germany': 'Europe',
-    'France': 'Europe',
-    'Spain': 'Europe',
-    'Italy': 'Europe',
-    'Netherlands': 'Europe',
     'Australia': 'Oceania',
-    'New Zealand': 'Oceania',
     'Japan': 'Asia',
-    'South Korea': 'Asia',
-    'China': 'Asia',
-    'India': 'Asia',
-    'Singapore': 'Asia',
-    'Brazil': 'South America',
-    'Argentina': 'South America',
-    'Nigeria': 'Africa',
-    'South Africa': 'Africa',
-    'Kenya': 'Africa'
+    'Brazil': 'South America'
   };
 
   const region = regions[user.country] || 'Global';
@@ -58,7 +42,6 @@ const generateGroups = (user: User): Group[] => {
     description: `Regional ${user.niche.toLowerCase()} community across ${region}. Cross-border collaborations, market insights, and regional opportunities.`
   });
 
-  // Global group
   groups.push({
     id: `global-${user.niche}`,
     name: `Global ${user.niche} Alliance`,
@@ -68,7 +51,6 @@ const generateGroups = (user: User): Group[] => {
     description: `Worldwide ${user.niche.toLowerCase()} community. International partnerships, global market trends, and cross-cultural business insights.`
   });
 
-  // Add featured cross-niche groups
   groups.push(
     {
       id: 'entrepreneurs-global',
@@ -86,14 +68,6 @@ const generateGroups = (user: User): Group[] => {
       country: user.country,
       memberCount: Math.floor(Math.random() * 800) + 200,
       description: `Local startup community in ${user.country}. Perfect for early-stage companies, investors, and startup enthusiasts.`
-    },
-    {
-      id: 'women-business',
-      name: 'Women in Business - Global',
-      niche: 'All Niches',
-      scope: 'global',
-      memberCount: 18750,
-      description: 'Empowering women entrepreneurs and business leaders worldwide. Mentorship, support, and networking opportunities.'
     }
   );
 
@@ -167,7 +141,6 @@ const GroupList: React.FC<GroupListProps> = ({ user, onJoinGroup, onBack }) => {
         </CardHeader>
         
         <CardContent className="p-6 space-y-6">
-          {/* Welcome Section */}
           <div className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
@@ -183,7 +156,6 @@ const GroupList: React.FC<GroupListProps> = ({ user, onJoinGroup, onBack }) => {
             </div>
           </div>
 
-          {/* Search and Filter Section */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -230,7 +202,6 @@ const GroupList: React.FC<GroupListProps> = ({ user, onJoinGroup, onBack }) => {
             </div>
           </div>
 
-          {/* Groups Grid */}
           <div className="grid gap-6">
             {filteredGroups.map((group) => (
               <Card key={group.id} className="hover:shadow-lg transition-all duration-300 transform hover:scale-105 border-2 hover:border-blue-300">

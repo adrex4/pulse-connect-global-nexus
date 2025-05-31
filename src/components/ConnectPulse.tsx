@@ -27,13 +27,15 @@ const ConnectPulse = () => {
   };
 
   const handleGroupJoin = (group: Group) => {
+    console.log('Joining group:', group);
+    
     // Create user if doesn't exist
     if (!currentUser) {
       const newUser: User = {
         id: Date.now().toString(),
         name: 'New User',
-        niche: userType || 'general',
-        country: 'United States',
+        niche: profileData?.primarySkill || userType || 'general',
+        country: locationData?.country || 'United States',
         preferredScope: 'global'
       };
       setCurrentUser(newUser);
@@ -85,6 +87,7 @@ const ConnectPulse = () => {
   };
 
   const handleUserTypeSelect = (type: UserType, action: UserAction) => {
+    console.log('User type selected:', type, action);
     setUserType(type);
     setUserAction(action);
     

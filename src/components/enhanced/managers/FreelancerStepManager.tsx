@@ -27,11 +27,7 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
   onGroupJoin,
   setProfileData
 }) => {
-  // Only handle freelancer-specific steps for non-business types
-  if (userType === 'business' || userAction === 'view') {
-    return null;
-  }
-
+  // Handle freelancer-specific steps
   if (currentStep === 'freelancer-gig') {
     return (
       <FreelancerGigCreator 
