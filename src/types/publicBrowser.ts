@@ -1,42 +1,42 @@
 
+export interface PublicProfileBrowserProps {
+  onGetStarted: () => void;
+  initialFilter?: 'users' | 'businesses' | 'freelancers' | 'groups' | 'social_media' | null;
+}
+
 export interface Profile {
   id: string;
   name: string;
-  user_type: string;
-  business_type?: string;
-  primary_skill?: string;
-  occupation?: string;
-  service_type?: 'online' | 'in_person' | 'both';
-  bio?: string;
-  hourly_rate?: number;
-  rating: number;
-  total_reviews: number;
-  location?: {
-    name: string;
-    parent?: {
-      name: string;
-      parent?: {
-        name: string;
-      };
-    };
-  };
-  profile_image_url?: string;
-  is_verified: boolean;
+  title: string;
+  location: string;
+  category: string;
+  description: string;
+  skills?: string[];
+  experience?: string;
+  rating?: number;
+  projects?: number;
+  verified?: boolean;
 }
 
 export interface Group {
   id: string;
   name: string;
-  description?: string;
+  description: string;
   category: string;
-  scope: string;
-  member_count: number;
-  location?: {
-    name: string;
-  };
+  memberCount: number;
+  location: string;
+  isPublic: boolean;
+  tags: string[];
 }
 
-export interface PublicProfileBrowserProps {
-  onGetStarted: () => void;
-  initialFilter?: 'users' | 'businesses' | 'freelancers' | 'groups' | null;
+export interface UsePublicBrowserDataReturn {
+  profiles: Profile[];
+  groups: Group[];
+  loading: boolean;
+  availableCategories: string[];
+  availableLocations: string[];
+  fetchLocations: () => void;
+  fetchCategories: (type: 'users' | 'businesses' | 'groups') => void;
+  fetchProfiles: (type: 'users' | 'businesses', search?: string, location?: string, category?: string) => void;
+  fetchGroups: (search?: string, location?: string, category?: string) => void;
 }

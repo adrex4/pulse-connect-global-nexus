@@ -5,6 +5,8 @@ import EnhancedLocationSelector from '../EnhancedLocationSelector';
 import ServiceSelector from '../ServiceSelector';
 import PortfolioUploader from '../PortfolioUploader';
 import SocialMediaProfileCreator from '../SocialMediaProfileCreator';
+import SocialMediaGroupList from '../SocialMediaGroupList';
+import LocalServiceGroupList from '../LocalServiceGroupList';
 import GroupChat from '../../GroupChat';
 import GroupList from '../../GroupList';
 
@@ -109,7 +111,49 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
   }
   
   if (currentStep === 'groups') {
-    // Create a mock user if none exists for groups display
+    // Handle social media influencer groups specifically
+    if (userType === 'social_media_influencer') {
+      const user = currentUser || {
+        id: 'temp-social-user',
+        name: 'Content Creator',
+        niche: 'Social Media',
+        country: 'United States',
+        preferredScope: 'global' as const
+      };
+
+      return (
+        <SocialMediaGroupList
+          user={user}
+          userType={userType}
+          userAction={userAction as 'join' | 'create'}
+          onJoinGroup={onGroupJoin}
+          onBack={() => onStepChange('location')}
+        />
+      );
+    }
+
+    // Handle local service provider groups
+    if (userType === 'occupation_provider') {
+      const user = currentUser || {
+        id: 'temp-service-user',
+        name: 'Service Provider',
+        niche: 'Local Services',
+        country: 'United States',
+        preferredScope: 'local' as const
+      };
+
+      return (
+        <LocalServiceGroupList
+          user={user}
+          userType={userType}
+          userAction={userAction as 'join' | 'create'}
+          onJoinGroup={onGroupJoin}
+          onBack={() => onStepChange('location')}
+        />
+      );
+    }
+
+    // Default groups for other user types
     const user = currentUser || {
       id: 'temp-user',
       name: 'New User',
@@ -128,7 +172,6 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
   }
   
   if (currentStep === 'chat' && selectedGroup) {
-    // Create a mock user if none exists for chat
     const user = currentUser || {
       id: 'temp-user',
       name: 'New User',
