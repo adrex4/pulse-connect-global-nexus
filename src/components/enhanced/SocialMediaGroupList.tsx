@@ -4,11 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Camera, Users, Globe, MapPin, Search, Heart, Zap, Star, TrendingUp, Play, Image } from 'lucide-react';
+import { ArrowLeft, Camera, Users, Globe, MapPin, Search, Heart, Zap, Star, TrendingUp, Play, Image, MessageSquare } from 'lucide-react';
 import { User, Group, UserType, UserAction } from '@/types/connectPulse';
 
 const generateSocialMediaGroups = (user: User): Group[] => {
-  const groups: Group[] = [
+  return [
     {
       id: 'influencer-global',
       name: 'Global Influencer Hub',
@@ -89,10 +89,48 @@ const generateSocialMediaGroups = (user: User): Group[] => {
       scope: 'global',
       memberCount: 19500,
       description: 'Fitness influencers, trainers, and wellness coaches. Share workout content, nutrition tips, and fitness brand partnerships.'
+    },
+    {
+      id: 'gaming-streamers',
+      name: 'Gaming & Streaming Hub',
+      niche: 'Gaming',
+      scope: 'global',
+      memberCount: 28400,
+      description: 'Gaming content creators, streamers, and esports influencers. Share streaming tips, game reviews, and collaboration opportunities.'
+    },
+    {
+      id: 'travel-bloggers',
+      name: 'Travel Content Creators',
+      niche: 'Travel',
+      scope: 'global',
+      memberCount: 16700,
+      description: 'Travel bloggers and adventure influencers. Share destination guides, travel tips, and collaborate with tourism brands.'
+    },
+    {
+      id: 'tech-reviewers',
+      name: 'Tech Review Community',
+      niche: 'Technology',
+      scope: 'global',
+      memberCount: 13200,
+      description: 'Technology reviewers and tech influencers. Share product reviews, tech news, and collaborate with tech brands.'
+    },
+    {
+      id: 'beauty-gurus',
+      name: 'Beauty & Makeup Artists',
+      niche: 'Beauty',
+      scope: 'global',
+      memberCount: 21500,
+      description: 'Beauty influencers, makeup artists, and skincare experts. Share beauty tips, product reviews, and brand collaborations.'
+    },
+    {
+      id: 'parenting-bloggers',
+      name: 'Parenting & Family Content',
+      niche: 'Parenting',
+      scope: 'global',
+      memberCount: 11800,
+      description: 'Parenting bloggers and family content creators. Share parenting tips, family activities, and collaborate with family brands.'
     }
   ];
-
-  return groups;
 };
 
 interface SocialMediaGroupListProps {
@@ -115,98 +153,151 @@ const SocialMediaGroupList: React.FC<SocialMediaGroupListProps> = ({
 
   const filteredGroups = groups.filter(group => 
     group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    group.description.toLowerCase().includes(searchTerm.toLowerCase())
+    group.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    group.niche.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="max-w-6xl mx-auto animate-fade-in">
-      <Card className="shadow-lg border-0">
-        <CardHeader className="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <CardTitle className="text-xl flex items-center gap-2">
-                <Camera className="h-6 w-6" />
-                Influencer Communities & Brand Networks
-              </CardTitle>
-              <p className="text-pink-100 mt-1">Connect with fellow creators and discover brand opportunities</p>
-            </div>
-          </div>
-        </CardHeader>
-        
-        <CardContent className="p-6 space-y-6">
-          <div className="p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border border-pink-200">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 p-4">
+      <div className="max-w-6xl mx-auto animate-fade-in">
+        <Card className="shadow-2xl border-0 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600 text-white">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-                <Camera className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-pink-900">Welcome, Content Creator!</h3>
-                <p className="text-pink-700">
-                  Join vibrant communities of influencers, discover brand partnerships, and grow your audience together.
-                </p>
+              <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20 transition-all">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <div className="flex-1">
+                <CardTitle className="text-2xl flex items-center gap-3">
+                  <Camera className="h-7 w-7" />
+                  Influencer Communities & Creator Networks
+                </CardTitle>
+                <p className="text-pink-100 mt-2 text-lg">Connect with fellow creators, discover brand opportunities, and grow your influence</p>
               </div>
             </div>
-          </div>
+          </CardHeader>
+          
+          <CardContent className="p-8 space-y-8">
+            {/* Welcome Banner */}
+            <div className="p-8 bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-2xl border-2 border-pink-200 shadow-lg">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Camera className="h-10 w-10 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Welcome, Content Creator!</h3>
+                  <p className="text-gray-700 text-lg leading-relaxed">
+                    Join vibrant communities of influencers, discover exclusive brand partnerships, and collaborate with creators worldwide. 
+                    Build your network, share your expertise, and take your content to the next level.
+                  </p>
+                </div>
+              </div>
+            </div>
 
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search influencer communities..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 border-2 focus:border-pink-500"
-            />
-          </div>
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+              <Input
+                placeholder="Search communities by name, niche, or focus area..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-12 h-14 text-lg border-2 focus:border-pink-500 rounded-xl shadow-sm"
+              />
+            </div>
 
-          <div className="grid gap-6">
-            {filteredGroups.map((group) => (
-              <Card key={group.id} className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 hover:border-pink-300">
-                <CardContent className="p-6">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-3 mb-3">
-                      <h3 className="text-xl font-semibold text-gray-800">{group.name}</h3>
-                      <Badge className={`${
-                        group.scope === 'local' ? 'bg-pink-500' : 'bg-purple-500'
-                      } text-white flex items-center gap-1`}>
-                        {group.scope === 'local' ? <MapPin className="h-3 w-3" /> : <Globe className="h-3 w-3" />}
-                        {group.scope === 'local' ? 'Local' : 'Global'}
-                      </Badge>
+            {/* Stats Overview */}
+            <div className="grid grid-cols-3 gap-6">
+              <div className="text-center p-6 bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl border border-pink-200">
+                <div className="text-3xl font-bold text-pink-600">{groups.length}</div>
+                <div className="text-pink-700 font-medium">Active Communities</div>
+              </div>
+              <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
+                <div className="text-3xl font-bold text-purple-600">{groups.reduce((sum, g) => sum + g.memberCount, 0).toLocaleString()}</div>
+                <div className="text-purple-700 font-medium">Total Creators</div>
+              </div>
+              <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+                <div className="text-3xl font-bold text-blue-600">24/7</div>
+                <div className="text-blue-700 font-medium">Active Support</div>
+              </div>
+            </div>
+
+            {/* Groups Grid */}
+            <div className="grid gap-8">
+              {filteredGroups.map((group) => (
+                <Card key={group.id} className="hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] border-2 hover:border-pink-300 overflow-hidden">
+                  <CardContent className="p-8">
+                    <div className="flex items-start gap-6">
+                      {/* Group Icon */}
+                      <div className="w-16 h-16 bg-gradient-to-br from-pink-500 via-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <MessageSquare className="h-8 w-8 text-white" />
+                      </div>
+                      
+                      {/* Group Content */}
+                      <div className="flex-1 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-2xl font-bold text-gray-900">{group.name}</h3>
+                          <Badge className={`${
+                            group.scope === 'local' ? 'bg-pink-500' : 'bg-purple-500'
+                          } text-white flex items-center gap-2 px-4 py-2 text-sm font-medium`}>
+                            {group.scope === 'local' ? <MapPin className="h-4 w-4" /> : <Globe className="h-4 w-4" />}
+                            {group.scope === 'local' ? 'Local Community' : 'Global Network'}
+                          </Badge>
+                        </div>
+                        
+                        <p className="text-gray-600 text-lg leading-relaxed">{group.description}</p>
+                        
+                        <div className="flex items-center gap-8 text-sm">
+                          <span className="flex items-center gap-2 font-medium">
+                            <Users className="h-5 w-5 text-pink-500" />
+                            <span className="text-pink-600 font-bold">{group.memberCount.toLocaleString()}</span>
+                            <span className="text-gray-600">creators</span>
+                          </span>
+                          <span className="flex items-center gap-2 font-medium">
+                            <Heart className="h-5 w-5 text-red-500" />
+                            <span className="text-red-600">High engagement</span>
+                          </span>
+                          <span className="flex items-center gap-2 font-medium">
+                            <Zap className="h-5 w-5 text-yellow-500" />
+                            <span className="text-yellow-600">Brand partnerships</span>
+                          </span>
+                          <span className="flex items-center gap-2 font-medium">
+                            <Star className="h-5 w-5 text-blue-500" />
+                            <span className="text-blue-600">{group.niche}</span>
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between pt-4">
+                          <div className="text-sm text-gray-500">
+                            {group.scope === 'local' && group.country && (
+                              <span>📍 {group.country}</span>
+                            )}
+                          </div>
+                          <Button 
+                            onClick={() => onJoinGroup(group)}
+                            className="bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600 hover:from-pink-600 hover:via-purple-700 hover:to-blue-700 transition-all duration-300 px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                            size="lg"
+                          >
+                            Join Community
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <p className="text-gray-600 mb-4 leading-relaxed">{group.description}</p>
-                    
-                    <div className="flex items-center justify-center gap-6 text-sm text-gray-500 mb-6">
-                      <span className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-pink-500" />
-                        <strong className="text-pink-600">{group.memberCount.toLocaleString()}</strong> creators
-                      </span>
-                      <span className="flex items-center gap-2">
-                        <Heart className="h-4 w-4 text-red-500" />
-                        <span className="text-red-600">Engaged community</span>
-                      </span>
-                      <span className="flex items-center gap-2">
-                        <Zap className="h-4 w-4 text-yellow-500" />
-                        <span className="text-yellow-600">Brand collaborations</span>
-                      </span>
-                    </div>
-                    
-                    <Button 
-                      onClick={() => onJoinGroup(group)}
-                      className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 transition-all duration-300"
-                      size="lg"
-                    >
-                      Join Community
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {filteredGroups.length === 0 && (
+              <div className="text-center py-16">
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Search className="h-12 w-12 text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-semibold text-gray-700 mb-2">No communities found</h3>
+                <p className="text-gray-500 text-lg">Try adjusting your search terms to find the perfect community for you.</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
