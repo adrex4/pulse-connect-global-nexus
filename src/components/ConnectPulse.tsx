@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
 import WelcomeSection from './enhanced/WelcomeSection';
@@ -116,6 +117,13 @@ const ConnectPulse = () => {
       return;
     }
     
+    // FIXED: Handle social media influencer join action
+    if (type === 'social_media_influencer' && action === 'join') {
+      console.log('Social media influencer joining - going to groups');
+      setCurrentStep('groups');
+      return;
+    }
+    
     // Determine next step based on user type and action
     if (type === 'business') {
       if (action === 'create') {
@@ -134,14 +142,12 @@ const ConnectPulse = () => {
     } else if (type === 'social_media_influencer') {
       if (action === 'create') {
         setCurrentStep('social-media-profile');
-      } else {
-        setCurrentStep('service-selection');
       }
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4">
       <div className="max-w-7xl mx-auto">
         {currentStep === 'welcome' && (
           <WelcomeSection 

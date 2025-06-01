@@ -1,15 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState, useRef, useEffect } from 'react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, Send, Users, MessageSquare, Heart, Reply, MoreVertical, Smile, Paperclip } from 'lucide-react';
 import { User, Group, Message } from '@/types/connectPulse';
-import EnhancedChatHeader from './chat/EnhancedChatHeader';
-import EnhancedMessageList from './chat/EnhancedMessageList';
-import EnhancedMessageInput from './chat/EnhancedMessageInput';
-import OnlineUsersList from './chat/OnlineUsersList';
-import VideoCallModal from './VideoCallModal';
-import GroupSettingsModal from './GroupSettingsModal';
-import ImageUploadModal from './ImageUploadModal';
 
 interface GroupChatProps {
   user: User;
@@ -19,296 +16,201 @@ interface GroupChatProps {
   onBack: () => void;
 }
 
-interface ExtendedMessage extends Message {
-  type?: 'text' | 'image' | 'voice' | 'file' | 'system';
-  imageUrl?: string;
-  fileName?: string;
-  fileSize?: string;
-  duration?: string;
-  isEdited?: boolean;
-  repliedTo?: ExtendedMessage;
-  reactions?: { emoji: string; users: string[]; count: number }[];
-  isPinned?: boolean;
-  threadCount?: number;
-}
-
-const generateInitialMessages = (group: Group): ExtendedMessage[] => {
-  return [
-    {
-      id: '1',
-      userId: 'user1',
-      userName: 'Sarah Johnson',
-      content: `🎉 Welcome to the ${group.name} group! Great to have everyone here. Let's share our experiences and grow together!`,
-      timestamp: new Date(Date.now() - 7200000),
-      groupId: group.id,
-      isPinned: true,
-      reactions: [
-        { emoji: '❤️', users: ['Mike Chen', 'Emma Rodriguez'], count: 2 },
-        { emoji: '👍', users: ['David Kumar'], count: 1 }
-      ]
-    },
-    {
-      id: '2',
-      userId: 'user2',
-      userName: 'Mike Chen',
-      content: 'Looking forward to collaborating with businesses in this space! Anyone working on sustainable solutions?',
-      timestamp: new Date(Date.now() - 6000000),
-      groupId: group.id,
-      threadCount: 2
-    },
-    {
-      id: '3',
-      userId: 'user3',
-      userName: 'Emma Rodriguez',
-      content: 'Has anyone here worked with international clients? Would love to share experiences and learn best practices.',
-      timestamp: new Date(Date.now() - 4800000),
-      groupId: group.id
-    },
-    {
-      id: '4',
-      userId: 'user4',
-      userName: 'David Kumar',
-      content: '@Emma Rodriguez Yes! I\'ve been working with clients across 15 countries. Happy to share some insights in a call this week.',
-      timestamp: new Date(Date.now() - 3600000),
-      groupId: group.id,
-      repliedTo: {
-        id: '3',
-        userId: 'user3',
-        userName: 'Emma Rodriguez',
-        content: 'Has anyone here worked with international clients?',
-        timestamp: new Date(Date.now() - 4800000),
-        groupId: group.id
-      }
-    },
-    {
-      id: '5',
-      userId: 'user1',
-      userName: 'Sarah Johnson',
-      content: 'That sounds amazing! We should organize a virtual meetup. What do you all think? 📅',
-      timestamp: new Date(Date.now() - 1800000),
-      groupId: group.id,
-      reactions: [
-        { emoji: '🔥', users: ['Mike Chen', 'Emma Rodriguez', 'David Kumar'], count: 3 },
-        { emoji: '👏', users: ['Alex Smith'], count: 1 }
-      ]
-    }
-  ];
-};
-
-const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMessage, onBack }) => {
+const GroupChat: React.FC<GroupChatProps> = ({ 
+  user, 
+  group, 
+  messages, 
+  onSendMessage, 
+  onBack 
+}) => {
   const [newMessage, setNewMessage] = useState('');
-  const [allMessages, setAllMessages] = useState<ExtendedMessage[]>([]);
-  const [isTyping, setIsTyping] = useState(false);
-  const [showOnlineUsers, setShowOnlineUsers] = useState(false);
-  const [replyTo, setReplyTo] = useState<ExtendedMessage | null>(null);
   const [reactions, setReactions] = useState<Record<string, string[]>>({});
-  const [isVideoCallOpen, setIsVideoCallOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [isNotified, setIsNotified] = useState(true);
-  const { toast } = useToast();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
-    if (messages.length === 0) {
-      setAllMessages(generateInitialMessages(group));
-    } else {
-      setAllMessages([...generateInitialMessages(group), ...messages]);
-    }
-  }, [group.id, messages]);
+    scrollToBottom();
+  }, [messages]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSend = () => {
     if (newMessage.trim()) {
-      const messageContent = replyTo 
-        ? `@${replyTo.userName} ${newMessage.trim()}`
-        : newMessage.trim();
-      
-      onSendMessage(messageContent);
+      onSendMessage(newMessage);
       setNewMessage('');
-      setReplyTo(null);
-      
-      toast({
-        title: "Message sent!",
-        description: "Your message has been delivered to the group.",
-      });
-      
-      setIsTyping(true);
-      setTimeout(() => setIsTyping(false), 2000);
     }
   };
 
-  const handleImageSelect = (imageUrl: string, caption?: string) => {
-    const newImageMessage: ExtendedMessage = {
-      id: `img-${Date.now()}`,
-      userId: user.id,
-      userName: user.name,
-      content: caption || 'Shared an image',
-      timestamp: new Date(),
-      groupId: group.id,
-      type: 'image',
-      imageUrl: imageUrl
-    };
-    
-    setAllMessages(prev => [...prev, newImageMessage]);
-    setIsImageModalOpen(false);
-    
-    toast({
-      title: "Image shared!",
-      description: "Your image has been sent to the group.",
-    });
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
-  const handleEmojiSelect = (emoji: string) => {
-    setNewMessage(prev => prev + emoji);
-  };
-
-  const handleReaction = (messageId: string, emoji: string) => {
+  const addReaction = (messageId: string, emoji: string) => {
     setReactions(prev => ({
       ...prev,
       [messageId]: [...(prev[messageId] || []), emoji]
     }));
-    toast({
-      title: "Reaction added!",
-      description: `Added ${emoji} reaction to message.`,
-    });
   };
 
-  const handleVoiceMessage = () => {
-    if (isRecording) {
-      setIsRecording(false);
-      const voiceMessage: ExtendedMessage = {
-        id: `voice-${Date.now()}`,
-        userId: user.id,
-        userName: user.name,
-        content: 'Sent a voice message',
-        timestamp: new Date(),
-        groupId: group.id,
-        type: 'voice',
-        duration: '0:05'
-      };
-      setAllMessages(prev => [...prev, voiceMessage]);
-      
-      toast({
-        title: "Voice message sent!",
-        description: "Your voice message has been delivered.",
-      });
-    } else {
-      setIsRecording(true);
-      toast({
-        title: "Recording...",
-        description: "Hold to record your voice message.",
-      });
-    }
+  const formatTime = (timestamp: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(timestamp);
   };
-
-  const handleEditMessage = (message: ExtendedMessage) => {
-    setNewMessage(message.content);
-    setReplyTo(null);
-    toast({
-      title: "Editing message",
-      description: "Make your changes and send to update.",
-    });
-  };
-
-  const handleDeleteMessage = (messageId: string) => {
-    setAllMessages(prev => prev.filter(m => m.id !== messageId));
-    toast({
-      title: "Message deleted",
-      description: "The message has been removed from the chat.",
-    });
-  };
-
-  const handlePinMessage = (messageId: string) => {
-    setAllMessages(prev => prev.map(m => 
-      m.id === messageId ? { ...m, isPinned: !m.isPinned } : m
-    ));
-    toast({
-      title: "Message pinned",
-      description: "The message has been pinned to the chat.",
-    });
-  };
-
-  const handleThread = (message: ExtendedMessage) => {
-    toast({
-      title: "Thread started",
-      description: "Threading feature coming soon!",
-    });
-  };
-
-  const onlineUsers = Math.floor(group.memberCount * 0.15);
 
   return (
-    <div className="max-w-7xl mx-auto h-screen flex flex-col bg-gradient-to-br from-gray-50 to-blue-50">
-      <Card className="flex-1 flex flex-col shadow-2xl border-0 bg-white overflow-hidden">
-        <EnhancedChatHeader
-          group={group}
-          onlineUsers={onlineUsers}
-          showOnlineUsers={showOnlineUsers}
-          onBack={onBack}
-          onVideoCall={() => setIsVideoCallOpen(true)}
-          onAudioCall={() => toast({ title: "Audio call", description: "Audio call feature coming soon!" })}
-          onToggleUsers={() => setShowOnlineUsers(!showOnlineUsers)}
-          onSettings={() => setIsSettingsOpen(true)}
-          onSearch={() => toast({ title: "Search", description: "Search feature coming soon!" })}
-          onInvite={() => toast({ title: "Invite", description: "Invite feature coming soon!" })}
-          isMuted={isMuted}
-          onToggleMute={() => setIsMuted(!isMuted)}
-          isNotified={isNotified}
-          onToggleNotifications={() => setIsNotified(!isNotified)}
-        />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
+      <div className="max-w-5xl mx-auto h-[calc(100vh-2rem)] flex flex-col">
+        <Card className="flex-1 flex flex-col shadow-2xl border-0 overflow-hidden bg-white/95 backdrop-blur-sm">
+          {/* Enhanced Header */}
+          <CardHeader className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white p-6 shadow-lg">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onBack}
+                className="text-white hover:bg-white/20 transition-all duration-300 rounded-lg"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              
+              <div className="flex items-center gap-4 flex-1">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                  <MessageSquare className="h-6 w-6 text-white" />
+                </div>
+                
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold">{group.name}</h2>
+                  <div className="flex items-center gap-4 mt-1">
+                    <Badge variant="secondary" className="bg-white/20 text-white border-0">
+                      <Users className="h-3 w-3 mr-1" />
+                      {group.memberCount.toLocaleString()} members
+                    </Badge>
+                    <span className="text-blue-100 text-sm">{group.niche}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardHeader>
 
-        <CardContent className="flex-1 flex p-0 bg-transparent overflow-hidden">
-          <div className="flex-1 flex flex-col">
-            <EnhancedMessageList
-              messages={allMessages}
-              user={user}
-              reactions={reactions}
-              isTyping={isTyping}
-              onReply={setReplyTo}
-              onReaction={handleReaction}
-              onEdit={handleEditMessage}
-              onDelete={handleDeleteMessage}
-              onPin={handlePinMessage}
-              onThread={handleThread}
-            />
+          {/* Enhanced Messages Area */}
+          <CardContent className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-white to-gray-50">
+            {messages.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MessageSquare className="h-10 w-10 text-blue-500" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">Welcome to {group.name}!</h3>
+                <p className="text-gray-500">Be the first to start the conversation in this community.</p>
+              </div>
+            ) : (
+              messages.map((message) => (
+                <div key={message.id} className="group animate-slide-up">
+                  <div className="flex items-start gap-3 hover:bg-white/50 p-3 rounded-xl transition-all duration-200">
+                    <Avatar className="w-10 h-10 border-2 border-white shadow-md">
+                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white font-semibold">
+                        {message.userName.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-gray-900">{message.userName}</span>
+                        <span className="text-xs text-gray-500">{formatTime(message.timestamp)}</span>
+                        {message.userId === user.id && (
+                          <Badge variant="outline" className="text-xs bg-blue-50 text-blue-600 border-blue-200">
+                            You
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 mb-2">
+                        <p className="text-gray-800 leading-relaxed">{message.content}</p>
+                      </div>
+                      
+                      {/* Enhanced Message Actions */}
+                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => addReaction(message.id, '👍')}
+                          className="h-7 px-2 text-xs hover:bg-blue-50 text-gray-500"
+                        >
+                          <Heart className="h-3 w-3 mr-1" />
+                          React
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2 text-xs hover:bg-blue-50 text-gray-500"
+                        >
+                          <Reply className="h-3 w-3 mr-1" />
+                          Reply
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2 text-xs hover:bg-blue-50 text-gray-500"
+                        >
+                          <MoreVertical className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      
+                      {/* Reactions Display */}
+                      {reactions[message.id] && reactions[message.id].length > 0 && (
+                        <div className="flex gap-1 mt-2">
+                          {reactions[message.id].map((emoji, index) => (
+                            <span key={index} className="bg-blue-50 px-2 py-1 rounded-full text-sm">
+                              {emoji}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+            <div ref={messagesEndRef} />
+          </CardContent>
 
-            <EnhancedMessageInput
-              newMessage={newMessage}
-              replyTo={replyTo}
-              isRecording={isRecording}
-              onMessageChange={setNewMessage}
-              onSendMessage={handleSendMessage}
-              onEmojiSelect={handleEmojiSelect}
-              onImageUpload={() => setIsImageModalOpen(true)}
-              onVoiceMessage={handleVoiceMessage}
-              onCancelReply={() => setReplyTo(null)}
-              onFileUpload={() => toast({ title: "File upload", description: "File upload coming soon!" })}
-              onVideoUpload={() => toast({ title: "Video upload", description: "Video upload coming soon!" })}
-              onAudioUpload={() => toast({ title: "Audio upload", description: "Audio upload coming soon!" })}
-            />
+          {/* Enhanced Message Input */}
+          <div className="p-6 bg-white border-t border-gray-100">
+            <div className="flex gap-3 items-end">
+              <div className="flex-1 relative">
+                <Input
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder={`Message ${group.name}...`}
+                  className="pr-20 py-3 text-base border-2 focus:border-blue-500 rounded-xl bg-gray-50 focus:bg-white transition-colors"
+                />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex gap-1">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-100">
+                    <Smile className="h-4 w-4 text-gray-400" />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-100">
+                    <Paperclip className="h-4 w-4 text-gray-400" />
+                  </Button>
+                </div>
+              </div>
+              
+              <Button 
+                onClick={handleSend}
+                disabled={!newMessage.trim()}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-
-          {showOnlineUsers && <OnlineUsersList onlineUsers={onlineUsers} />}
-        </CardContent>
-      </Card>
-
-      <VideoCallModal 
-        isOpen={isVideoCallOpen} 
-        onClose={() => setIsVideoCallOpen(false)} 
-        groupName={group.name}
-      />
-      <GroupSettingsModal 
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)} 
-        groupName={group.name}
-      />
-      <ImageUploadModal
-        isOpen={isImageModalOpen}
-        onClose={() => setIsImageModalOpen(false)}
-        onImageSelect={handleImageSelect}
-      />
+        </Card>
+      </div>
     </div>
   );
 };

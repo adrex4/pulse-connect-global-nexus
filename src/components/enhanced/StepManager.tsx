@@ -160,7 +160,7 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
     }
   }
 
-  // Handle social media influencer groups
+  // FIXED: Handle social media influencer groups explicitly
   if (userType === 'social_media_influencer' && currentStep === 'groups') {
     const user = currentUser || {
       id: 'temp-social-user',
@@ -170,13 +170,14 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
       preferredScope: 'global' as const
     };
 
+    console.log('Rendering SocialMediaGroupList for join action');
     return (
       <SocialMediaGroupList
         user={user}
         userType={userType}
         userAction={userAction as 'join' | 'create'}
         onJoinGroup={onGroupJoin}
-        onBack={() => onStepChange('location')}
+        onBack={() => onStepChange('user-type')}
       />
     );
   }
@@ -197,7 +198,7 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
         userType={userType}
         userAction={userAction as 'join' | 'create'}
         onJoinGroup={onGroupJoin}
-        onBack={() => onStepChange('location')}
+        onBack={() => onStepChange('user-type')}
       />
     );
   }
