@@ -6,6 +6,7 @@ import FreelancerStepManager from './managers/FreelancerStepManager';
 import GeneralStepManager from './managers/GeneralStepManager';
 import SharedStepManager from './managers/SharedStepManager';
 import SocialMediaGroupList from './SocialMediaGroupList';
+import SocialMediaProfilePreview from './SocialMediaProfilePreview';
 import LocalServiceGroupList from './LocalServiceGroupList';
 import FreelancerProfilePreview from './FreelancerProfilePreview';
 import LocalServiceProfilePreview from './LocalServiceProfilePreview';
@@ -84,6 +85,20 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
         locationData={locationData}
         portfolioItems={portfolioItems}
         onEdit={() => onStepChange('freelancer-gig')}
+        onPublish={() => onStepChange('welcome')}
+        onHome={() => onStepChange('welcome')}
+      />
+    );
+  }
+
+  // Handle social media profile preview
+  if (currentStep === 'social-media-profile-preview' && userType === 'social_media_influencer') {
+    return (
+      <SocialMediaProfilePreview
+        profileData={profileData}
+        locationData={locationData}
+        portfolioItems={portfolioItems}
+        onEdit={() => onStepChange('social-media-profile')}
         onPublish={() => onStepChange('welcome')}
         onHome={() => onStepChange('welcome')}
       />

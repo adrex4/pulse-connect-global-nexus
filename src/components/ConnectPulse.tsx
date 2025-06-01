@@ -86,6 +86,12 @@ const ConnectPulse = () => {
       } else {
         setCurrentStep('freelancer-groups');
       }
+    } else if (userType === 'social_media_influencer') {
+      if (userAction === 'create') {
+        setCurrentStep('social-media-profile-preview');
+      } else {
+        setCurrentStep('groups');
+      }
     } else if (userType === 'occupation_provider') {
       if (userAction === 'create') {
         setCurrentStep('local-service-profile-preview');

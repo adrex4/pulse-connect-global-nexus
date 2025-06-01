@@ -37,6 +37,7 @@ export type Step =
   | 'business-groups'
   | 'service-selection'
   | 'social-media-profile'
+  | 'social-media-profile-preview'
   | 'portfolio'
   | 'location'
   | 'groups'

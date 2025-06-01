@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Camera, Users, Globe, MapPin, Search, Heart, Zap, Star } from 'lucide-react';
+import { ArrowLeft, Camera, Users, Globe, MapPin, Search, Heart, Zap, Star, TrendingUp, Play, Image } from 'lucide-react';
 import { User, Group, UserType, UserAction } from '@/types/connectPulse';
 
 const generateSocialMediaGroups = (user: User): Group[] => {
@@ -49,6 +49,46 @@ const generateSocialMediaGroups = (user: User): Group[] => {
       scope: 'global',
       memberCount: 9850,
       description: 'Lifestyle, fashion, and beauty influencers unite! Share trends, review products, and build authentic audiences together.'
+    },
+    {
+      id: 'tiktok-creators',
+      name: 'TikTok Creator Studio',
+      niche: 'TikTok',
+      scope: 'global',
+      memberCount: 22100,
+      description: 'Master the art of TikTok content creation. Learn viral trends, editing techniques, and monetization strategies.'
+    },
+    {
+      id: 'youtube-partners',
+      name: 'YouTube Creator Network',
+      niche: 'YouTube',
+      scope: 'global',
+      memberCount: 18600,
+      description: 'YouTube creators helping each other grow. Share editing tips, collaboration opportunities, and monetization advice.'
+    },
+    {
+      id: 'instagram-growth',
+      name: 'Instagram Growth Academy',
+      niche: 'Instagram',
+      scope: 'global',
+      memberCount: 31200,
+      description: 'Master Instagram marketing and content creation. Learn from successful influencers and grow your following organically.'
+    },
+    {
+      id: 'food-bloggers',
+      name: 'Food & Recipe Creators',
+      niche: 'Food',
+      scope: 'global',
+      memberCount: 14800,
+      description: 'Food bloggers, recipe creators, and culinary influencers. Share food photography tips and collaborate with food brands.'
+    },
+    {
+      id: 'fitness-influencers',
+      name: 'Fitness & Wellness Community',
+      niche: 'Fitness',
+      scope: 'global',
+      memberCount: 19500,
+      description: 'Fitness influencers, trainers, and wellness coaches. Share workout content, nutrition tips, and fitness brand partnerships.'
     }
   ];
 

@@ -32,18 +32,73 @@ const SocialMediaProfileCreator: React.FC<SocialMediaProfileCreatorProps> = ({ o
 
   const platforms = [
     'Instagram', 'TikTok', 'YouTube', 'Twitter/X', 'LinkedIn', 
-    'Facebook', 'Snapchat', 'Pinterest', 'Twitch', 'Discord'
+    'Facebook', 'Snapchat', 'Pinterest', 'Twitch', 'Discord',
+    'Reddit', 'Clubhouse', 'BeReal', 'Threads', 'Mastodon'
   ];
 
   const niches = [
-    'Fashion & Beauty', 'Fitness & Health', 'Food & Cooking', 'Travel',
-    'Technology', 'Gaming', 'Lifestyle', 'Business & Finance',
-    'Education', 'Entertainment', 'Sports', 'Art & Design'
+    'Fashion & Beauty', 'Fitness & Health', 'Food & Cooking', 'Travel & Adventure',
+    'Technology & Gadgets', 'Gaming & Esports', 'Lifestyle & Wellness', 'Business & Finance',
+    'Education & Learning', 'Entertainment & Comedy', 'Sports & Athletics', 'Art & Design',
+    'Music & Audio', 'Photography & Visual Arts', 'Home & Decor', 'Parenting & Family',
+    'Pets & Animals', 'Nature & Environment', 'DIY & Crafts', 'Book Reviews & Literature',
+    'Movie & TV Reviews', 'Science & Research', 'Mental Health & Mindfulness', 'Spirituality & Religion',
+    'Politics & Social Issues', 'News & Current Events', 'History & Culture', 'Cars & Automotive',
+    'Real Estate & Property', 'Personal Development', 'Relationships & Dating', 'Wedding & Events',
+    'Skincare & Cosmetics', 'Hair & Beauty Tips', 'Street Style & Fashion', 'Luxury & High-End',
+    'Budget & Affordable', 'Sustainable Living', 'Vegan & Plant-Based', 'Health & Nutrition',
+    'Weight Loss & Fitness', 'Yoga & Meditation', 'Running & Cardio', 'Strength Training',
+    'Dance & Movement', 'Outdoor Activities', 'Extreme Sports', 'Traditional Sports',
+    'Recipe Creation', 'Restaurant Reviews', 'Baking & Desserts', 'International Cuisine',
+    'Street Food', 'Wine & Beverages', 'Coffee Culture', 'Cocktails & Mixology',
+    'Solo Travel', 'Family Travel', 'Adventure Travel', 'Luxury Travel', 'Budget Travel',
+    'Local Tourism', 'Cultural Experiences', 'Photography Travel', 'Tech Reviews',
+    'Software Tutorials', 'Mobile Apps', 'Gadget Unboxing', 'Coding & Programming',
+    'AI & Machine Learning', 'Cybersecurity', 'Web Development', 'Data Science',
+    'Mobile Gaming', 'Console Gaming', 'PC Gaming', 'Indie Games', 'Game Reviews',
+    'Esports Commentary', 'Game Streaming', 'Retro Gaming', 'Entrepreneurship',
+    'Investment Tips', 'Cryptocurrency', 'Stock Market', 'Personal Finance', 'Saving Money',
+    'Side Hustles', 'Career Advice', 'Leadership', 'Online Courses', 'Language Learning',
+    'Study Tips', 'Academic Success', 'Professional Skills', 'Certifications',
+    'Stand-up Comedy', 'Sketch Comedy', 'Meme Culture', 'Viral Content', 'Prank Videos',
+    'Magic & Illusions', 'Voice Acting', 'Impressions', 'Painting & Drawing', 'Digital Art',
+    'Sculpture & 3D Art', 'Street Art', 'Calligraphy', 'Graphic Design', 'UI/UX Design',
+    'Interior Design', 'Architecture', 'Landscape Photography', 'Portrait Photography',
+    'Wedding Photography', 'Product Photography', 'Music Production', 'Singing & Vocals',
+    'Instrument Tutorials', 'Music Reviews', 'Concert Coverage', 'DJ & Electronic Music',
+    'Classical Music', 'Home Organization', 'Garden & Plants', 'Minimalism', 'Maximalism',
+    'Vintage & Antiques', 'Smart Home Tech', 'Baby & Toddler', 'Teen Parenting',
+    'Single Parenting', 'Adoption & Foster Care', 'Pregnancy & Maternity', 'Dog Training',
+    'Cat Care', 'Exotic Pets', 'Wildlife Conservation', 'Farm Animals', 'Aquarium & Fish',
+    'Bird Watching', 'Conservation Efforts', 'Climate Change', 'Recycling & Upcycling',
+    'Zero Waste Living', 'Renewable Energy', 'Woodworking', 'Metalworking', 'Pottery & Ceramics',
+    'Jewelry Making', 'Knitting & Crochet', 'Sewing & Fashion Design', 'Embroidery',
+    'Scrapbooking', 'Fiction Reviews', 'Non-fiction Reviews', 'Poetry & Creative Writing',
+    'Book Clubs', 'Author Interviews', 'Literary Analysis', 'Horror Movies', 'Comedy Films',
+    'Documentary Reviews', 'TV Series Analysis', 'Anime & Manga', 'Foreign Films',
+    'Classic Cinema', 'Astronomy & Space', 'Biology & Life Sciences', 'Chemistry Experiments',
+    'Physics Demonstrations', 'Mathematics', 'Psychology', 'Sociology', 'Philosophy',
+    'Anxiety & Depression', 'Self-Care Routines', 'Therapy & Counseling', 'Meditation Practices',
+    'Stress Management', 'Christianity', 'Islam', 'Judaism', 'Buddhism', 'Hinduism',
+    'New Age Spirituality', 'Atheism & Agnosticism', 'Local Politics', 'International Affairs',
+    'Human Rights', 'Social Justice', 'Environmental Activism', 'Breaking News',
+    'Technology News', 'Entertainment News', 'Sports News', 'Economic Updates',
+    'Ancient History', 'Modern History', 'Cultural Traditions', 'Language & Linguistics',
+    'Anthropology', 'Car Reviews', 'Motorcycle Culture', 'Electric Vehicles', 'Classic Cars',
+    'Auto Repair', 'Racing & Motorsports', 'Home Buying', 'Real Estate Investment',
+    'Property Flipping', 'Rental Properties', 'Commercial Real Estate', 'Goal Setting',
+    'Productivity Tips', 'Time Management', 'Habit Formation', 'Life Coaching',
+    'Dating Advice', 'Marriage & Relationships', 'Breakup Recovery', 'Online Dating',
+    'Long Distance Relationships', 'Wedding Planning', 'Event Coordination', 'Party Planning',
+    'Holiday Celebrations', 'Birthday Ideas'
   ];
 
   const contentTypes = [
     'Photos & Reels', 'Long-form Videos', 'Live Streaming', 'Stories',
-    'Tutorials & How-tos', 'Product Reviews', 'Vlogs', 'Educational Content'
+    'Tutorials & How-tos', 'Product Reviews', 'Vlogs', 'Educational Content',
+    'Comedy Skits', 'Dance Videos', 'Music Covers', 'Unboxing Videos',
+    'Before & After', 'Day in the Life', 'Q&A Sessions', 'Collaborations',
+    'Behind the Scenes', 'Challenges', 'Reaction Videos', 'Podcasts'
   ];
 
   const followerRanges = [
@@ -160,7 +215,7 @@ const SocialMediaProfileCreator: React.FC<SocialMediaProfileCreatorProps> = ({ o
               <SelectTrigger className="h-12 text-lg border-2 focus:border-pink-500">
                 <SelectValue placeholder="Select your content niche" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-60">
                 {niches.map((n) => (
                   <SelectItem key={n} value={n}>{n}</SelectItem>
                 ))}
