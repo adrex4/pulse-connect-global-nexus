@@ -7,13 +7,33 @@ export interface PublicProfileBrowserProps {
 export interface Profile {
   id: string;
   name: string;
-  title: string;
-  location: string;
-  category: string;
-  description: string;
+  bio?: string;
+  user_type: string;
+  business_type?: string;
+  primary_skill?: string;
+  occupation?: string;
+  profile_image_url?: string;
+  is_verified?: boolean;
+  total_reviews?: number;
+  rating?: number;
+  hourly_rate?: number;
+  service_type?: string;
+  location?: {
+    name: string;
+    parent?: {
+      name: string;
+      parent?: {
+        name: string;
+      };
+    };
+  };
+  // Legacy properties for backwards compatibility
+  title?: string;
+  category?: string;
+  description?: string;
+  location_string?: string;
   skills?: string[];
   experience?: string;
-  rating?: number;
   projects?: number;
   verified?: boolean;
 }
@@ -23,10 +43,20 @@ export interface Group {
   name: string;
   description: string;
   category: string;
-  memberCount: number;
-  location: string;
-  isPublic: boolean;
-  tags: string[];
+  member_count: number;
+  scope: string;
+  is_public: boolean;
+  location?: {
+    name: string;
+  };
+  // Legacy properties for backwards compatibility
+  memberCount?: number;
+  location_string?: string;
+  isPublic?: boolean;
+  tags?: string[];
+  niche?: string;
+  country?: string;
+  region?: string;
 }
 
 export interface UsePublicBrowserDataReturn {

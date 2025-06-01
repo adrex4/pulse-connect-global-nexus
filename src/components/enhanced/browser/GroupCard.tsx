@@ -10,6 +10,11 @@ interface GroupCardProps {
 }
 
 const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
+  const getLocationString = (location: any) => {
+    if (!location) return 'Location not specified';
+    return location.name || 'Location not specified';
+  };
+
   return (
     <Card className="hover:shadow-lg transition-shadow cursor-pointer">
       <CardContent className="p-6">
@@ -35,7 +40,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
             {group.location && (
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                {group.location.name}
+                {getLocationString(group.location)}
               </div>
             )}
           </div>

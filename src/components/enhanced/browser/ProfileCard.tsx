@@ -30,7 +30,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
       case 'social_media_influencer':
         return 'Social Media Influencer';
       default:
-        return 'User';
+        return profile.title || 'User';
     }
   };
 
@@ -63,7 +63,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
               <h3 className="font-semibold text-lg">{profile.name}</h3>
-              {profile.is_verified && (
+              {(profile.is_verified || profile.verified) && (
                 <Badge variant="secondary" className="bg-green-100 text-green-800">
                   Verified
                 </Badge>
@@ -75,20 +75,20 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
               <p className="text-blue-600 font-medium">{getProfileType(profile)}</p>
             </div>
             
-            {profile.bio && (
-              <p className="text-gray-600 text-sm line-clamp-2">{profile.bio}</p>
+            {(profile.bio || profile.description) && (
+              <p className="text-gray-600 text-sm line-clamp-2">{profile.bio || profile.description}</p>
             )}
             
             <div className="flex items-center gap-4 text-sm text-gray-500">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                {getLocationString(profile.location)}
+                {getLocationString(profile.location) || profile.location_string || 'Location not specified'}
               </div>
               
-              {profile.rating > 0 && (
+              {profile.rating && profile.rating > 0 && (
                 <div className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  {profile.rating.toFixed(1)} ({profile.total_reviews})
+                  {profile.rating.toFixed(1)} ({profile.total_reviews || 0})
                 </div>
               )}
               
