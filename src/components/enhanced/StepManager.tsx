@@ -22,7 +22,7 @@ interface StepManagerProps {
   businessData: any;
   locationData: any;
   portfolioItems: any[];
-  browsingFilter: 'users' | 'businesses' | 'freelancers' | 'groups' | 'social_media' | null;
+  browsingFilter: 'businesses' | 'freelancers' | 'groups' | 'social_media' | null;
   onStepChange: (step: Step) => void;
   onUserTypeSelect: (type: UserType, action: UserAction) => void;
   onUserRegistration: (userData: Omit<User, 'id'>) => void;
@@ -34,7 +34,7 @@ interface StepManagerProps {
   onBusinessProfileEdit: () => void;
   setProfileData: (data: any) => void;
   setCurrentUser: (user: User | null) => void;
-  setBrowsingFilter: (filter: 'users' | 'businesses' | 'freelancers' | 'groups' | 'social_media' | null) => void;
+  setBrowsingFilter: (filter: 'businesses' | 'freelancers' | 'groups' | 'social_media' | null) => void;
 }
 
 const StepManager: React.FC<StepManagerProps> = (props) => {
