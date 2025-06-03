@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,56 +40,7 @@ const SocialMediaProfileCreator: React.FC<SocialMediaProfileCreatorProps> = ({ o
     'Technology & Gadgets', 'Gaming & Esports', 'Lifestyle & Wellness', 'Business & Finance',
     'Education & Learning', 'Entertainment & Comedy', 'Sports & Athletics', 'Art & Design',
     'Music & Audio', 'Photography & Visual Arts', 'Home & Decor', 'Parenting & Family',
-    'Pets & Animals', 'Nature & Environment', 'DIY & Crafts', 'Book Reviews & Literature',
-    'Movie & TV Reviews', 'Science & Research', 'Mental Health & Mindfulness', 'Spirituality & Religion',
-    'Politics & Social Issues', 'News & Current Events', 'History & Culture', 'Cars & Automotive',
-    'Real Estate & Property', 'Personal Development', 'Relationships & Dating', 'Wedding & Events',
-    'Skincare & Cosmetics', 'Hair & Beauty Tips', 'Street Style & Fashion', 'Luxury & High-End',
-    'Budget & Affordable', 'Sustainable Living', 'Vegan & Plant-Based', 'Health & Nutrition',
-    'Weight Loss & Fitness', 'Yoga & Meditation', 'Running & Cardio', 'Strength Training',
-    'Dance & Movement', 'Outdoor Activities', 'Extreme Sports', 'Traditional Sports',
-    'Recipe Creation', 'Restaurant Reviews', 'Baking & Desserts', 'International Cuisine',
-    'Street Food', 'Wine & Beverages', 'Coffee Culture', 'Cocktails & Mixology',
-    'Solo Travel', 'Family Travel', 'Adventure Travel', 'Luxury Travel', 'Budget Travel',
-    'Local Tourism', 'Cultural Experiences', 'Photography Travel', 'Tech Reviews',
-    'Software Tutorials', 'Mobile Apps', 'Gadget Unboxing', 'Coding & Programming',
-    'AI & Machine Learning', 'Cybersecurity', 'Web Development', 'Data Science',
-    'Mobile Gaming', 'Console Gaming', 'PC Gaming', 'Indie Games', 'Game Reviews',
-    'Esports Commentary', 'Game Streaming', 'Retro Gaming', 'Entrepreneurship',
-    'Investment Tips', 'Cryptocurrency', 'Stock Market', 'Personal Finance', 'Saving Money',
-    'Side Hustles', 'Career Advice', 'Leadership', 'Online Courses', 'Language Learning',
-    'Study Tips', 'Academic Success', 'Professional Skills', 'Certifications',
-    'Stand-up Comedy', 'Sketch Comedy', 'Meme Culture', 'Viral Content', 'Prank Videos',
-    'Magic & Illusions', 'Voice Acting', 'Impressions', 'Painting & Drawing', 'Digital Art',
-    'Sculpture & 3D Art', 'Street Art', 'Calligraphy', 'Graphic Design', 'UI/UX Design',
-    'Interior Design', 'Architecture', 'Landscape Photography', 'Portrait Photography',
-    'Wedding Photography', 'Product Photography', 'Music Production', 'Singing & Vocals',
-    'Instrument Tutorials', 'Music Reviews', 'Concert Coverage', 'DJ & Electronic Music',
-    'Classical Music', 'Home Organization', 'Garden & Plants', 'Minimalism', 'Maximalism',
-    'Vintage & Antiques', 'Smart Home Tech', 'Baby & Toddler', 'Teen Parenting',
-    'Single Parenting', 'Adoption & Foster Care', 'Pregnancy & Maternity', 'Dog Training',
-    'Cat Care', 'Exotic Pets', 'Wildlife Conservation', 'Farm Animals', 'Aquarium & Fish',
-    'Bird Watching', 'Conservation Efforts', 'Climate Change', 'Recycling & Upcycling',
-    'Zero Waste Living', 'Renewable Energy', 'Woodworking', 'Metalworking', 'Pottery & Ceramics',
-    'Jewelry Making', 'Knitting & Crochet', 'Sewing & Fashion Design', 'Embroidery',
-    'Scrapbooking', 'Fiction Reviews', 'Non-fiction Reviews', 'Poetry & Creative Writing',
-    'Book Clubs', 'Author Interviews', 'Literary Analysis', 'Horror Movies', 'Comedy Films',
-    'Documentary Reviews', 'TV Series Analysis', 'Anime & Manga', 'Foreign Films',
-    'Classic Cinema', 'Astronomy & Space', 'Biology & Life Sciences', 'Chemistry Experiments',
-    'Physics Demonstrations', 'Mathematics', 'Psychology', 'Sociology', 'Philosophy',
-    'Anxiety & Depression', 'Self-Care Routines', 'Therapy & Counseling', 'Meditation Practices',
-    'Stress Management', 'Christianity', 'Islam', 'Judaism', 'Buddhism', 'Hinduism',
-    'New Age Spirituality', 'Atheism & Agnosticism', 'Local Politics', 'International Affairs',
-    'Human Rights', 'Social Justice', 'Environmental Activism', 'Breaking News',
-    'Technology News', 'Entertainment News', 'Sports News', 'Economic Updates',
-    'Ancient History', 'Modern History', 'Cultural Traditions', 'Language & Linguistics',
-    'Anthropology', 'Car Reviews', 'Motorcycle Culture', 'Electric Vehicles', 'Classic Cars',
-    'Auto Repair', 'Racing & Motorsports', 'Home Buying', 'Real Estate Investment',
-    'Property Flipping', 'Rental Properties', 'Commercial Real Estate', 'Goal Setting',
-    'Productivity Tips', 'Time Management', 'Habit Formation', 'Life Coaching',
-    'Dating Advice', 'Marriage & Relationships', 'Breakup Recovery', 'Online Dating',
-    'Long Distance Relationships', 'Wedding Planning', 'Event Coordination', 'Party Planning',
-    'Holiday Celebrations', 'Birthday Ideas'
+    'Pets & Animals', 'Nature & Environment', 'DIY & Crafts', 'Book Reviews & Literature'
   ];
 
   const contentTypes = [
@@ -130,7 +80,7 @@ const SocialMediaProfileCreator: React.FC<SocialMediaProfileCreatorProps> = ({ o
 
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
-      <Card className="shadow-lg border-0 bg-white">
+      <Card className="shadow-xl border-0 bg-white">
         <CardHeader className="bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-t-lg">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
@@ -138,14 +88,14 @@ const SocialMediaProfileCreator: React.FC<SocialMediaProfileCreatorProps> = ({ o
             </Button>
             <div className="flex items-center gap-3">
               <Camera className="h-6 w-6" />
-              <CardTitle className="text-xl">Create Your Influencer Profile</CardTitle>
+              <CardTitle className="text-2xl">Create Your Influencer Profile</CardTitle>
             </div>
           </div>
         </CardHeader>
         <CardContent className="p-8 space-y-6">
           <div className="text-center space-y-3">
-            <h3 className="text-2xl font-semibold text-gray-800">Build Your Influence</h3>
-            <p className="text-gray-600">
+            <h3 className="text-3xl font-semibold text-gray-800">Build Your Influence</h3>
+            <p className="text-gray-600 text-lg">
               Showcase your social media presence and connect with brands looking for influencers like you.
             </p>
           </div>
@@ -268,7 +218,7 @@ const SocialMediaProfileCreator: React.FC<SocialMediaProfileCreatorProps> = ({ o
             className="w-full h-12 text-lg bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
             size="lg"
           >
-            Continue to Portfolio Upload →
+            Continue to Content Showcase →
           </Button>
         </CardContent>
       </Card>
