@@ -12,8 +12,11 @@ import FreelancerMarketplace from '../FreelancerMarketplace';
 import SocialMediaBrowser from './SocialMediaBrowser';
 
 const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarted, initialFilter = null }) => {
-  const [activeTab, setActiveTab] = useState<'users' | 'businesses' | 'freelancers' | 'groups' | 'social_media'>(
-    initialFilter === 'social_media' ? 'social_media' : initialFilter || 'users'
+  const [activeTab, setActiveTab] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media'>(
+    initialFilter === 'social_media' ? 'social_media' : 
+    initialFilter === 'businesses' ? 'businesses' :
+    initialFilter === 'freelancers' ? 'freelancers' :
+    initialFilter === 'groups' ? 'groups' : 'businesses'
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('all_locations');
@@ -33,25 +36,24 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
 
   useEffect(() => {
     fetchLocations();
-    // Only fetch categories for tabs that support them (not freelancers or social_media)
     if (activeTab !== 'freelancers' && activeTab !== 'social_media') {
-      fetchCategories(activeTab as 'users' | 'businesses' | 'groups');
+      fetchCategories(activeTab as 'businesses' | 'groups');
     }
   }, []);
 
   useEffect(() => {
     if (activeTab === 'groups') {
       fetchGroups(searchTerm, selectedLocation, selectedCategory);
-    } else if (activeTab !== 'freelancers' && activeTab !== 'social_media') {
-      fetchProfiles(activeTab, searchTerm, selectedLocation, selectedCategory);
+    } else if (activeTab === 'businesses') {
+      fetchProfiles('businesses', searchTerm, selectedLocation, selectedCategory);
     }
   }, [activeTab, searchTerm, selectedLocation, selectedCategory]);
 
-  const handleTabChange = (tab: 'users' | 'businesses' | 'freelancers' | 'groups' | 'social_media') => {
+  const handleTabChange = (tab: 'businesses' | 'freelancers' | 'groups' | 'social_media') => {
     setActiveTab(tab);
     setSelectedCategory('all_categories');
     if (tab !== 'freelancers' && tab !== 'social_media') {
-      fetchCategories(tab as 'users' | 'businesses' | 'groups');
+      fetchCategories(tab as 'businesses' | 'groups');
     }
   };
 
@@ -69,7 +71,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover amazing professionals, businesses, and groups before joining our platform.
+            Discover amazing creators, businesses, and communities before joining our platform.
           </p>
         </div>
 
@@ -109,7 +111,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover amazing professionals, businesses, and groups before joining our platform.
+            Discover talented freelancers, innovative businesses, and thriving communities.
           </p>
         </div>
 
@@ -144,7 +146,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover amazing professionals, businesses, and groups before joining our platform.
+            Discover innovative businesses, talented professionals, and vibrant communities.
           </p>
         </div>
 
@@ -153,7 +155,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
 
         {/* Business Browser with enhanced filters */}
         <BusinessBrowser
-          onBack={() => handleTabChange('users')}
+          onBack={() => handleTabChange('businesses')}
           onCreateBusiness={onGetStarted}
           showFilters={true}
           searchTerm={searchTerm}
@@ -183,18 +185,40 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
     );
   }
 
+  // Groups tab - enhanced with community content
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
+        <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Communities</h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Discover amazing professionals, businesses, and groups before joining our platform.
+          Join vibrant communities where professionals, creators, and businesses connect and collaborate.
         </p>
       </div>
 
       {/* Tabs */}
       <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
+
+      {/* Community Highlights */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+          <h3 className="text-xl font-semibold text-blue-800 mb-3">Professional Networks</h3>
+          <p className="text-blue-700 mb-4">Connect with industry leaders, share insights, and grow your professional network.</p>
+          <div className="text-sm text-blue-600">• Business Communities • Industry Forums • Networking Groups</div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-lg border border-pink-200">
+          <h3 className="text-xl font-semibold text-pink-800 mb-3">Creator Communities</h3>
+          <p className="text-pink-700 mb-4">Collaborate with fellow creators, share content strategies, and find brand partnerships.</p>
+          <div className="text-sm text-pink-600">• Influencer Networks • Content Creator Groups • Brand Partnerships</div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+          <h3 className="text-xl font-semibold text-green-800 mb-3">Skill-Based Groups</h3>
+          <p className="text-green-700 mb-4">Learn from experts, share knowledge, and collaborate on projects in your field.</p>
+          <div className="text-sm text-green-600">• Tech Communities • Design Groups • Freelancer Networks</div>
+        </div>
+      </div>
 
       {/* Search and Filters */}
       <SearchFilters
@@ -223,7 +247,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       {/* Call to Action */}
       <div className="text-center space-y-4 py-8">
         <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
-        <p className="text-gray-600">Create your profile and start connecting with amazing people in your industry.</p>
+        <p className="text-gray-600">Create your profile and start connecting with amazing communities in your industry.</p>
         <Button 
           onClick={onGetStarted}
           size="lg"

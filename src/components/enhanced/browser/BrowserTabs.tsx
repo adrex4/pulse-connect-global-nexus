@@ -1,37 +1,36 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Users, Building2, Briefcase, MessageSquare, Camera } from 'lucide-react';
+import { Building2, Briefcase, Users, Camera } from 'lucide-react';
 
 interface BrowserTabsProps {
-  activeTab: 'users' | 'businesses' | 'freelancers' | 'groups' | 'social_media';
-  onTabChange: (tab: 'users' | 'businesses' | 'freelancers' | 'groups' | 'social_media') => void;
+  activeTab: 'businesses' | 'freelancers' | 'groups' | 'social_media';
+  onTabChange: (tab: 'businesses' | 'freelancers' | 'groups' | 'social_media') => void;
 }
 
 const BrowserTabs: React.FC<BrowserTabsProps> = ({ activeTab, onTabChange }) => {
   const tabs = [
-    { id: 'users' as const, label: 'Professionals', icon: Users },
-    { id: 'businesses' as const, label: 'Businesses', icon: Building2 },
-    { id: 'freelancers' as const, label: 'Freelancers', icon: Briefcase },
-    { id: 'social_media' as const, label: 'Social Media', icon: Camera },
-    { id: 'groups' as const, label: 'Groups', icon: MessageSquare },
+    { id: 'businesses' as const, label: 'Businesses', icon: Building2, color: 'blue' },
+    { id: 'freelancers' as const, label: 'Freelancers', icon: Briefcase, color: 'green' },
+    { id: 'social_media' as const, label: 'Creators', icon: Camera, color: 'pink' },
+    { id: 'groups' as const, label: 'Communities', icon: Users, color: 'purple' }
   ];
 
   return (
     <div className="flex flex-wrap gap-2 justify-center">
-      {tabs.map((tab) => (
+      {tabs.map(({ id, label, icon: Icon, color }) => (
         <Button
-          key={tab.id}
-          variant={activeTab === tab.id ? "default" : "outline"}
-          onClick={() => onTabChange(tab.id)}
-          className={`flex items-center gap-2 ${
-            activeTab === tab.id
-              ? "bg-blue-600 text-white"
-              : "text-gray-600 hover:text-blue-600"
+          key={id}
+          variant={activeTab === id ? "default" : "outline"}
+          onClick={() => onTabChange(id)}
+          className={`flex items-center gap-2 px-6 py-3 ${
+            activeTab === id
+              ? `bg-${color}-600 hover:bg-${color}-700 text-white`
+              : `border-${color}-200 text-${color}-600 hover:bg-${color}-50`
           }`}
         >
-          <tab.icon className="h-4 w-4" />
-          {tab.label}
+          <Icon className="h-4 w-4" />
+          {label}
         </Button>
       ))}
     </div>

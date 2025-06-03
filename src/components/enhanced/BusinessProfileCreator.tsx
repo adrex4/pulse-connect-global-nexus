@@ -6,12 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Building2, Upload, X } from 'lucide-react';
+import ProfilePictureUploader from './ProfilePictureUploader';
 
 interface BusinessProfileCreatorProps {
   onNext: (businessData: {
     businessName: string;
     products: string;
     website?: string;
+    profileImage?: string;
     images: string[];
     videos: string[];
   }) => void;
@@ -22,6 +24,7 @@ const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext,
   const [businessName, setBusinessName] = useState('');
   const [products, setProducts] = useState('');
   const [website, setWebsite] = useState('');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [images, setImages] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);
 
@@ -69,6 +72,7 @@ const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext,
         businessName: businessName.trim(),
         products: products.trim(),
         website: website.trim() || undefined,
+        profileImage: profileImage || undefined,
         images,
         videos
       });
@@ -96,6 +100,13 @@ const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext,
               Share your business details to connect with potential partners, clients, and opportunities.
             </p>
           </div>
+
+          {/* Profile Picture */}
+          <ProfilePictureUploader
+            onImageSelect={setProfileImage}
+            currentImage={profileImage || undefined}
+            userName={businessName || 'Business'}
+          />
 
           {/* Business Name */}
           <div className="space-y-3">

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Briefcase, Plus, X } from 'lucide-react';
 import { UserType } from '@/types/connectPulse';
+import ProfilePictureUploader from './ProfilePictureUploader';
 
 interface FreelancerGigCreatorProps {
   userType: UserType;
@@ -57,12 +57,17 @@ const FreelancerGigCreator: React.FC<FreelancerGigCreatorProps> = ({
     description: '',
     skills: [] as string[],
     hourlyRate: '',
-    experience: ''
+    experience: '',
+    profileImage: null as string | null
   });
   const [customSkill, setCustomSkill] = useState('');
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleProfileImageChange = (imageUrl: string | null) => {
+    setFormData(prev => ({ ...prev, profileImage: imageUrl }));
   };
 
   const addSkill = (skill: string) => {
@@ -153,6 +158,13 @@ const FreelancerGigCreator: React.FC<FreelancerGigCreatorProps> = ({
               Share your expertise and connect with clients who need your skills
             </p>
           </div>
+
+          {/* Profile Picture */}
+          <ProfilePictureUploader
+            onImageSelect={handleProfileImageChange}
+            currentImage={formData.profileImage || undefined}
+            userName={formData.gigTitle || 'Professional'}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left Column */}

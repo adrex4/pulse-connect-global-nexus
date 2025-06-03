@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Camera, Users, Star, TrendingUp } from 'lucide-react';
+import ProfilePictureUploader from './ProfilePictureUploader';
 
 interface SocialMediaProfileCreatorProps {
   onNext: (profileData: {
@@ -16,6 +17,7 @@ interface SocialMediaProfileCreatorProps {
     contentType: string;
     bio: string;
     rates: string;
+    profileImage?: string;
   }) => void;
   onBack: () => void;
 }
@@ -28,6 +30,7 @@ const SocialMediaProfileCreator: React.FC<SocialMediaProfileCreatorProps> = ({ o
   const [contentType, setContentType] = useState('');
   const [bio, setBio] = useState('');
   const [rates, setRates] = useState('');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const platforms = [
     'Instagram', 'TikTok', 'YouTube', 'Twitter/X', 'LinkedIn', 
@@ -73,7 +76,8 @@ const SocialMediaProfileCreator: React.FC<SocialMediaProfileCreatorProps> = ({ o
         niche,
         contentType,
         bio: bio.trim(),
-        rates: rates.trim()
+        rates: rates.trim(),
+        profileImage: profileImage || undefined
       });
     }
   };
@@ -99,6 +103,13 @@ const SocialMediaProfileCreator: React.FC<SocialMediaProfileCreatorProps> = ({ o
               Showcase your social media presence and connect with brands looking for influencers like you.
             </p>
           </div>
+
+          {/* Profile Picture */}
+          <ProfilePictureUploader
+            onImageSelect={setProfileImage}
+            currentImage={profileImage || undefined}
+            userName={influencerName || 'Influencer'}
+          />
 
           {/* Influencer Name */}
           <div className="space-y-3">
