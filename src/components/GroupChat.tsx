@@ -20,8 +20,8 @@ import {
   UserPlus, Settings, Phone, VideoIcon, Shield, Bell, BellOff, Download,
   Upload, Filter, SortAsc, MessageCircle, Headphones, Camera, FileImage,
   Globe, Lock, Unlock, Palette, Type, AlignLeft, Bold, Italic, Underline,
-  Code, Quote, List, ListOrdered, AtSign, Hashtag, Slash, MousePointer,
-  Layers, Maximize2, Minimize2, RotateCcw, Check, X, Plus, Minus
+  Code, Quote, List, ListOrdered, AtSign, MapPin, Slash, MousePointer,
+  Layers, Maximize2, Minimize2, RotateCcw, Check, X, Plus, Minus, BarChart
 } from 'lucide-react';
 import { User, Group, Message } from '@/types/connectPulse';
 
@@ -1165,7 +1165,7 @@ const GroupChat: React.FC<GroupChatProps> = ({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start">
                           <DropdownMenuItem onClick={() => setShowPollCreator(true)}>
-                            <BarChart3 className="h-4 w-4 mr-2" />
+                            <BarChart className="h-4 w-4 mr-2" />
                             Create Poll
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => setShowScheduler(true)}>
