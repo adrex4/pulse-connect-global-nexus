@@ -31,6 +31,7 @@ import {
 import { User, Group, Message } from '@/types/connectPulse';
 import EnhancedChatHeader from './chat/EnhancedChatHeader';
 import OnlineUsersList from './chat/OnlineUsersList';
+import MessageBubble from './chat/MessageBubble';
 import VideoCallModal from './VideoCallModal';
 import { useToast } from '@/hooks/use-toast';
 
@@ -91,7 +92,6 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
     { id: '7', name: 'Jordan Smith', avatar: 'JS', status: 'online' }
   ];
 
-  const emojis = ['👍', '❤️', '😂', '😮', '😢', '😡', '🎉', '🔥', '💯', '👏'];
   const themes = ['blue', 'green', 'purple', 'orange', 'pink'];
 
   useEffect(() => {
@@ -170,46 +170,6 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
     }));
   };
 
-  const handleVoiceRecord = () => {
-    setIsRecording(!isRecording);
-    if (!isRecording) {
-      toast({
-        title: "Recording started",
-        description: "Tap again to stop recording",
-      });
-    } else {
-      toast({
-        title: "Voice message sent",
-        description: "Your voice message has been sent",
-      });
-    }
-  };
-
-  const handleFileUpload = (type: string) => {
-    setShowFileUpload(false);
-    toast({
-      title: "File uploaded",
-      description: `${type} has been uploaded successfully`,
-    });
-  };
-
-  const filteredMessages = messages.filter(message => {
-    if (messageFilter === 'pinned') return pinnedMessages.includes(message.id);
-    if (messageFilter === 'bookmarked') return bookmarkedMessages.includes(message.id);
-    if (messageFilter === 'media') return message.content.includes('📷') || message.content.includes('🎵');
-    if (searchQuery) return message.content.toLowerCase().includes(searchQuery.toLowerCase());
-    return true;
-  });
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'online': return 'bg-green-500';
-      case 'away': return 'bg-yellow-500';
-      case 'busy': return 'bg-red-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
   const getThemeColors = (theme: string) => {
     switch (theme) {
       case 'green': return 'from-green-500 to-emerald-600';
@@ -219,6 +179,14 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
       default: return 'from-blue-500 to-indigo-600';
     }
   };
+
+  const filteredMessages = messages.filter(message => {
+    if (messageFilter === 'pinned') return pinnedMessages.includes(message.id);
+    if (messageFilter === 'bookmarked') return bookmarkedMessages.includes(message.id);
+    if (messageFilter === 'media') return message.content.includes('📷') || message.content.includes('🎵');
+    if (searchQuery) return message.content.toLowerCase().includes(searchQuery.toLowerCase());
+    return true;
+  });
 
   return (
     <div className={`flex flex-col h-screen ${isDarkMode ? 'dark bg-gray-900' : 'bg-white'} ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
@@ -272,7 +240,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
 
       <div className="flex flex-1 overflow-hidden">
         {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {/* Pinned Messages Bar */}
           {pinnedMessages.length > 0 && (
             <div className="bg-yellow-50 border-b p-2">
@@ -287,170 +255,27 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
           )}
 
           {/* Messages Area */}
-          <ScrollArea className="flex-1 p-4" style={{ fontSize: `${fontSize}px` }}>
-            <div className="space-y-4">
+          <ScrollArea className="flex-1 p-4">
+            <div className="space-y-4 max-w-4xl mx-auto">
               {filteredMessages.map((message) => (
-                <div key={message.id} className="group relative">
-                  <div className={`flex items-start gap-3 ${message.userId === user.id ? 'flex-row-reverse' : ''}`}>
-                    <Avatar className="h-8 w-8 flex-shrink-0">
-                      <AvatarFallback className={`bg-gradient-to-r ${getThemeColors(theme)} text-white`}>
-                        {message.userId === user.id ? user.name.charAt(0) : 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    
-                    <div className={`flex-1 ${message.userId === user.id ? 'text-right' : ''}`}>
-                      {/* Message Header */}
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-sm">
-                          {message.userId === user.id ? 'You' : 'Anonymous User'}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {new Date(message.timestamp).toLocaleTimeString()}
-                        </span>
-                        {pinnedMessages.includes(message.id) && (
-                          <Pin className="h-3 w-3 text-yellow-600" />
-                        )}
-                        {bookmarkedMessages.includes(message.id) && (
-                          <Bookmark className="h-3 w-3 text-blue-600" />
-                        )}
-                        {showReadReceipts && (
-                          <div className="flex -space-x-1">
-                            <div className="w-3 h-3 bg-green-500 rounded-full border border-white"></div>
-                            <div className="w-3 h-3 bg-blue-500 rounded-full border border-white"></div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Reply Context */}
-                      {replyingTo === message.id && (
-                        <div className="bg-gray-100 p-2 rounded mb-2 text-sm">
-                          <div className="flex items-center gap-2">
-                            <Reply className="h-3 w-3" />
-                            <span className="text-gray-600">Replying to message</span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setReplyingTo(null)}
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Message Content */}
-                      <div className={`p-3 rounded-lg ${
-                        message.userId === user.id 
-                          ? `bg-gradient-to-r ${getThemeColors(theme)} text-white ml-8` 
-                          : 'bg-gray-100 mr-8'
-                      }`}>
-                        <p className="whitespace-pre-wrap">{message.content}</p>
-                        
-                        {/* Message Translation */}
-                        {messageTranslation[message.id] && (
-                          <div className="mt-2 p-2 bg-black/10 rounded text-sm">
-                            <div className="flex items-center gap-1 mb-1">
-                              <Globe className="h-3 w-3" />
-                              <span className="text-xs opacity-75">Translation:</span>
-                            </div>
-                            <p>{messageTranslation[message.id]}</p>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Message Reactions */}
-                      {reactions[message.id] && reactions[message.id].length > 0 && (
-                        <div className="flex gap-1 mt-2">
-                          {reactions[message.id].map((emoji, index) => (
-                            <Button
-                              key={index}
-                              variant="outline"
-                              size="sm"
-                              className="h-6 px-2 text-xs"
-                              onClick={() => handleReaction(message.id, emoji)}
-                            >
-                              {emoji}
-                            </Button>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Message Actions */}
-                      <div className={`opacity-0 group-hover:opacity-100 transition-opacity mt-2 ${
-                        message.userId === user.id ? 'text-right' : ''
-                      }`}>
-                        <div className="flex gap-1">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                                <Smile className="h-3 w-3" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              <div className="grid grid-cols-5 gap-1 p-2">
-                                {emojis.map(emoji => (
-                                  <Button
-                                    key={emoji}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0"
-                                    onClick={() => handleReaction(message.id, emoji)}
-                                  >
-                                    {emoji}
-                                  </Button>
-                                ))}
-                              </div>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0"
-                            onClick={() => setReplyingTo(message.id)}
-                          >
-                            <Reply className="h-3 w-3" />
-                          </Button>
-
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                                <MoreHorizontal className="h-3 w-3" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              <DropdownMenuItem onClick={() => handlePinMessage(message.id)}>
-                                <Pin className="h-4 w-4 mr-2" />
-                                {pinnedMessages.includes(message.id) ? 'Unpin' : 'Pin'} Message
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleBookmarkMessage(message.id)}>
-                                <Bookmark className="h-4 w-4 mr-2" />
-                                {bookmarkedMessages.includes(message.id) ? 'Remove' : 'Add'} Bookmark
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleTranslateMessage(message.id)}>
-                                <Globe className="h-4 w-4 mr-2" />
-                                Translate
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Copy className="h-4 w-4 mr-2" />
-                                Copy Message
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Forward className="h-4 w-4 mr-2" />
-                                Forward
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-red-600">
-                                <Flag className="h-4 w-4 mr-2" />
-                                Report
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <MessageBubble
+                  key={message.id}
+                  message={message}
+                  user={user}
+                  reactions={reactions}
+                  pinnedMessages={pinnedMessages}
+                  bookmarkedMessages={bookmarkedMessages}
+                  messageTranslation={messageTranslation}
+                  showReadReceipts={showReadReceipts}
+                  theme={theme}
+                  fontSize={fontSize}
+                  onReaction={handleReaction}
+                  onPin={handlePinMessage}
+                  onBookmark={handleBookmarkMessage}
+                  onTranslate={handleTranslateMessage}
+                  onReply={(messageId) => setReplyingTo(messageId)}
+                  getThemeColors={getThemeColors}
+                />
               ))}
               
               {/* Typing Indicator */}
@@ -494,31 +319,13 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
             </div>
           )}
 
-          {/* Message Input Area */}
-          <div className="p-4 border-t bg-white">
-            <div className="flex items-end gap-2">
+          {/* Compact Message Input Area */}
+          <div className="p-3 border-t bg-white">
+            <div className="flex items-center gap-2 max-w-4xl mx-auto">
               {/* File Upload */}
-              <DropdownMenu open={showFileUpload} onOpenChange={setShowFileUpload}>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <PaperclipIcon className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => handleFileUpload('image')}>
-                    <Image className="h-4 w-4 mr-2" />
-                    Upload Image
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleFileUpload('document')}>
-                    <FileText className="h-4 w-4 mr-2" />
-                    Upload Document
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleFileUpload('video')}>
-                    <Video className="h-4 w-4 mr-2" />
-                    Upload Video
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button variant="ghost" size="sm" className="flex-shrink-0">
+                <PaperclipIcon className="h-4 w-4" />
+              </Button>
 
               {/* Message Input */}
               <div className="flex-1 relative">
@@ -526,7 +333,8 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder={`Message ${group.name}...`}
-                  className="min-h-[44px] max-h-32 resize-none pr-20"
+                  className="min-h-[40px] max-h-24 resize-none pr-16 text-sm"
+                  rows={1}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
@@ -537,78 +345,22 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
                 
                 {/* Input Actions */}
                 <div className="absolute right-2 bottom-2 flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                  >
-                    <Smile className="h-4 w-4" />
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                    <Smile className="h-3 w-3" />
                   </Button>
                   
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleVoiceRecord}
-                    className={isRecording ? 'text-red-500' : ''}
-                  >
-                    <Mic className="h-4 w-4" />
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                    <Mic className="h-3 w-3" />
                   </Button>
                 </div>
-
-                {/* Emoji Picker */}
-                {showEmojiPicker && (
-                  <div className="absolute bottom-full right-0 mb-2 bg-white border rounded-lg shadow-lg p-3">
-                    <div className="grid grid-cols-8 gap-1">
-                      {emojis.map(emoji => (
-                        <Button
-                          key={emoji}
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setNewMessage(prev => prev + emoji);
-                            setShowEmojiPicker(false);
-                          }}
-                        >
-                          {emoji}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
-
-              {/* Advanced Actions */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setShowPollCreator(true)}>
-                    <BarChart className="h-4 w-4 mr-2" />
-                    Create Poll
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setShowScheduler(true)}>
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Schedule Message
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <MapPin className="h-4 w-4 mr-2" />
-                    Share Location
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <ScreenShare className="h-4 w-4 mr-2" />
-                    Screen Share
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
 
               {/* Send Button */}
               <Button 
                 onClick={handleSendMessage} 
                 disabled={!newMessage.trim()}
-                className={`bg-gradient-to-r ${getThemeColors(theme)}`}
+                size="sm"
+                className={`bg-gradient-to-r ${getThemeColors(theme)} flex-shrink-0`}
               >
                 <Send className="h-4 w-4" />
               </Button>
