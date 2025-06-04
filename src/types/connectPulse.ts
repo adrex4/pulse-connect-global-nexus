@@ -1,7 +1,34 @@
 
+export type Step = 
+  | 'welcome'
+  | 'browse'
+  | 'user-type'
+  | 'business-profile'
+  | 'business-niche'
+  | 'freelancer-gig'
+  | 'freelancer-groups'
+  | 'business-groups'
+  | 'groups'
+  | 'portfolio'
+  | 'location'
+  | 'chat'
+  | 'service-selection'
+  | 'business-profile-preview'
+  | 'freelancer-profile-preview'
+  | 'social-media-profile'
+  | 'social-media-profile-preview'
+  | 'local-service-profile-preview';
+
+export type UserType = 'business' | 'freelancer' | 'social_media_influencer' | 'occupation_provider';
+
+export type UserAction = 'create' | 'join' | 'view';
+
 export interface User {
   id: string;
   name: string;
+  email?: string;
+  avatar?: string;
+  bio?: string;
   niche: string;
   country: string;
   preferredScope: 'local' | 'regional' | 'global';
@@ -10,12 +37,16 @@ export interface User {
 export interface Group {
   id: string;
   name: string;
-  niche: string;
-  scope: 'local' | 'regional' | 'global';
-  country?: string;
-  region?: string;
-  memberCount: number;
   description: string;
+  category?: string;
+  niche?: string;
+  memberCount: number;
+  scope: 'local' | 'regional' | 'global';
+  isPublic: boolean;
+  location?: string;
+  verified?: boolean;
+  trending?: boolean;
+  premium?: boolean;
 }
 
 export interface Message {
@@ -26,27 +57,3 @@ export interface Message {
   timestamp: Date;
   groupId: string;
 }
-
-export type Step = 
-  | 'welcome'
-  | 'browse'
-  | 'user-type'
-  | 'business-niche'
-  | 'business-profile'
-  | 'business-profile-preview'
-  | 'business-groups'
-  | 'service-selection'
-  | 'social-media-profile'
-  | 'social-media-profile-preview'
-  | 'portfolio'
-  | 'location'
-  | 'groups'
-  | 'chat'
-  | 'freelancer-gig'
-  | 'freelancer-location'
-  | 'freelancer-groups'
-  | 'freelancer-profile-preview'
-  | 'local-service-profile-preview';
-
-export type UserType = 'business' | 'freelancer' | 'occupation_provider' | 'social_media_influencer';
-export type UserAction = 'join' | 'create' | 'view';

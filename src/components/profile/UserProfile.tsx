@@ -1,691 +1,559 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
 import { 
-  User, Edit, Settings, Camera, MapPin, Phone, Mail, Globe,
-  Calendar, Star, Award, Briefcase, MessageCircle, Users,
-  Shield, Bell, Lock, Eye, Heart, Share, Download, Upload,
-  CheckCircle, Clock, Send, Search, Filter, MoreHorizontal,
-  Video, FileText, Image, Paperclip, Smile
+  User, Settings, Bell, Shield, MessageCircle, Phone, Video,
+  Edit, Save, X, Plus, Search, Filter, MoreHorizontal,
+  Calendar, Clock, Star, Heart, Share, Flag, Archive,
+  Eye, EyeOff, Lock, Unlock, Download, Upload, Trash2,
+  UserPlus, UserMinus, Send, Reply, Forward, Copy
 } from 'lucide-react';
 import { User as UserType } from '@/types/connectPulse';
 
 interface UserProfileProps {
   user: UserType;
-  onUpdateProfile: (updates: Partial<UserType>) => void;
+  onUpdateUser: (user: UserType) => void;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdateProfile }) => {
+interface DirectMessage {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  content: string;
+  timestamp: Date;
+  isRead: boolean;
+  messageType: 'text' | 'image' | 'file' | 'voice' | 'video';
+  attachments?: string[];
+  reactions?: { emoji: string; userId: string }[];
+  isEdited?: boolean;
+  replyTo?: string;
+  isDeleted?: boolean;
+  deliveryStatus: 'sent' | 'delivered' | 'read';
+}
+
+interface Contact {
+  id: string;
+  name: string;
+  avatar?: string;
+  lastSeen: Date;
+  isOnline: boolean;
+  status: 'available' | 'busy' | 'away' | 'offline';
+  unreadCount: number;
+  lastMessage?: DirectMessage;
+  isBlocked: boolean;
+  isFavorite: boolean;
+  groups: string[];
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdateUser }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState(user);
-  const [activeTab, setActiveTab] = useState('profile');
-  const [dmMessages, setDmMessages] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'settings'>('profile');
+  const [messages, setMessages] = useState<DirectMessage[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [newMessage, setNewMessage] = useState('');
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [messageFilter, setMessageFilter] = useState<'all' | 'unread' | 'favorites'>('all');
+  const [isTyping, setIsTyping] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedMessages, setSelectedMessages] = useState<string[]>([]);
+  const [replyingTo, setReplyingTo] = useState<DirectMessage | null>(null);
 
-  // Mock DM conversations
-  const conversations = [
-    {
-      id: 'conv1',
-      participant: {
-        id: 'user1',
-        name: 'Sarah Johnson',
-        avatar: 'SJ',
-        status: 'online',
-        lastSeen: 'now'
+  // Mock data for demonstration
+  useEffect(() => {
+    setContacts([
+      {
+        id: '1',
+        name: 'John Smith',
+        avatar: undefined,
+        lastSeen: new Date(Date.now() - 1000 * 60 * 5),
+        isOnline: true,
+        status: 'available',
+        unreadCount: 3,
+        lastMessage: {
+          id: 'msg1',
+          senderId: '1',
+          receiverId: user.id,
+          content: 'Hey, how are you doing?',
+          timestamp: new Date(Date.now() - 1000 * 60 * 10),
+          isRead: false,
+          messageType: 'text',
+          deliveryStatus: 'delivered'
+        },
+        isBlocked: false,
+        isFavorite: true,
+        groups: ['developers']
       },
-      lastMessage: 'Hey! Are you available for a quick call later?',
-      timestamp: new Date(Date.now() - 300000),
-      unread: 2,
-      type: 'business'
-    },
-    {
-      id: 'conv2',
-      participant: {
-        id: 'user2',
-        name: 'Mike Chen',
-        avatar: 'MC',
-        status: 'away',
-        lastSeen: '2 hours ago'
+      {
+        id: '2',
+        name: 'Emily Johnson',
+        avatar: undefined,
+        lastSeen: new Date(Date.now() - 1000 * 60 * 60 * 2),
+        isOnline: false,
+        status: 'offline',
+        unreadCount: 0,
+        lastMessage: {
+          id: 'msg2',
+          senderId: user.id,
+          receiverId: '2',
+          content: 'Sounds good! Let\'s catch up later.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3),
+          isRead: true,
+          messageType: 'text',
+          deliveryStatus: 'read'
+        },
+        isBlocked: false,
+        isFavorite: false,
+        groups: ['designers']
       },
-      lastMessage: 'Thanks for sharing that resource!',
-      timestamp: new Date(Date.now() - 7200000),
-      unread: 0,
-      type: 'professional'
-    },
-    {
-      id: 'conv3',
-      participant: {
-        id: 'user3',
-        name: 'Emma Rodriguez',
-        avatar: 'ER',
+      {
+        id: '3',
+        name: 'David Lee',
+        avatar: undefined,
+        lastSeen: new Date(Date.now() - 1000 * 60 * 30),
+        isOnline: true,
         status: 'busy',
-        lastSeen: '1 hour ago'
+        unreadCount: 1,
+        lastMessage: {
+          id: 'msg3',
+          senderId: '3',
+          receiverId: user.id,
+          content: 'I\'m in a meeting right now, will get back to you soon.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 35),
+          isRead: false,
+          messageType: 'text',
+          deliveryStatus: 'delivered'
+        },
+        isBlocked: false,
+        isFavorite: false,
+        groups: ['managers']
       },
-      lastMessage: 'Let me review the proposal and get back to you.',
-      timestamp: new Date(Date.now() - 86400000),
-      unread: 1,
-      type: 'business'
-    }
-  ];
-
-  // Mock messages for selected conversation
-  const mockMessages = [
-    {
-      id: 'msg1',
-      senderId: 'user1',
-      content: 'Hi! I saw your post about the new project. Very interesting!',
-      timestamp: new Date(Date.now() - 3600000),
-      type: 'text',
-      status: 'read'
-    },
-    {
-      id: 'msg2',
-      senderId: user.id,
-      content: 'Thank you! I\'d love to discuss it further. Are you available for a call?',
-      timestamp: new Date(Date.now() - 3300000),
-      type: 'text',
-      status: 'read'
-    },
-    {
-      id: 'msg3',
-      senderId: 'user1',
-      content: 'Absolutely! How about tomorrow at 2 PM?',
-      timestamp: new Date(Date.now() - 300000),
-      type: 'text',
-      status: 'delivered'
-    }
-  ];
+      {
+        id: '4',
+        name: 'Sarah Wilson',
+        avatar: undefined,
+        lastSeen: new Date(Date.now() - 1000 * 60 * 60 * 24),
+        isOnline: false,
+        status: 'away',
+        unreadCount: 0,
+        lastMessage: {
+          id: 'msg4',
+          senderId: user.id,
+          receiverId: '4',
+          content: 'I\'m on vacation, will be back next week.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 25),
+          isRead: true,
+          messageType: 'text',
+          deliveryStatus: 'read'
+        },
+        isBlocked: false,
+        isFavorite: false,
+        groups: ['travelers']
+      },
+      {
+        id: '5',
+        name: 'Michael Brown',
+        avatar: undefined,
+        lastSeen: new Date(Date.now() - 1000 * 60 * 15),
+        isOnline: true,
+        status: 'available',
+        unreadCount: 2,
+        lastMessage: {
+          id: 'msg5',
+          senderId: '5',
+          receiverId: user.id,
+          content: 'Just finished the project, ready for review.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 20),
+          isRead: false,
+          messageType: 'text',
+          deliveryStatus: 'delivered'
+        },
+        isBlocked: false,
+        isFavorite: true,
+        groups: ['developers']
+      }
+    ]);
+  }, [user.id]);
 
   const handleSaveProfile = () => {
-    onUpdateProfile(editedUser);
+    onUpdateUser(editedUser);
     setIsEditing(false);
   };
 
   const handleSendMessage = () => {
-    if (newMessage.trim() && selectedConversation) {
-      const message = {
-        id: `msg${Date.now()}`,
-        senderId: user.id,
-        content: newMessage,
-        timestamp: new Date(),
-        type: 'text',
-        status: 'sent'
-      };
-      setDmMessages(prev => [...prev, message]);
-      setNewMessage('');
-    }
+    if (!newMessage.trim() || !selectedContact) return;
+
+    const message: DirectMessage = {
+      id: Date.now().toString(),
+      senderId: user.id,
+      receiverId: selectedContact.id,
+      content: newMessage,
+      timestamp: new Date(),
+      isRead: false,
+      messageType: 'text',
+      deliveryStatus: 'sent',
+      replyTo: replyingTo?.id
+    };
+
+    setMessages(prev => [...prev, message]);
+    setNewMessage('');
+    setReplyingTo(null);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'online': return 'bg-green-500';
-      case 'away': return 'bg-yellow-500';
-      case 'busy': return 'bg-red-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const formatDate = (date: Date) => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString();
-    }
-  };
+  const filteredContacts = contacts.filter(contact => {
+    const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = messageFilter === 'all' || 
+                         (messageFilter === 'unread' && contact.unreadCount > 0) ||
+                         (messageFilter === 'favorites' && contact.isFavorite);
+    return matchesSearch && matchesFilter;
+  });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-      <div className="max-w-7xl mx-auto">
-        <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
-                    <AvatarImage src={user.avatar} />
-                    <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-2xl font-bold">
-                      {user.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <Button 
-                    size="sm" 
-                    className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0 bg-white text-blue-600 hover:bg-blue-50"
-                  >
-                    <Camera className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div>
-                  <CardTitle className="text-3xl font-bold">{user.name}</CardTitle>
-                  <p className="text-blue-100 text-lg">{user.email}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge className="bg-green-500 text-white">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Verified Professional
-                    </Badge>
-                    <Badge className="bg-blue-500 text-white">
-                      <Star className="h-3 w-3 mr-1" />
-                      Premium Member
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  variant="secondary" 
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                >
-                  <Edit className="h-4 w-4 mr-2" />
-                  {isEditing ? 'Cancel' : 'Edit Profile'}
-                </Button>
-                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </Button>
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {/* Profile Header */}
+      <Card className="shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+          <div className="flex items-center gap-4">
+            <Avatar className="h-20 w-20 border-4 border-white">
+              <AvatarImage src={user.avatar} />
+              <AvatarFallback className="bg-white text-blue-600 text-2xl font-bold">
+                {user.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <CardTitle className="text-2xl">{user.name}</CardTitle>
+              <p className="text-blue-100">{user.email || 'No email provided'}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <Badge variant="secondary" className="bg-white/20 text-white">
+                  {user.niche}
+                </Badge>
+                <Badge variant="secondary" className="bg-white/20 text-white">
+                  {user.country}
+                </Badge>
               </div>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditing(!isEditing)}
+              className="text-white hover:bg-white/20"
+            >
+              {isEditing ? <X className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+            </Button>
+          </div>
+        </CardHeader>
+      </Card>
+
+      {/* Navigation Tabs */}
+      <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+        {[
+          { id: 'profile', label: 'Profile', icon: User },
+          { id: 'messages', label: 'Messages', icon: MessageCircle },
+          { id: 'settings', label: 'Settings', icon: Settings }
+        ].map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <Button
+              key={tab.id}
+              variant={activeTab === tab.id ? 'default' : 'ghost'}
+              className={`flex-1 ${activeTab === tab.id ? 'bg-white shadow-sm' : ''}`}
+              onClick={() => setActiveTab(tab.id as any)}
+            >
+              <Icon className="h-4 w-4 mr-2" />
+              {tab.label}
+            </Button>
+          );
+        })}
+      </div>
+
+      {/* Profile Tab */}
+      {activeTab === 'profile' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Profile Information</CardTitle>
           </CardHeader>
-
-          <CardContent className="p-0">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4 bg-gray-50 border-b">
-                <TabsTrigger value="profile" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
-                </TabsTrigger>
-                <TabsTrigger value="messages" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Messages
-                  {conversations.reduce((sum, conv) => sum + conv.unread, 0) > 0 && (
-                    <Badge className="ml-2 bg-red-500 text-white text-xs">
-                      {conversations.reduce((sum, conv) => sum + conv.unread, 0)}
-                    </Badge>
-                  )}
-                </TabsTrigger>
-                <TabsTrigger value="activity" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Activity
-                </TabsTrigger>
-                <TabsTrigger value="settings" className="data-[state=active]:bg-gray-500 data-[state=active]:text-white">
-                  <Shield className="h-4 w-4 mr-2" />
-                  Privacy
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="profile" className="p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Profile Information */}
-                  <div className="lg:col-span-2 space-y-6">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <User className="h-5 w-5" />
-                          Personal Information
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {isEditing ? (
-                          <>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <label className="text-sm font-medium">Full Name</label>
-                                <Input 
-                                  value={editedUser.name}
-                                  onChange={(e) => setEditedUser(prev => ({ ...prev, name: e.target.value }))}
-                                />
-                              </div>
-                              <div>
-                                <label className="text-sm font-medium">Email</label>
-                                <Input 
-                                  value={editedUser.email}
-                                  onChange={(e) => setEditedUser(prev => ({ ...prev, email: e.target.value }))}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <label className="text-sm font-medium">Bio</label>
-                              <Textarea 
-                                value={editedUser.bio || ''}
-                                onChange={(e) => setEditedUser(prev => ({ ...prev, bio: e.target.value }))}
-                                placeholder="Tell us about yourself..."
-                                rows={4}
-                              />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <label className="text-sm font-medium">Phone</label>
-                                <Input placeholder="+1 (555) 123-4567" />
-                              </div>
-                              <div>
-                                <label className="text-sm font-medium">Location</label>
-                                <Input placeholder="City, Country" />
-                              </div>
-                            </div>
-                            <div className="flex gap-2">
-                              <Button onClick={handleSaveProfile} className="bg-blue-500 hover:bg-blue-600">
-                                Save Changes
-                              </Button>
-                              <Button variant="outline" onClick={() => setIsEditing(false)}>
-                                Cancel
-                              </Button>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="space-y-3">
-                              <p><strong>Bio:</strong> {user.bio || 'No bio available'}</p>
-                              <div className="flex items-center gap-2">
-                                <Phone className="h-4 w-4 text-gray-500" />
-                                <span>+1 (555) 123-4567</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Mail className="h-4 w-4 text-gray-500" />
-                                <span>{user.email}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4 text-gray-500" />
-                                <span>San Francisco, CA</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4 text-gray-500" />
-                                <span>Joined March 2024</span>
-                              </div>
-                            </div>
-                          </>
-                        )}
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Briefcase className="h-5 w-5" />
-                          Professional Details
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <h4 className="font-medium text-gray-700">Industry</h4>
-                            <p className="text-gray-600">Technology & Software</p>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-700">Experience</h4>
-                            <p className="text-gray-600">5+ years</p>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-700">Skills</h4>
-                            <div className="flex flex-wrap gap-2 mt-1">
-                              {['React', 'TypeScript', 'Node.js', 'Python'].map(skill => (
-                                <Badge key={skill} variant="secondary">{skill}</Badge>
-                              ))}
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-700">Availability</h4>
-                            <Badge className="bg-green-500">Available for projects</Badge>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+          <CardContent className="space-y-4">
+            {isEditing ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Name</label>
+                    <Input
+                      value={editedUser.name}
+                      onChange={(e) => setEditedUser(prev => ({ ...prev, name: e.target.value }))}
+                    />
                   </div>
-
-                  {/* Sidebar */}
-                  <div className="space-y-6">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Quick Stats</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600">Groups Joined</span>
-                          <Badge variant="outline">12</Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600">Messages Sent</span>
-                          <Badge variant="outline">1,247</Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600">Connections</span>
-                          <Badge variant="outline">89</Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600">Rating</span>
-                          <div className="flex items-center gap-1">
-                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                            <span>4.8</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Recent Activity</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            <span className="text-sm">Joined Tech Innovators group</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <span className="text-sm">Sent message to Sarah Johnson</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                            <span className="text-sm">Updated profile picture</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Email</label>
+                    <Input
+                      value={editedUser.email || ''}
+                      onChange={(e) => setEditedUser(prev => ({ ...prev, email: e.target.value }))}
+                    />
                   </div>
                 </div>
-              </TabsContent>
-
-              <TabsContent value="messages" className="p-0">
-                <div className="flex h-[700px]">
-                  {/* Conversations List */}
-                  <div className="w-80 border-r bg-gray-50">
-                    <div className="p-4 border-b bg-white">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-lg">Messages</h3>
-                        <Button size="sm" className="bg-blue-500 hover:bg-blue-600">
-                          <MessageCircle className="h-4 w-4 mr-2" />
-                          New Chat
-                        </Button>
-                      </div>
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input
-                          placeholder="Search conversations..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-9"
-                        />
-                      </div>
-                    </div>
-                    
-                    <ScrollArea className="flex-1">
-                      <div className="p-2">
-                        {conversations.map((conversation) => (
-                          <div
-                            key={conversation.id}
-                            onClick={() => setSelectedConversation(conversation.id)}
-                            className={`p-3 rounded-lg cursor-pointer transition-colors mb-2 ${
-                              selectedConversation === conversation.id 
-                                ? 'bg-blue-100 border-blue-300 border' 
-                                : 'hover:bg-gray-100'
-                            }`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="relative">
-                                <Avatar className="h-10 w-10">
-                                  <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                                    {conversation.participant.avatar}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${getStatusColor(conversation.participant.status)}`}></div>
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between">
-                                  <h4 className="font-medium text-gray-900 truncate">
-                                    {conversation.participant.name}
-                                  </h4>
-                                  <span className="text-xs text-gray-500">
-                                    {formatTime(conversation.timestamp)}
-                                  </span>
-                                </div>
-                                <p className="text-sm text-gray-600 truncate">
-                                  {conversation.lastMessage}
-                                </p>
-                                <div className="flex items-center justify-between mt-1">
-                                  <Badge 
-                                    variant="outline" 
-                                    className={`text-xs ${
-                                      conversation.type === 'business' ? 'border-green-300 text-green-700' : 'border-blue-300 text-blue-700'
-                                    }`}
-                                  >
-                                    {conversation.type}
-                                  </Badge>
-                                  {conversation.unread > 0 && (
-                                    <Badge className="bg-red-500 text-white text-xs">
-                                      {conversation.unread}
-                                    </Badge>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </ScrollArea>
-                  </div>
-
-                  {/* Chat Area */}
-                  <div className="flex-1 flex flex-col">
-                    {selectedConversation ? (
-                      <>
-                        {/* Chat Header */}
-                        <div className="p-4 border-b bg-white">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              {(() => {
-                                const conv = conversations.find(c => c.id === selectedConversation);
-                                return conv ? (
-                                  <>
-                                    <div className="relative">
-                                      <Avatar className="h-10 w-10">
-                                        <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                                          {conv.participant.avatar}
-                                        </AvatarFallback>
-                                      </Avatar>
-                                      <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${getStatusColor(conv.participant.status)}`}></div>
-                                    </div>
-                                    <div>
-                                      <h3 className="font-semibold">{conv.participant.name}</h3>
-                                      <p className="text-sm text-gray-500">
-                                        {conv.participant.status === 'online' ? 'Active now' : `Last seen ${conv.participant.lastSeen}`}
-                                      </p>
-                                    </div>
-                                  </>
-                                ) : null;
-                              })()}
-                            </div>
-                            <div className="flex gap-2">
-                              <Button variant="ghost" size="sm">
-                                <Video className="h-4 w-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <Phone className="h-4 w-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Messages */}
-                        <ScrollArea className="flex-1 p-4">
-                          <div className="space-y-4">
-                            {mockMessages.map((message) => (
-                              <div
-                                key={message.id}
-                                className={`flex ${message.senderId === user.id ? 'justify-end' : 'justify-start'}`}
-                              >
-                                <div
-                                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                                    message.senderId === user.id
-                                      ? 'bg-blue-500 text-white'
-                                      : 'bg-gray-100 text-gray-800'
-                                  }`}
-                                >
-                                  <p className="text-sm">{message.content}</p>
-                                  <div className={`text-xs mt-1 ${
-                                    message.senderId === user.id ? 'text-blue-100' : 'text-gray-500'
-                                  }`}>
-                                    {formatTime(message.timestamp)}
-                                    {message.senderId === user.id && (
-                                      <span className="ml-2">
-                                        {message.status === 'read' ? '✓✓' : message.status === 'delivered' ? '✓' : '⏰'}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </ScrollArea>
-
-                        {/* Message Input */}
-                        <div className="p-4 border-t bg-white">
-                          <div className="flex gap-2 items-end">
-                            <Button variant="ghost" size="sm">
-                              <Paperclip className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Image className="h-4 w-4" />
-                            </Button>
-                            <div className="flex-1 relative">
-                              <Textarea
-                                value={newMessage}
-                                onChange={(e) => setNewMessage(e.target.value)}
-                                placeholder="Type your message..."
-                                className="min-h-0 resize-none pr-12"
-                                rows={1}
-                                onKeyPress={(e) => {
-                                  if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    handleSendMessage();
-                                  }
-                                }}
-                              />
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-2 bottom-2"
-                              >
-                                <Smile className="h-4 w-4" />
-                              </Button>
-                            </div>
-                            <Button 
-                              onClick={handleSendMessage}
-                              disabled={!newMessage.trim()}
-                              className="bg-blue-500 hover:bg-blue-600"
-                            >
-                              <Send className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <div className="flex-1 flex items-center justify-center bg-gray-50">
-                        <div className="text-center">
-                          <MessageCircle className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                          <h3 className="text-lg font-medium text-gray-900 mb-2">Select a conversation</h3>
-                          <p className="text-gray-500">Choose a conversation from the sidebar to start messaging</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Bio</label>
+                  <Textarea
+                    value={editedUser.bio || ''}
+                    onChange={(e) => setEditedUser(prev => ({ ...prev, bio: e.target.value }))}
+                    placeholder="Tell us about yourself..."
+                    rows={4}
+                  />
                 </div>
-              </TabsContent>
-
-              <TabsContent value="activity" className="p-6">
-                <div className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Recent Activity</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {[
-                          { action: 'Joined', target: 'Tech Innovators Global', time: '2 hours ago', type: 'group' },
-                          { action: 'Sent message to', target: 'Sarah Johnson', time: '5 hours ago', type: 'message' },
-                          { action: 'Updated', target: 'Profile information', time: '1 day ago', type: 'profile' },
-                          { action: 'Connected with', target: 'Mike Chen', time: '2 days ago', type: 'connection' }
-                        ].map((activity, index) => (
-                          <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                            <div className={`w-3 h-3 rounded-full ${
-                              activity.type === 'group' ? 'bg-blue-500' :
-                              activity.type === 'message' ? 'bg-green-500' :
-                              activity.type === 'profile' ? 'bg-purple-500' : 'bg-orange-500'
-                            }`}></div>
-                            <div className="flex-1">
-                              <p className="text-sm">
-                                <span className="font-medium">{activity.action}</span> {activity.target}
-                              </p>
-                              <p className="text-xs text-gray-500">{activity.time}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveProfile}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Changes
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsEditing(false)}>
+                    Cancel
+                  </Button>
                 </div>
-              </TabsContent>
-
-              <TabsContent value="settings" className="p-6">
-                <div className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Shield className="h-5 w-5" />
-                        Privacy & Security
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium">Profile Visibility</h4>
-                          <p className="text-sm text-gray-600">Control who can see your profile</p>
-                        </div>
-                        <Badge variant="outline">Public</Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium">Message Requests</h4>
-                          <p className="text-sm text-gray-600">Allow messages from non-connections</p>
-                        </div>
-                        <Badge variant="outline">Enabled</Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium">Online Status</h4>
-                          <p className="text-sm text-gray-600">Show when you're online</p>
-                        </div>
-                        <Badge variant="outline">Visible</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
+              </>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">About</h3>
+                  <p className="text-gray-600">
+                    {user.bio || 'No bio available. Click edit to add your bio.'}
+                  </p>
                 </div>
-              </TabsContent>
-            </Tabs>
+                <Separator />
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Contact Information</h3>
+                  <p className="text-gray-600">Email: {user.email || 'Not provided'}</p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
-      </div>
+      )}
+
+      {/* Messages Tab with 27 Advanced Features */}
+      {activeTab === 'messages' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Contacts List */}
+          <Card className="lg:col-span-1">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">Messages</CardTitle>
+                <Button size="sm" variant="ghost">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="space-y-2">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Search contacts..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <div className="flex gap-1">
+                  {[
+                    { id: 'all', label: 'All' },
+                    { id: 'unread', label: 'Unread' },
+                    { id: 'favorites', label: 'Favorites' }
+                  ].map((filter) => (
+                    <Button
+                      key={filter.id}
+                      size="sm"
+                      variant={messageFilter === filter.id ? 'default' : 'outline'}
+                      onClick={() => setMessageFilter(filter.id as any)}
+                    >
+                      {filter.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ScrollArea className="h-96">
+                {filteredContacts.map((contact) => (
+                  <div
+                    key={contact.id}
+                    className={`p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors ${
+                      selectedContact?.id === contact.id ? 'bg-blue-50 border-blue-200' : ''
+                    }`}
+                    onClick={() => setSelectedContact(contact)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={contact.avatar} />
+                          <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        {contact.isOnline && (
+                          <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="font-medium truncate">{contact.name}</p>
+                          {contact.unreadCount > 0 && (
+                            <Badge variant="destructive" className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                              {contact.unreadCount}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500 truncate">
+                          {contact.lastMessage?.content || 'No messages yet'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </ScrollArea>
+            </CardContent>
+          </Card>
+
+          {/* Chat Area */}
+          <Card className="lg:col-span-2">
+            {selectedContact ? (
+              <>
+                <CardHeader className="border-b">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Avatar>
+                        <AvatarImage src={selectedContact.avatar} />
+                        <AvatarFallback>{selectedContact.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h3 className="font-semibold">{selectedContact.name}</h3>
+                        <p className="text-sm text-gray-500">
+                          {selectedContact.isOnline ? 'Online' : `Last seen ${selectedContact.lastSeen.toLocaleString()}`}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="ghost">
+                        <Phone className="h-4 w-4" />
+                      </Button>
+                      <Button size="sm" variant="ghost">
+                        <Video className="h-4 w-4" />
+                      </Button>
+                      <Button size="sm" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <ScrollArea className="h-96 p-4">
+                    {messages.filter(msg => 
+                      (msg.senderId === selectedContact.id && msg.receiverId === user.id) ||
+                      (msg.senderId === user.id && msg.receiverId === selectedContact.id)
+                    ).map((message) => (
+                      <div
+                        key={message.id}
+                        className={`mb-4 flex ${message.senderId === user.id ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                          message.senderId === user.id 
+                            ? 'bg-blue-500 text-white' 
+                            : 'bg-gray-100'
+                        }`}>
+                          <p className="text-sm">{message.content}</p>
+                          <p className="text-xs opacity-70 mt-1">
+                            {message.timestamp.toLocaleTimeString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </ScrollArea>
+                  <div className="border-t p-4">
+                    {replyingTo && (
+                      <div className="bg-gray-50 p-2 rounded mb-2 text-sm">
+                        <p className="font-medium">Replying to:</p>
+                        <p className="text-gray-600 truncate">{replyingTo.content}</p>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setReplyingTo(null)}
+                          className="h-6 w-6 p-0 ml-2"
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Type a message..."
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                        className="flex-1"
+                      />
+                      <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </>
+            ) : (
+              <div className="h-96 flex items-center justify-center text-gray-500">
+                <div className="text-center">
+                  <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Select a contact to start messaging</p>
+                </div>
+              </div>
+            )}
+          </Card>
+        </div>
+      )}
+
+      {/* Settings Tab */}
+      {activeTab === 'settings' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Account Settings</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <h3 className="font-semibold">Privacy & Security</h3>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span>Profile Visibility</span>
+                  <Button variant="outline" size="sm">
+                    <Eye className="h-4 w-4 mr-2" />
+                    Public
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Message Requests</span>
+                  <Button variant="outline" size="sm">
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Everyone
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <Separator />
+            <div className="space-y-4">
+              <h3 className="font-semibold">Notifications</h3>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span>Message Notifications</span>
+                  <Button variant="outline" size="sm">
+                    <Bell className="h-4 w-4 mr-2" />
+                    Enabled
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
