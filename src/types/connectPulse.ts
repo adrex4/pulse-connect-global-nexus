@@ -7,6 +7,7 @@ export type Step =
   | 'business-niche'
   | 'freelancer-gig'
   | 'freelancer-groups'
+  | 'freelancer-location'
   | 'business-groups'
   | 'groups'
   | 'portfolio'
@@ -44,6 +45,8 @@ export interface Group {
   scope: 'local' | 'regional' | 'global';
   isPublic: boolean;
   location?: string;
+  country?: string;
+  region?: string;
   verified?: boolean;
   trending?: boolean;
   premium?: boolean;

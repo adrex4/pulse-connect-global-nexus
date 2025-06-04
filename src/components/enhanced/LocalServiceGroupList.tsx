@@ -19,7 +19,8 @@ const generateLocalServiceGroups = (user: User): Group[] => {
       scope: 'local',
       country: user.country,
       memberCount: Math.floor(Math.random() * 800) + 300,
-      description: `Community of trusted local service providers in ${user.country}. Share referrals, discuss best practices, and support each other's businesses.`
+      description: `Community of trusted local service providers in ${user.country}. Share referrals, discuss best practices, and support each other's businesses.`,
+      isPublic: true
     },
     {
       id: 'home-services-network',
@@ -27,7 +28,8 @@ const generateLocalServiceGroups = (user: User): Group[] => {
       niche: 'Home Services',
       scope: 'regional',
       memberCount: 6420,
-      description: 'Plumbers, electricians, cleaners, and handymen unite! Share job opportunities, get advice, and build professional relationships.'
+      description: 'Plumbers, electricians, cleaners, and handymen unite! Share job opportunities, get advice, and build professional relationships.',
+      isPublic: true
     },
     {
       id: 'skilled-trades-guild',
@@ -35,7 +37,8 @@ const generateLocalServiceGroups = (user: User): Group[] => {
       niche: 'Skilled Trades',
       scope: 'global',
       memberCount: 18500,
-      description: 'Global community for skilled tradespeople. Share techniques, discuss industry trends, and find opportunities worldwide.'
+      description: 'Global community for skilled tradespeople. Share techniques, discuss industry trends, and find opportunities worldwide.',
+      isPublic: true
     },
     {
       id: 'local-business-referrals',
@@ -44,7 +47,8 @@ const generateLocalServiceGroups = (user: User): Group[] => {
       scope: 'local',
       country: user.country,
       memberCount: Math.floor(Math.random() * 400) + 150,
-      description: `Trusted referral network for local businesses in ${user.country}. Help each other grow through quality referrals and partnerships.`
+      description: `Trusted referral network for local businesses in ${user.country}. Help each other grow through quality referrals and partnerships.`,
+      isPublic: true
     },
     {
       id: 'service-entrepreneurs',
@@ -52,7 +56,8 @@ const generateLocalServiceGroups = (user: User): Group[] => {
       niche: 'Entrepreneurship',
       scope: 'global',
       memberCount: 9200,
-      description: 'Entrepreneurs running service-based businesses. Share growth strategies, pricing tips, and business development insights.'
+      description: 'Entrepreneurs running service-based businesses. Share growth strategies, pricing tips, and business development insights.',
+      isPublic: true
     }
   ];
 

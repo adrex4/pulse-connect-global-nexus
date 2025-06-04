@@ -16,7 +16,8 @@ const generateBusinessGroups = (user: User): Group[] => {
       scope: 'local',
       country: user.country,
       memberCount: Math.floor(Math.random() * 300) + 120,
-      description: `Exclusive business networking group for ${user.country}. Connect with local business owners, share opportunities, and build partnerships.`
+      description: `Exclusive business networking group for ${user.country}. Connect with local business owners, share opportunities, and build partnerships.`,
+      isPublic: true
     },
     {
       id: 'business-partnerships',
@@ -24,7 +25,8 @@ const generateBusinessGroups = (user: User): Group[] => {
       niche: 'Partnerships',
       scope: 'global',
       memberCount: 8420,
-      description: 'International business partnership hub. Find co-founders, investors, suppliers, and strategic partners worldwide.'
+      description: 'International business partnership hub. Find co-founders, investors, suppliers, and strategic partners worldwide.',
+      isPublic: true
     },
     {
       id: 'industry-leaders',
@@ -32,7 +34,8 @@ const generateBusinessGroups = (user: User): Group[] => {
       niche: user.niche,
       scope: 'global',
       memberCount: Math.floor(Math.random() * 2000) + 500,
-      description: `Elite network of ${user.niche.toLowerCase()} industry leaders. Share insights, discuss trends, and collaborate on major projects.`
+      description: `Elite network of ${user.niche.toLowerCase()} industry leaders. Share insights, discuss trends, and collaborate on major projects.`,
+      isPublic: true
     },
     {
       id: 'startup-founders',
@@ -40,7 +43,8 @@ const generateBusinessGroups = (user: User): Group[] => {
       niche: 'Startups',
       scope: 'global',
       memberCount: 5240,
-      description: 'Exclusive community for startup founders and entrepreneurs. Get mentorship, find co-founders, and access funding opportunities.'
+      description: 'Exclusive community for startup founders and entrepreneurs. Get mentorship, find co-founders, and access funding opportunities.',
+      isPublic: true
     },
     {
       id: 'local-chamber',
@@ -49,7 +53,8 @@ const generateBusinessGroups = (user: User): Group[] => {
       scope: 'local',
       country: user.country,
       memberCount: Math.floor(Math.random() * 800) + 200,
-      description: `Digital extension of traditional chamber of commerce for ${user.country}. Government updates, local business support, and advocacy.`
+      description: `Digital extension of traditional chamber of commerce for ${user.country}. Government updates, local business support, and advocacy.`,
+      isPublic: true
     }
   ];
 

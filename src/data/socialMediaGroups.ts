@@ -9,7 +9,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Social Media',
       scope: 'global',
       memberCount: 15420,
-      description: 'Premier community for content creators and influencers worldwide. Share strategies, collaborate on campaigns, and grow together.'
+      description: 'Premier community for content creators and influencers worldwide. Share strategies, collaborate on campaigns, and grow together.',
+      isPublic: true
     },
     {
       id: 'brand-partnerships',
@@ -17,7 +18,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Brand Collaborations',
       scope: 'global',
       memberCount: 8740,
-      description: 'Connect with brands looking for influencer partnerships. Exclusive sponsorship opportunities and collaboration deals.'
+      description: 'Connect with brands looking for influencer partnerships. Exclusive sponsorship opportunities and collaboration deals.',
+      isPublic: true
     },
     {
       id: 'content-creators-local',
@@ -26,7 +28,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       scope: 'local',
       country: user.country,
       memberCount: Math.floor(Math.random() * 500) + 200,
-      description: `Local content creators and influencers in ${user.country}. Meet up, collaborate on local campaigns, and support each other's growth.`
+      description: `Local content creators and influencers in ${user.country}. Meet up, collaborate on local campaigns, and support each other's growth.`,
+      isPublic: true
     },
     {
       id: 'micro-influencers',
@@ -34,7 +37,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Micro-Influencing',
       scope: 'global',
       memberCount: 12300,
-      description: 'Community for micro-influencers (1K-100K followers). Perfect for growing creators to share tips and find collaboration opportunities.'
+      description: 'Community for micro-influencers (1K-100K followers). Perfect for growing creators to share tips and find collaboration opportunities.',
+      isPublic: true
     },
     {
       id: 'lifestyle-influencers',
@@ -42,7 +46,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Lifestyle',
       scope: 'global',
       memberCount: 9850,
-      description: 'Lifestyle, fashion, and beauty influencers unite! Share trends, review products, and build authentic audiences together.'
+      description: 'Lifestyle, fashion, and beauty influencers unite! Share trends, review products, and build authentic audiences together.',
+      isPublic: true
     },
     {
       id: 'tiktok-creators',
@@ -50,7 +55,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'TikTok',
       scope: 'global',
       memberCount: 22100,
-      description: 'Master the art of TikTok content creation. Learn viral trends, editing techniques, and monetization strategies.'
+      description: 'Master the art of TikTok content creation. Learn viral trends, editing techniques, and monetization strategies.',
+      isPublic: true
     },
     {
       id: 'youtube-partners',
@@ -58,7 +64,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'YouTube',
       scope: 'global',
       memberCount: 18600,
-      description: 'YouTube creators helping each other grow. Share editing tips, collaboration opportunities, and monetization advice.'
+      description: 'YouTube creators helping each other grow. Share editing tips, collaboration opportunities, and monetization advice.',
+      isPublic: true
     },
     {
       id: 'instagram-growth',
@@ -66,7 +73,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Instagram',
       scope: 'global',
       memberCount: 31200,
-      description: 'Master Instagram marketing and content creation. Learn from successful influencers and grow your following organically.'
+      description: 'Master Instagram marketing and content creation. Learn from successful influencers and grow your following organically.',
+      isPublic: true
     },
     {
       id: 'food-bloggers',
@@ -74,7 +82,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Food',
       scope: 'global',
       memberCount: 14800,
-      description: 'Food bloggers, recipe creators, and culinary influencers. Share food photography tips and collaborate with food brands.'
+      description: 'Food bloggers, recipe creators, and culinary influencers. Share food photography tips and collaborate with food brands.',
+      isPublic: true
     },
     {
       id: 'fitness-influencers',
@@ -82,7 +91,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Fitness',
       scope: 'global',
       memberCount: 19500,
-      description: 'Fitness influencers, trainers, and wellness coaches. Share workout content, nutrition tips, and fitness brand partnerships.'
+      description: 'Fitness influencers, trainers, and wellness coaches. Share workout content, nutrition tips, and fitness brand partnerships.',
+      isPublic: true
     },
     {
       id: 'gaming-streamers',
@@ -90,7 +100,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Gaming',
       scope: 'global',
       memberCount: 28400,
-      description: 'Gaming content creators, streamers, and esports influencers. Share streaming tips, game reviews, and collaboration opportunities.'
+      description: 'Gaming content creators, streamers, and esports influencers. Share streaming tips, game reviews, and collaboration opportunities.',
+      isPublic: true
     },
     {
       id: 'travel-bloggers',
@@ -98,7 +109,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Travel',
       scope: 'global',
       memberCount: 16700,
-      description: 'Travel bloggers and adventure influencers. Share destination guides, travel tips, and collaborate with tourism brands.'
+      description: 'Travel bloggers and adventure influencers. Share destination guides, travel tips, and collaborate with tourism brands.',
+      isPublic: true
     },
     {
       id: 'tech-reviewers',
@@ -106,7 +118,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Technology',
       scope: 'global',
       memberCount: 13200,
-      description: 'Technology reviewers and tech influencers. Share product reviews, tech news, and collaborate with tech brands.'
+      description: 'Technology reviewers and tech influencers. Share product reviews, tech news, and collaborate with tech brands.',
+      isPublic: true
     },
     {
       id: 'beauty-gurus',
@@ -114,7 +127,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Beauty',
       scope: 'global',
       memberCount: 21500,
-      description: 'Beauty influencers, makeup artists, and skincare experts. Share beauty tips, product reviews, and brand collaborations.'
+      description: 'Beauty influencers, makeup artists, and skincare experts. Share beauty tips, product reviews, and brand collaborations.',
+      isPublic: true
     },
     {
       id: 'parenting-bloggers',
@@ -122,7 +136,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       niche: 'Parenting',
       scope: 'global',
       memberCount: 11800,
-      description: 'Parenting bloggers and family content creators. Share parenting tips, family activities, and collaborate with family brands.'
+      description: 'Parenting bloggers and family content creators. Share parenting tips, family activities, and collaborate with family brands.',
+      isPublic: true
     },
     {
       id: `europe-creators-${user.country}`,
@@ -131,7 +146,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       scope: 'regional',
       region: 'Europe',
       memberCount: 8500,
-      description: 'Connect with content creators across Europe. Share cultural insights, collaborate on European campaigns, and grow together.'
+      description: 'Connect with content creators across Europe. Share cultural insights, collaborate on European campaigns, and grow together.',
+      isPublic: true
     },
     {
       id: `asia-pacific-creators`,
@@ -140,7 +156,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       scope: 'regional',
       region: 'Asia-Pacific',
       memberCount: 12700,
-      description: 'Dynamic community of Asia-Pacific content creators. Share trends, cultural content, and brand opportunities in the region.'
+      description: 'Dynamic community of Asia-Pacific content creators. Share trends, cultural content, and brand opportunities in the region.',
+      isPublic: true
     },
     {
       id: `americas-creators`,
@@ -149,7 +166,8 @@ export const generateSocialMediaGroups = (user: User): Group[] => {
       scope: 'regional',
       region: 'Americas',
       memberCount: 15300,
-      description: 'Unite creators from North and South America. Share market insights, collaborate on cross-border campaigns, and expand reach.'
+      description: 'Unite creators from North and South America. Share market insights, collaborate on cross-border campaigns, and expand reach.',
+      isPublic: true
     }
   ];
 };

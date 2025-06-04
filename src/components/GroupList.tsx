@@ -17,7 +17,8 @@ const generateGroups = (user: User): Group[] => {
     scope: 'local',
     country: user.country,
     memberCount: Math.floor(Math.random() * 500) + 150,
-    description: `Local ${user.niche.toLowerCase()} businesses and professionals in ${user.country}. Daily discussions, networking events, and local partnerships.`
+    description: `Local ${user.niche.toLowerCase()} businesses and professionals in ${user.country}. Daily discussions, networking events, and local partnerships.`,
+    isPublic: true
   });
 
   const regions: { [key: string]: string } = {
@@ -39,26 +40,28 @@ const generateGroups = (user: User): Group[] => {
     scope: 'regional',
     region: region,
     memberCount: Math.floor(Math.random() * 3000) + 800,
-    description: `Regional ${user.niche.toLowerCase()} community across ${region}. Cross-border collaborations, market insights, and regional opportunities.`
+    description: `Regional ${user.niche.toLowerCase()} community across ${region}. Cross-border collaborations, market insights, and regional opportunities.`,
+    isPublic: true
   });
 
-  groups.push({
-    id: `global-${user.niche}`,
-    name: `Global ${user.niche} Alliance`,
-    niche: user.niche,
-    scope: 'global',
-    memberCount: Math.floor(Math.random() * 15000) + 5000,
-    description: `Worldwide ${user.niche.toLowerCase()} community. International partnerships, global market trends, and cross-cultural business insights.`
-  });
-
-  groups.push(
+  groups.push(...[
+    {
+      id: `global-${user.niche}`,
+      name: `Global ${user.niche} Alliance`,
+      niche: user.niche,
+      scope: 'global',
+      memberCount: Math.floor(Math.random() * 15000) + 5000,
+      description: `Worldwide ${user.niche.toLowerCase()} community. International partnerships, global market trends, and cross-cultural business insights.`,
+      isPublic: true
+    },
     {
       id: 'entrepreneurs-global',
       name: 'Global Entrepreneurs Hub',
       niche: 'All Niches',
       scope: 'global',
       memberCount: 25420,
-      description: 'Premier community for entrepreneurs across all industries. Share experiences, find co-founders, and access exclusive resources.'
+      description: 'Premier community for entrepreneurs across all industries. Share experiences, find co-founders, and access exclusive resources.',
+      isPublic: true
     },
     {
       id: 'startups-local',
@@ -67,9 +70,10 @@ const generateGroups = (user: User): Group[] => {
       scope: 'local',
       country: user.country,
       memberCount: Math.floor(Math.random() * 800) + 200,
-      description: `Local startup community in ${user.country}. Perfect for early-stage companies, investors, and startup enthusiasts.`
+      description: `Local startup community in ${user.country}. Perfect for early-stage companies, investors, and startup enthusiasts.`,
+      isPublic: true
     }
-  );
+  ] as Group[]);
 
   return groups;
 };

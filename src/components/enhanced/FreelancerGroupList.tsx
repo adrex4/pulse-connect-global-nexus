@@ -23,7 +23,8 @@ const freelancerGroups: Group[] = [
     niche: 'Web Development',
     scope: 'global',
     memberCount: 15420,
-    description: 'Global community of web developers sharing knowledge, projects, and opportunities in React, Vue, Angular, and more.'
+    description: 'Global community of web developers sharing knowledge, projects, and opportunities in React, Vue, Angular, and more.',
+    isPublic: true
   },
   {
     id: '2',
@@ -31,7 +32,8 @@ const freelancerGroups: Group[] = [
     niche: 'Graphic Design',
     scope: 'global',
     memberCount: 8750,
-    description: 'Creative professionals specializing in branding, logo design, and visual communication.'
+    description: 'Creative professionals specializing in branding, logo design, and visual communication.',
+    isPublic: true
   },
   {
     id: '3',
@@ -39,7 +41,8 @@ const freelancerGroups: Group[] = [
     niche: 'Mobile Development',
     scope: 'global',
     memberCount: 12300,
-    description: 'iOS and Android developers building the next generation of mobile applications.'
+    description: 'iOS and Android developers building the next generation of mobile applications.',
+    isPublic: true
   },
   {
     id: '4',
@@ -47,7 +50,8 @@ const freelancerGroups: Group[] = [
     niche: 'Content Writing',
     scope: 'global',
     memberCount: 9850,
-    description: 'Professional writers creating compelling content for blogs, websites, and marketing campaigns.'
+    description: 'Professional writers creating compelling content for blogs, websites, and marketing campaigns.',
+    isPublic: true
   },
   {
     id: '5',
@@ -55,7 +59,8 @@ const freelancerGroups: Group[] = [
     niche: 'Digital Marketing',
     scope: 'global',
     memberCount: 11200,
-    description: 'Marketing specialists focused on SEO, social media, PPC, and growth strategies.'
+    description: 'Marketing specialists focused on SEO, social media, PPC, and growth strategies.',
+    isPublic: true
   },
   {
     id: '6',
@@ -63,7 +68,8 @@ const freelancerGroups: Group[] = [
     niche: 'UI/UX Design',
     scope: 'global',
     memberCount: 7650,
-    description: 'User experience and interface designers creating intuitive digital experiences.'
+    description: 'User experience and interface designers creating intuitive digital experiences.',
+    isPublic: true
   },
   {
     id: '7',
@@ -71,7 +77,8 @@ const freelancerGroups: Group[] = [
     niche: 'Video Production',
     scope: 'global',
     memberCount: 6420,
-    description: 'Video creators, editors, and producers for commercial, educational, and entertainment content.'
+    description: 'Video creators, editors, and producers for commercial, educational, and entertainment content.',
+    isPublic: true
   },
   {
     id: '8',
@@ -79,7 +86,8 @@ const freelancerGroups: Group[] = [
     niche: 'Data Science',
     scope: 'global',
     memberCount: 10150,
-    description: 'Data scientists and analysts working with machine learning, AI, and big data solutions.'
+    description: 'Data scientists and analysts working with machine learning, AI, and big data solutions.',
+    isPublic: true
   },
   {
     id: '9',
@@ -87,7 +95,8 @@ const freelancerGroups: Group[] = [
     niche: 'Photography',
     scope: 'global',
     memberCount: 5830,
-    description: 'Professional photographers specializing in portraits, events, commercial, and artistic photography.'
+    description: 'Professional photographers specializing in portraits, events, commercial, and artistic photography.',
+    isPublic: true
   },
   {
     id: '10',
@@ -95,7 +104,8 @@ const freelancerGroups: Group[] = [
     niche: 'Translation',
     scope: 'global',
     memberCount: 4750,
-    description: 'Professional translators and interpreters working across multiple languages and industries.'
+    description: 'Professional translators and interpreters working across multiple languages and industries.',
+    isPublic: true
   },
   {
     id: '11',
@@ -103,7 +113,8 @@ const freelancerGroups: Group[] = [
     niche: 'Copywriting',
     scope: 'global',
     memberCount: 6890,
-    description: 'Sales copywriters creating persuasive content for advertising, email campaigns, and sales pages.'
+    description: 'Sales copywriters creating persuasive content for advertising, email campaigns, and sales pages.',
+    isPublic: true
   },
   {
     id: '12',
@@ -111,7 +122,8 @@ const freelancerGroups: Group[] = [
     niche: 'Voice Over',
     scope: 'global',
     memberCount: 3240,
-    description: 'Professional voice actors for commercials, audiobooks, animations, and corporate videos.'
+    description: 'Professional voice actors for commercials, audiobooks, animations, and corporate videos.',
+    isPublic: true
   },
   {
     id: '13',
@@ -119,7 +131,8 @@ const freelancerGroups: Group[] = [
     niche: 'Social Media Management',
     scope: 'global',
     memberCount: 8950,
-    description: 'Social media experts managing brand presence across platforms and creating engaging content strategies.'
+    description: 'Social media experts managing brand presence across platforms and creating engaging content strategies.',
+    isPublic: true
   },
   {
     id: '14',
@@ -127,7 +140,8 @@ const freelancerGroups: Group[] = [
     niche: 'Blockchain Development',
     scope: 'global',
     memberCount: 4560,
-    description: 'Developers building decentralized applications, smart contracts, and cryptocurrency solutions.'
+    description: 'Developers building decentralized applications, smart contracts, and cryptocurrency solutions.',
+    isPublic: true
   },
   {
     id: '15',
@@ -135,7 +149,8 @@ const freelancerGroups: Group[] = [
     niche: 'Music Production',
     scope: 'global',
     memberCount: 5670,
-    description: 'Music producers, sound engineers, and composers creating original music and audio content.'
+    description: 'Music producers, sound engineers, and composers creating original music and audio content.',
+    isPublic: true
   },
   {
     id: '16',
@@ -143,7 +158,8 @@ const freelancerGroups: Group[] = [
     niche: 'Virtual Assistant',
     scope: 'global',
     memberCount: 12750,
-    description: 'Administrative professionals providing remote support services to businesses and entrepreneurs.'
+    description: 'Administrative professionals providing remote support services to businesses and entrepreneurs.',
+    isPublic: true
   },
   {
     id: '17',
@@ -151,7 +167,8 @@ const freelancerGroups: Group[] = [
     niche: 'Logo Design',
     scope: 'global',
     memberCount: 4320,
-    description: 'Designers specializing in brand identity and logo creation for businesses of all sizes.'
+    description: 'Designers specializing in brand identity and logo creation for businesses of all sizes.',
+    isPublic: true
   },
   {
     id: '18',
@@ -159,7 +176,8 @@ const freelancerGroups: Group[] = [
     niche: 'SEO',
     scope: 'global',
     memberCount: 7890,
-    description: 'Search engine optimization specialists helping businesses improve their online visibility.'
+    description: 'Search engine optimization specialists helping businesses improve their online visibility.',
+    isPublic: true
   },
   {
     id: '19',
@@ -167,7 +185,8 @@ const freelancerGroups: Group[] = [
     niche: 'Game Development',
     scope: 'global',
     memberCount: 6540,
-    description: 'Independent game developers creating innovative gaming experiences across all platforms.'
+    description: 'Independent game developers creating innovative gaming experiences across all platforms.',
+    isPublic: true
   },
   {
     id: '20',
@@ -175,7 +194,8 @@ const freelancerGroups: Group[] = [
     niche: 'E-commerce',
     scope: 'global',
     memberCount: 9340,
-    description: 'Professionals helping businesses build and optimize their online stores and sales funnels.'
+    description: 'Professionals helping businesses build and optimize their online stores and sales funnels.',
+    isPublic: true
   }
 ];
 
