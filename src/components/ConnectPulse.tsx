@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,10 +51,27 @@ const ConnectPulse: React.FC = () => {
     setCurrentStep(step);
   };
 
-  const handleUserTypeSelect = (type: UserType) => {
-    console.log('User type selected:', type);
+  const handleUserTypeSelect = (type: UserType, action: UserAction) => {
+    console.log('User type selected:', type, 'Action:', action);
     setUserType(type);
-    setCurrentStep('business-profile');
+    setUserAction(action);
+    
+    // Navigate based on user type and action
+    if (action === 'create') {
+      if (type === 'business') {
+        setCurrentStep('business-profile');
+      } else if (type === 'freelancer') {
+        setCurrentStep('freelancer-gig');
+      } else if (type === 'social_media_influencer') {
+        setCurrentStep('social-media-profile');
+      } else if (type === 'occupation_provider') {
+        setCurrentStep('service-selection');
+      }
+    } else if (action === 'join') {
+      setCurrentStep('groups');
+    } else {
+      setCurrentStep('browse');
+    }
   };
 
   const handleProfileDataSave = (data: any) => {
@@ -237,6 +253,7 @@ const ConnectPulse: React.FC = () => {
         user={currentUser}
         joinedGroups={joinedGroups}
         onUpdateUser={setCurrentUser}
+        onBack={handleGoBack}
       />
     );
   }
@@ -306,7 +323,7 @@ const ConnectPulse: React.FC = () => {
   if (currentStep === 'user-type') {
     return (
       <UserTypeSelector 
-        onUserTypeSelect={handleUserTypeSelect} 
+        onNext={handleUserTypeSelect} 
         onBack={handleGoBack}
       />
     );
@@ -316,7 +333,7 @@ const ConnectPulse: React.FC = () => {
     return (
       <div className="max-w-3xl mx-auto mt-12 animate-fade-in">
         <BusinessProfileCreator 
-          onSave={handleProfileDataSave} 
+          onNext={handleProfileDataSave} 
           onBack={handleGoBack}
         />
       </div>
@@ -341,7 +358,8 @@ const ConnectPulse: React.FC = () => {
     return (
       <div className="max-w-3xl mx-auto mt-12 animate-fade-in">
         <FreelancerGigCreator 
-          onSave={handleProfileDataSave}
+          userType={userType}
+          onNext={handleProfileDataSave}
           onBack={handleGoBack}
         />
       </div>
