@@ -18,7 +18,9 @@ export type Step =
   | 'freelancer-profile-preview'
   | 'social-media-profile'
   | 'social-media-profile-preview'
-  | 'local-service-profile-preview';
+  | 'local-service-profile-preview'
+  | 'profile'
+  | 'dashboard';
 
 export type UserType = 'business' | 'freelancer' | 'social_media_influencer' | 'occupation_provider';
 

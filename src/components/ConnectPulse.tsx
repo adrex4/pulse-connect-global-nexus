@@ -1,7 +1,10 @@
+
 import React, { useState } from 'react';
 import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
 import WelcomeSection from './enhanced/WelcomeSection';
 import StepManager from './enhanced/StepManager';
+import UserProfilePage from './UserProfilePage';
+import GlobalNavigation from './GlobalNavigation';
 
 const ConnectPulse = () => {
   const [currentStep, setCurrentStep] = useState<Step>('welcome');
@@ -15,6 +18,7 @@ const ConnectPulse = () => {
   const [locationData, setLocationData] = useState<any>(null);
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
   const [browsingFilter, setBrowsingFilter] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | null>(null);
+  const [joinedGroups, setJoinedGroups] = useState<Group[]>([]);
 
   const handleUserRegistration = (userData: Omit<User, 'id'>) => {
     const newUser: User = {
@@ -38,6 +42,11 @@ const ConnectPulse = () => {
         preferredScope: 'global'
       };
       setCurrentUser(newUser);
+    }
+    
+    // Add group to joined groups if not already joined
+    if (!joinedGroups.find(g => g.id === group.id)) {
+      setJoinedGroups(prev => [...prev, group]);
     }
     
     setSelectedGroup(group);
@@ -145,43 +154,93 @@ const ConnectPulse = () => {
     }
   };
 
+  // Handle navigation to profile page
+  const handleNavigateToProfile = () => {
+    if (currentUser) {
+      setCurrentStep('profile');
+    }
+  };
+
+  // Show user profile page
+  if (currentStep === 'profile' && currentUser) {
+    return (
+      <UserProfilePage
+        currentUser={currentUser}
+        joinedGroups={joinedGroups}
+        messages={messages}
+        onBack={() => setCurrentStep('welcome')}
+        onEditProfile={() => {
+          // Navigate to appropriate edit profile step based on user type
+          if (userType === 'business') {
+            setCurrentStep('business-profile');
+          } else if (userType === 'freelancer') {
+            setCurrentStep('freelancer-gig');
+          } else if (userType === 'social_media_influencer') {
+            setCurrentStep('social-media-profile');
+          } else if (userType === 'occupation_provider') {
+            setCurrentStep('service-selection');
+          } else {
+            setCurrentStep('user-type');
+          }
+        }}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4">
-      <div className="max-w-7xl mx-auto">
-        {currentStep === 'welcome' && (
-          <WelcomeSection 
-            onBrowse={() => setCurrentStep('browse')}
-            onGetStarted={() => setCurrentStep('user-type')}
-          />
-        )}
-        
-        {currentStep !== 'welcome' && (
-          <StepManager
-            currentStep={currentStep}
-            userType={userType}
-            userAction={userAction}
-            currentUser={currentUser}
-            selectedGroup={selectedGroup}
-            messages={messages}
-            profileData={profileData}
-            businessData={businessData}
-            locationData={locationData}
-            portfolioItems={portfolioItems}
-            browsingFilter={browsingFilter}
-            onStepChange={setCurrentStep}
-            onUserTypeSelect={handleUserTypeSelect}
-            onUserRegistration={handleUserRegistration}
-            onGroupJoin={handleGroupJoin}
-            onSendMessage={handleSendMessage}
-            onPortfolioSave={handlePortfolioSave}
-            onBusinessProfileSave={handleBusinessProfileSave}
-            onLocationSave={handleLocationSave}
-            onBusinessProfileEdit={handleBusinessProfileEdit}
-            setProfileData={setProfileData}
-            setCurrentUser={setCurrentUser}
-            setBrowsingFilter={setBrowsingFilter}
-          />
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      {/* Global Navigation - Show when user is logged in */}
+      {currentUser && currentStep !== 'welcome' && (
+        <GlobalNavigation 
+          currentUserType={userType}
+          onNavigate={(path) => {
+            if (path === '/profile') {
+              handleNavigateToProfile();
+            }
+            // Add other navigation handlers as needed
+          }}
+        />
+      )}
+      
+      <div className="p-4">
+        <div className="max-w-7xl mx-auto">
+          {currentStep === 'welcome' && (
+            <WelcomeSection 
+              onBrowse={() => setCurrentStep('browse')}
+              onGetStarted={() => setCurrentStep('user-type')}
+              onMyProfile={currentUser ? handleNavigateToProfile : undefined}
+              currentUser={currentUser}
+            />
+          )}
+          
+          {currentStep !== 'welcome' && currentStep !== 'profile' && (
+            <StepManager
+              currentStep={currentStep}
+              userType={userType}
+              userAction={userAction}
+              currentUser={currentUser}
+              selectedGroup={selectedGroup}
+              messages={messages}
+              profileData={profileData}
+              businessData={businessData}
+              locationData={locationData}
+              portfolioItems={portfolioItems}
+              browsingFilter={browsingFilter}
+              onStepChange={setCurrentStep}
+              onUserTypeSelect={handleUserTypeSelect}
+              onUserRegistration={handleUserRegistration}
+              onGroupJoin={handleGroupJoin}
+              onSendMessage={handleSendMessage}
+              onPortfolioSave={handlePortfolioSave}
+              onBusinessProfileSave={handleBusinessProfileSave}
+              onLocationSave={handleLocationSave}
+              onBusinessProfileEdit={handleBusinessProfileEdit}
+              setProfileData={setProfileData}
+              setCurrentUser={setCurrentUser}
+              setBrowsingFilter={setBrowsingFilter}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
