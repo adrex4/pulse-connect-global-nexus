@@ -1,3 +1,4 @@
+
 export type Step = 
   | 'welcome'
   | 'browse'
@@ -13,13 +14,11 @@ export type Step =
   | 'location'
   | 'chat'
   | 'service-selection'
-  | 'social-media-profile'
-  | 'local-service-profile'
   | 'business-profile-preview'
   | 'freelancer-profile-preview'
+  | 'social-media-profile'
   | 'social-media-profile-preview'
-  | 'local-service-profile-preview'
-  | 'dashboard';
+  | 'local-service-profile-preview';
 
 export type UserType = 'business' | 'freelancer' | 'social_media_influencer' | 'occupation_provider';
 
