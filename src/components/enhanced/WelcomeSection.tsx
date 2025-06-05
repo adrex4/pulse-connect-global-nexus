@@ -86,6 +86,16 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
           </Card>
         )}
 
+        {/* Top Right Profile Button for All Users */}
+        {currentUser && (
+          <div className="absolute top-4 right-4">
+            <Button onClick={onMyProfile} variant="outline" className="gap-2">
+              <User className="h-4 w-4" />
+              My Account
+            </Button>
+          </div>
+        )}
+
         {/* Main Header */}
         <div className="mb-12">
           <Badge variant="outline" className="mb-4 px-4 py-2">
@@ -112,6 +122,14 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
               Browse Communities
               <Users className="ml-2 h-5 w-5" />
             </Button>
+
+            {/* My Profile Button for non-logged in users or additional access */}
+            {!currentUser && (
+              <Button size="lg" variant="secondary" onClick={onMyProfile} className="text-lg px-8 py-6">
+                <User className="mr-2 h-5 w-5" />
+                My Profile
+              </Button>
+            )}
           </div>
         </div>
 
