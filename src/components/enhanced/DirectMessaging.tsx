@@ -12,7 +12,7 @@ import {
   Search, Send, Phone, Video, MoreVertical, ArrowLeft, Plus, Star, 
   Archive, Settings, Paperclip, Image, Smile, Clock, CheckCheck,
   Pin, Reply, Forward, Edit3, Trash2, Volume2, VolumeX,
-  UserPlus, UserMinus, Shield, Flag, Download, Copy
+  UserPlus, UserMinus, Shield, Flag, Download, Copy, X, MessageSquare
 } from 'lucide-react';
 import { User } from '@/types/connectPulse';
 
