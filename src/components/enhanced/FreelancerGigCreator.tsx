@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Briefcase, Plus, X } from 'lucide-react';
+import { ArrowLeft, Briefcase, Plus, X, CheckCircle, Award } from 'lucide-react';
 import { UserType } from '@/types/connectPulse';
 import ProfilePictureUploader from './ProfilePictureUploader';
 
@@ -132,60 +133,74 @@ const FreelancerGigCreator: React.FC<FreelancerGigCreatorProps> = ({
   };
 
   const placeholders = getPlaceholderText();
-  const sugggestedSkills = formData.category ? SKILL_SUGGESTIONS[formData.category as keyof typeof SKILL_SUGGESTIONS] || [] : [];
+  const suggestedSkills = formData.category ? SKILL_SUGGESTIONS[formData.category as keyof typeof SKILL_SUGGESTIONS] || [] : [];
+  const isFormValid = formData.gigTitle && formData.category && formData.description;
 
   return (
-    <div className="max-w-4xl mx-auto animate-fade-in">
-      <Card className="shadow-lg border-0 bg-white">
-        <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-t-lg">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
+    <div className="max-w-5xl mx-auto animate-fade-in p-4">
+      <Card className="shadow-2xl border-0 bg-white overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 text-white relative">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="relative flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onBack} 
+              className="text-white hover:bg-white/20 transition-all duration-200 z-10"
+            >
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div className="flex items-center gap-3">
-              <Briefcase className="h-6 w-6" />
-              <CardTitle className="text-xl">{getUserTypeTitle()}</CardTitle>
+              <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+                <Briefcase className="h-6 w-6" />
+              </div>
+              <CardTitle className="text-2xl font-bold">{getUserTypeTitle()}</CardTitle>
             </div>
           </div>
         </CardHeader>
         
-        <CardContent className="p-8 space-y-6">
-          <div className="text-center space-y-3">
-            <h3 className="text-2xl font-semibold text-gray-800">
+        <CardContent className="p-8 space-y-8 bg-gradient-to-br from-gray-50 to-white">
+          <div className="text-center space-y-4">
+            <h3 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
               Let's create your professional profile
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Share your expertise and connect with clients who need your skills
             </p>
           </div>
 
           {/* Profile Picture */}
-          <ProfilePictureUploader
-            onImageSelect={handleProfileImageChange}
-            currentImage={formData.profileImage || undefined}
-            userName={formData.gigTitle || 'Professional'}
-          />
+          <div className="flex justify-center">
+            <ProfilePictureUploader
+              onImageSelect={handleProfileImageChange}
+              currentImage={formData.profileImage || undefined}
+              userName={formData.gigTitle || 'Professional'}
+            />
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column */}
-            <div className="space-y-4">
-              <div>
-                <Label className="text-base font-medium">Service Title *</Label>
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <Label className="text-lg font-semibold flex items-center gap-2">
+                  <Award className="h-5 w-5 text-green-500" />
+                  Service Title *
+                </Label>
                 <Input
                   placeholder={placeholders.title}
                   value={formData.gigTitle}
                   onChange={(e) => handleInputChange('gigTitle', e.target.value)}
-                  className="mt-2 h-12"
+                  className="h-12 text-lg border-2 focus:border-green-500 transition-colors"
                 />
               </div>
 
-              <div>
-                <Label className="text-base font-medium">Category *</Label>
+              <div className="space-y-3">
+                <Label className="text-lg font-semibold">Category *</Label>
                 <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
-                  <SelectTrigger className="mt-2 h-12">
+                  <SelectTrigger className="h-12 text-lg border-2 focus:border-green-500">
                     <SelectValue placeholder="Select your category" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-50 bg-white">
                     {FREELANCER_CATEGORIES.map((category) => (
                       <SelectItem key={category} value={category}>
                         {category}
@@ -195,13 +210,13 @@ const FreelancerGigCreator: React.FC<FreelancerGigCreatorProps> = ({
                 </Select>
               </div>
 
-              <div>
-                <Label className="text-base font-medium">Experience Level</Label>
+              <div className="space-y-3">
+                <Label className="text-lg font-semibold">Experience Level</Label>
                 <Select value={formData.experience} onValueChange={(value) => handleInputChange('experience', value)}>
-                  <SelectTrigger className="mt-2 h-12">
+                  <SelectTrigger className="h-12 text-lg border-2 focus:border-green-500">
                     <SelectValue placeholder="Select experience level" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-50 bg-white">
                     <SelectItem value="beginner">Beginner (0-1 years)</SelectItem>
                     <SelectItem value="intermediate">Intermediate (2-4 years)</SelectItem>
                     <SelectItem value="expert">Expert (5+ years)</SelectItem>
@@ -209,64 +224,69 @@ const FreelancerGigCreator: React.FC<FreelancerGigCreatorProps> = ({
                 </Select>
               </div>
 
-              <div>
-                <Label className="text-base font-medium">Hourly Rate (Optional)</Label>
+              <div className="space-y-3">
+                <Label className="text-lg font-semibold">Hourly Rate (Optional)</Label>
                 <Input
                   placeholder="e.g., $50/hour"
                   value={formData.hourlyRate}
                   onChange={(e) => handleInputChange('hourlyRate', e.target.value)}
-                  className="mt-2 h-12"
+                  className="h-12 text-lg border-2 focus:border-green-500 transition-colors"
                 />
               </div>
             </div>
 
             {/* Right Column */}
-            <div className="space-y-4">
-              <div>
-                <Label className="text-base font-medium">Description *</Label>
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <Label className="text-lg font-semibold">Description *</Label>
                 <Textarea
                   placeholder={placeholders.description}
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
-                  className="mt-2 min-h-[120px]"
+                  className="min-h-[120px] text-lg border-2 focus:border-green-500 resize-none"
                 />
               </div>
 
-              <div>
-                <Label className="text-base font-medium">Skills & Expertise</Label>
+              <div className="space-y-4">
+                <Label className="text-lg font-semibold">Skills & Expertise</Label>
                 
                 {/* Add Custom Skill */}
-                <div className="flex gap-2 mt-2">
+                <div className="flex gap-3">
                   <Input
                     placeholder="Add a skill..."
                     value={customSkill}
                     onChange={(e) => setCustomSkill(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && addSkill(customSkill)}
-                    className="flex-1"
+                    className="flex-1 h-12 border-2 focus:border-green-500"
                   />
                   <Button 
                     onClick={() => addSkill(customSkill)}
-                    size="sm"
                     disabled={!customSkill}
+                    className="h-12 px-6 bg-green-600 hover:bg-green-700 transition-colors"
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
 
                 {/* Suggested Skills */}
-                {sugggestedSkills.length > 0 && (
-                  <div className="mt-3">
-                    <p className="text-sm text-gray-600 mb-2">Suggested skills:</p>
+                {suggestedSkills.length > 0 && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-700 mb-3">Suggested skills for {formData.category}:</p>
                     <div className="flex flex-wrap gap-2">
-                      {sugggestedSkills.map((skill) => (
+                      {suggestedSkills.map((skill) => (
                         <Button
                           key={skill}
                           variant="outline"
                           size="sm"
                           onClick={() => addSkill(skill)}
                           disabled={formData.skills.includes(skill)}
-                          className="text-xs"
+                          className={`text-sm transition-all duration-200 ${
+                            formData.skills.includes(skill)
+                              ? "bg-green-100 border-green-300 text-green-700 cursor-not-allowed"
+                              : "hover:bg-green-50 hover:border-green-400"
+                          }`}
                         >
+                          {formData.skills.includes(skill) && <CheckCircle className="h-3 w-3 mr-1" />}
                           {skill}
                         </Button>
                       ))}
@@ -276,17 +296,17 @@ const FreelancerGigCreator: React.FC<FreelancerGigCreatorProps> = ({
 
                 {/* Selected Skills */}
                 {formData.skills.length > 0 && (
-                  <div className="mt-3">
-                    <p className="text-sm text-gray-600 mb-2">Your skills:</p>
+                  <div>
+                    <p className="text-sm font-medium text-gray-700 mb-3">Your skills ({formData.skills.length}):</p>
                     <div className="flex flex-wrap gap-2">
                       {formData.skills.map((skill) => (
-                        <Badge key={skill} variant="secondary" className="px-3 py-1">
+                        <Badge key={skill} variant="secondary" className="px-3 py-2 bg-green-100 text-green-800 border border-green-200">
                           {skill}
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => removeSkill(skill)}
-                            className="ml-2 h-4 w-4 p-0 hover:bg-transparent"
+                            className="ml-2 h-4 w-4 p-0 hover:bg-red-100 hover:text-red-600 transition-colors"
                           >
                             <X className="h-3 w-3" />
                           </Button>
@@ -299,13 +319,37 @@ const FreelancerGigCreator: React.FC<FreelancerGigCreatorProps> = ({
             </div>
           </div>
 
-          <div className="pt-6">
+          {/* Progress Indicator */}
+          <div className="flex justify-center">
+            <div className="w-full max-w-md">
+              <div className="flex justify-between text-sm text-gray-600 mb-2">
+                <span>Profile Completion</span>
+                <span>{Math.round((Object.values({gigTitle: formData.gigTitle, category: formData.category, description: formData.description}).filter(Boolean).length / 3) * 100)}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-gradient-to-r from-green-500 to-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${(Object.values({gigTitle: formData.gigTitle, category: formData.category, description: formData.description}).filter(Boolean).length / 3) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-center pt-4">
             <Button
               onClick={handleSubmit}
-              disabled={!formData.gigTitle || !formData.category || !formData.description}
-              className="w-full h-12 text-lg bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+              disabled={!isFormValid}
+              className={`h-14 px-8 text-lg font-semibold transition-all duration-300 ${
+                isFormValid 
+                  ? "bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 hover:from-green-700 hover:via-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:scale-105" 
+                  : "bg-gray-300 cursor-not-allowed"
+              }`}
             >
-              Continue to Location Setup →
+              {isFormValid ? (
+                <>Continue to Location Setup →</>
+              ) : (
+                "Complete Required Fields"
+              )}
             </Button>
           </div>
         </CardContent>
