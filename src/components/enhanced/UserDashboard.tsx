@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   User, MessageCircle, Users, Settings, Bell, Crown, 
-  Calendar, Activity, MapPin, Globe, Star, Edit
+  Calendar, Activity, MapPin, Globe, Star, Edit, ArrowLeft
 } from 'lucide-react';
 import { User as UserType, Group } from '@/types/connectPulse';
 import UserProfile from '../profile/UserProfile';
@@ -17,12 +17,14 @@ interface UserDashboardProps {
   user: UserType;
   joinedGroups: Group[];
   onUpdateUser: (user: UserType) => void;
+  onBack?: () => void;
 }
 
 const UserDashboard: React.FC<UserDashboardProps> = ({ 
   user, 
   joinedGroups, 
-  onUpdateUser 
+  onUpdateUser,
+  onBack 
 }) => {
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -38,6 +40,11 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
       <Card className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-xl">
         <CardContent className="p-8">
           <div className="flex items-center gap-6">
+            {onBack && (
+              <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
             <div className="relative">
               <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
                 <AvatarImage src={user.avatar} />

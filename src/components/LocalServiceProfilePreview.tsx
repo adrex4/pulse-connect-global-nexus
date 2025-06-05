@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MapPin, Tool } from 'lucide-react';
+import { ArrowLeft, MapPin, Wrench } from 'lucide-react';
 
 interface LocalServiceProfilePreviewProps {
   profileData: any;
@@ -24,7 +24,7 @@ const LocalServiceProfilePreview: React.FC<LocalServiceProfilePreviewProps> = ({
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex items-center gap-3">
-            <Tool className="h-6 w-6" />
+            <Wrench className="h-6 w-6" />
             <CardTitle className="text-xl">Local Service Profile Preview</CardTitle>
           </div>
         </div>
