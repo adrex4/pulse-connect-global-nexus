@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,11 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import GroupList from './GroupList';
 import BusinessGroupList from './enhanced/BusinessGroupList';
-import { ArrowLeft, Users, Plus, MessageSquare } from 'lucide-react';
-import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
-import UserTypeSelector from './UserTypeSelector';
-import BusinessProfileCreator from './BusinessProfileCreator';
-import FreelancerGigCreator from './FreelancerGigCreator';
+import { ArrowLeft, Users, Plus, MessageSquare, User } from 'lucide-react';
+import { Step, UserType, UserAction, User as UserTypeInterface, Group, Message } from '@/types/connectPulse';
+import UserTypeSelector from './enhanced/UserTypeSelector';
+import BusinessProfileCreator from './enhanced/BusinessProfileCreator';
+import FreelancerGigCreator from './enhanced/FreelancerGigCreator';
 import EnhancedLocationSelector from './enhanced/EnhancedLocationSelector';
 import ServiceSelector from './enhanced/ServiceSelector';
 import PortfolioUploader from './enhanced/PortfolioUploader';
@@ -43,7 +44,7 @@ const ConnectPulse: React.FC = () => {
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserTypeInterface | null>(null);
   const [joinedGroups, setJoinedGroups] = useState<Group[]>([]);
 
   const handleStepChange = (step: Step) => {
@@ -132,11 +133,13 @@ const ConnectPulse: React.FC = () => {
       setCurrentStep('business-groups');
     } else if (currentStep === 'freelancer-profile-preview') {
       setCurrentStep('freelancer-location');
+    } else if (currentStep === 'dashboard') {
+      setCurrentStep('welcome');
     }
   };
 
-  const handleUserRegistration = (userData: Omit<User, 'id'>) => {
-    const newUser: User = {
+  const handleUserRegistration = (userData: Omit<UserTypeInterface, 'id'>) => {
+    const newUser: UserTypeInterface = {
       id: Date.now().toString(),
       ...userData
     };
@@ -385,7 +388,7 @@ const ConnectPulse: React.FC = () => {
     onUserRegistration: handleUserRegistration,
     onGroupJoin: handleGroupJoin,
     onSendMessage: handleSendMessage,
-    onPortfolioSave: setPortfolioSave,
+    onPortfolioSave: handlePortfolioSave,
     onLocationSave: handleLocationSave,
     setProfileData: setProfileData
   };

@@ -12,7 +12,8 @@ import {
   Send, Star, Archive, Trash2, Flag, Reply, Forward, Copy, 
   Edit, Check, CheckCheck, Clock, Eye, EyeOff, Volume2, VolumeX,
   Image, File, Calendar, MapPin, Heart, ThumbsUp, Zap, Gift,
-  Settings, Filter, Download, Upload, Lock, Unlock, Users, User
+  Settings, Filter, Download, Upload, Lock, Unlock, Users, User,
+  MessageCircle
 } from 'lucide-react';
 import { User as UserType } from '@/types/connectPulse';
 
