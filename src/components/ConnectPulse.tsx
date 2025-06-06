@@ -27,8 +27,9 @@ const ConnectPulse = () => {
       description: 'A community for web developers to share knowledge and collaborate',
       memberCount: 1250,
       category: 'Technology',
-      isPrivate: false,
-      tags: ['React', 'JavaScript', 'Web Development']
+      scope: 'global',
+      isPublic: true,
+      niche: 'Web Development'
     },
     {
       id: '2',
@@ -36,8 +37,9 @@ const ConnectPulse = () => {
       description: 'Connect with marketing professionals and share strategies',
       memberCount: 850,
       category: 'Marketing',
-      isPrivate: false,
-      tags: ['SEO', 'Social Media', 'Content Marketing']
+      scope: 'regional',
+      isPublic: true,
+      niche: 'Digital Marketing'
     },
     {
       id: '3',
@@ -45,8 +47,9 @@ const ConnectPulse = () => {
       description: 'A private network for startup founders to connect and support each other',
       memberCount: 320,
       category: 'Business',
-      isPrivate: true,
-      tags: ['Entrepreneurship', 'Funding', 'Growth']
+      scope: 'global',
+      isPublic: false,
+      niche: 'Entrepreneurship'
     }
   ];
 
