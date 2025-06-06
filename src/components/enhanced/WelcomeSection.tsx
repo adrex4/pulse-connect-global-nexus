@@ -53,6 +53,16 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
     { number: "98%", label: "Success Rate" }
   ];
 
+  // Handle My Profile button click with better error handling
+  const handleMyProfileClick = () => {
+    console.log('My Profile button clicked');
+    if (onMyProfile) {
+      onMyProfile();
+    } else {
+      console.warn('onMyProfile function not provided');
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background Elements */}
@@ -78,7 +88,11 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
                   <p className="text-sm text-gray-600">{currentUser.niche}</p>
                 </div>
               </div>
-              <Button onClick={onMyProfile} className="w-full gap-2">
+              <Button 
+                onClick={handleMyProfileClick} 
+                className="w-full gap-2"
+                type="button"
+              >
                 <User className="h-4 w-4" />
                 Go to My Profile
               </Button>
@@ -87,9 +101,14 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
         )}
 
         {/* Top Right Profile Button for All Users */}
-        {currentUser && (
+        {currentUser && onMyProfile && (
           <div className="absolute top-4 right-4">
-            <Button onClick={onMyProfile} variant="outline" className="gap-2">
+            <Button 
+              onClick={handleMyProfileClick} 
+              variant="outline" 
+              className="gap-2"
+              type="button"
+            >
               <User className="h-4 w-4" />
               My Account
             </Button>
@@ -113,19 +132,36 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" onClick={onGetStarted} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-lg px-8 py-6">
+            <Button 
+              size="lg" 
+              onClick={onGetStarted} 
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-lg px-8 py-6"
+              type="button"
+            >
               Get Started
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             
-            <Button size="lg" variant="outline" onClick={onBrowse} className="text-lg px-8 py-6">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={onBrowse} 
+              className="text-lg px-8 py-6"
+              type="button"
+            >
               Browse Communities
               <Users className="ml-2 h-5 w-5" />
             </Button>
 
             {/* My Profile Button for non-logged in users or additional access */}
-            {!currentUser && (
-              <Button size="lg" variant="secondary" onClick={onMyProfile} className="text-lg px-8 py-6">
+            {onMyProfile && (
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                onClick={handleMyProfileClick} 
+                className="text-lg px-8 py-6"
+                type="button"
+              >
                 <User className="mr-2 h-5 w-5" />
                 My Profile
               </Button>
@@ -172,11 +208,23 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
               Join thousands of professionals who are already building meaningful connections and growing their careers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" onClick={onGetStarted} className="text-lg px-8">
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                onClick={onGetStarted} 
+                className="text-lg px-8"
+                type="button"
+              >
                 Start Your Journey
                 <TrendingUp className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline" onClick={onBrowse} className="text-lg px-8 bg-transparent border-white text-white hover:bg-white hover:text-indigo-600">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                onClick={onBrowse} 
+                className="text-lg px-8 bg-transparent border-white text-white hover:bg-white hover:text-indigo-600"
+                type="button"
+              >
                 Explore First
                 <Star className="ml-2 h-5 w-5" />
               </Button>
