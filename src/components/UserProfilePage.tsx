@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +8,9 @@ import {
   User, MessageSquare, Users, Activity, Calendar, 
   MapPin, Edit, Settings, Bell, Heart, Share2,
   TrendingUp, Clock, Star, Trophy, Target, 
-  BookOpen, Award, Network, Zap, Shield
+  BookOpen, Award, Network, Zap, Shield, CheckCircle,
+  ArrowLeft, Download, Upload, MoreHorizontal, Copy,
+  Sparkles, Gift, Camera
 } from 'lucide-react';
 import { User as UserType, Group, Message } from '@/types/connectPulse';
 import DirectMessaging from './enhanced/DirectMessaging';
@@ -36,6 +37,7 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
   const [showDirectMessaging, setShowDirectMessaging] = useState(false);
   const [notifications, setNotifications] = useState(3);
   const [connectionRequests, setConnectionRequests] = useState(5);
+  const [isProfileShared, setIsProfileShared] = useState(false);
 
   // Calculate enhanced user statistics
   const userStats = {
@@ -51,100 +53,50 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
     skillsRated: 8
   };
 
-  // Enhanced activity data
-  const recentActivity = [
-    {
-      id: '1',
-      type: 'group_join',
-      title: 'Joined Web Developers Community',
-      description: 'Connected with 500+ developers',
-      time: '2 hours ago',
-      icon: Users,
-      color: 'text-blue-600'
-    },
-    {
-      id: '2',
-      type: 'message',
-      title: 'Posted in React Experts Group',
-      description: 'Shared insights about React 18 features',
-      time: '4 hours ago',
-      icon: MessageSquare,
-      color: 'text-green-600'
-    },
-    {
-      id: '3',
-      type: 'achievement',
-      title: 'Earned "Active Member" badge',
-      description: 'Reached 100 community interactions',
-      time: '1 day ago',
-      icon: Trophy,
-      color: 'text-yellow-600'
-    },
-    {
-      id: '4',
-      type: 'like',
-      title: 'Received 15 endorsements',
-      description: 'Your expertise was recognized',
-      time: '2 days ago',
-      icon: Heart,
-      color: 'text-red-600'
-    },
-    {
-      id: '5',
-      type: 'connection',
-      title: 'New connection with Sarah Johnson',
-      description: 'Now connected via Tech Innovators group',
-      time: '3 days ago',
-      icon: Network,
-      color: 'text-purple-600'
-    }
-  ];
-
-  // Professional achievements
-  const achievements = [
-    { id: 1, title: 'Community Leader', description: 'Led 5+ group discussions', icon: Trophy, earned: true },
-    { id: 2, title: 'Mentor', description: 'Helped 10+ community members', icon: Award, earned: true },
-    { id: 3, title: 'Expert Contributor', description: 'Made 50+ valuable posts', icon: Star, earned: true },
-    { id: 4, title: 'Network Builder', description: 'Connected 100+ professionals', icon: Network, earned: true },
-    { id: 5, title: 'Knowledge Sharer', description: 'Shared 25+ resources', icon: BookOpen, earned: false },
-    { id: 6, title: 'Innovation Champion', description: 'Pioneered new ideas', icon: Zap, earned: false }
-  ];
-
-  // Function 1: Direct Messaging System
+  // Enhanced functionality handlers
   const handleDirectMessaging = () => {
+    console.log('Opening direct messaging system');
     setShowDirectMessaging(true);
   };
 
-  // Function 2: Connection Management
   const handleConnectionRequests = () => {
     console.log('Managing connection requests');
-    // Implementation for connection management
+    setConnectionRequests(0);
   };
 
-  // Function 3: Notification Center
   const handleNotifications = () => {
     console.log('Opening notification center');
     setNotifications(0);
   };
 
-  // Function 4: Skills & Endorsements
   const handleSkillsEndorsements = () => {
     console.log('Managing skills and endorsements');
   };
 
-  // Function 5: Privacy & Security Settings
   const handlePrivacySettings = () => {
     console.log('Opening privacy settings');
   };
 
-  // Function 6: Activity Analytics
   const handleActivityAnalytics = () => {
     console.log('Viewing activity analytics');
   };
 
-  // Function 7: Professional Portfolio
   const handlePortfolioManagement = () => {
     console.log('Managing professional portfolio');
+  };
+
+  const handleShareProfile = () => {
+    navigator.clipboard.writeText(`${window.location.origin}/profile/${currentUser.id}`);
+    setIsProfileShared(true);
+    setTimeout(() => setIsProfileShared(false), 2000);
+  };
+
+  const handleDownloadProfile = () => {
+    console.log('Downloading profile data');
+  };
+
+  const handleUploadAvatar = () => {
+    console.log('Uploading new avatar');
   };
 
   if (showDirectMessaging) {
@@ -157,93 +109,126 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Enhanced Header with Notifications */}
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" onClick={onBack} className="gap-2">
-            ← Back to App
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
+        {/* Enhanced Header with Better Navigation */}
+        <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-lg border-0">
+          <Button variant="ghost" onClick={onBack} className="gap-2 hover:bg-gray-100">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Dashboard
           </Button>
-          <div className="flex gap-2">
-            {/* Function 3: Notification Center */}
-            <Button variant="outline" onClick={handleNotifications} className="gap-2 relative">
+          
+          <div className="flex items-center gap-3">
+            {/* Notification Center */}
+            <Button 
+              variant="outline" 
+              onClick={handleNotifications} 
+              className="gap-2 relative hover:bg-blue-50 border-blue-200"
+            >
               <Bell className="h-4 w-4" />
               Notifications
               {notifications > 0 && (
-                <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
                   {notifications}
                 </Badge>
               )}
             </Button>
             
-            {/* Function 1: Direct Messages */}
-            <Button variant="outline" onClick={handleDirectMessaging} className="gap-2">
+            {/* Direct Messages */}
+            <Button 
+              variant="outline" 
+              onClick={handleDirectMessaging} 
+              className="gap-2 hover:bg-green-50 border-green-200"
+            >
               <MessageSquare className="h-4 w-4" />
-              Direct Messages
+              Messages
             </Button>
             
-            <Button variant="outline" onClick={onEditProfile} className="gap-2">
+            {/* Profile Actions */}
+            <Button 
+              variant="outline" 
+              onClick={onEditProfile} 
+              className="gap-2 hover:bg-purple-50 border-purple-200"
+            >
               <Edit className="h-4 w-4" />
               Edit Profile
             </Button>
             
-            {/* Function 5: Privacy Settings */}
-            <Button variant="outline" onClick={handlePrivacySettings}>
-              <Shield className="h-4 w-4" />
+            {/* More Options */}
+            <Button variant="outline" className="px-3">
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         {/* Enhanced Profile Header */}
-        <Card className="shadow-lg">
-          <CardContent className="pt-6">
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex flex-col items-center md:items-start">
-                <Avatar className="h-28 w-28 mb-4 border-4 border-white shadow-lg">
-                  <AvatarImage src={currentUser.avatar} />
-                  <AvatarFallback className="text-xl bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                    {currentUser.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex gap-2 mb-4">
-                  <Badge variant="secondary" className="bg-gradient-to-r from-blue-100 to-purple-100">
+        <Card className="shadow-xl border-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white overflow-hidden">
+          <CardContent className="pt-8 pb-6">
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Avatar and Basic Info */}
+              <div className="flex flex-col items-center lg:items-start">
+                <div className="relative group">
+                  <Avatar className="h-32 w-32 mb-4 border-4 border-white shadow-2xl">
+                    <AvatarImage src={currentUser.avatar} />
+                    <AvatarFallback className="text-2xl bg-white text-blue-600 font-bold">
+                      {currentUser.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <Button
+                    size="sm"
+                    className="absolute bottom-2 right-2 h-8 w-8 rounded-full bg-white text-blue-600 hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={handleUploadAvatar}
+                  >
+                    <Camera className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-4 justify-center lg:justify-start">
+                  <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                    <Sparkles className="w-3 h-3 mr-1" />
                     {currentUser.niche}
                   </Badge>
-                  <Badge className="bg-green-100 text-green-800">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></div>
-                    Active
+                  <Badge className="bg-green-500/20 text-green-100 border-green-300/30">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                    Online
                   </Badge>
-                  <Badge className="bg-yellow-100 text-yellow-800">
+                  <Badge className="bg-yellow-500/20 text-yellow-100 border-yellow-300/30">
                     <Star className="w-3 h-3 mr-1" />
-                    Pro
+                    Pro Member
                   </Badge>
                 </div>
               </div>
 
-              <div className="flex-1">
-                <div className="flex flex-col md:flex-row md:items-start justify-between mb-6">
+              {/* Profile Details */}
+              <div className="flex-1 text-center lg:text-left">
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between mb-6">
                   <div>
-                    <h1 className="text-4xl font-bold text-gray-900 mb-2">{currentUser.name}</h1>
-                    <p className="text-lg text-gray-600 mb-2">{currentUser.email}</p>
-                    <div className="flex items-center gap-6 text-sm text-gray-500 mb-4">
-                      <div className="flex items-center gap-1">
+                    <h1 className="text-4xl lg:text-5xl font-bold mb-3 bg-gradient-to-r from-white to-blue-100 bg-clip-text">
+                      {currentUser.name}
+                    </h1>
+                    <p className="text-xl text-blue-100 mb-3">{currentUser.email}</p>
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-blue-100 mb-4 justify-center lg:justify-start">
+                      <div className="flex items-center gap-2">
                         <MapPin className="h-4 w-4" />
                         {currentUser.country}
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4" />
                         Member for {userStats.accountAge} days
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4" />
                         Last active: 2 hours ago
                       </div>
                     </div>
                   </div>
                   
-                  {/* Function 2: Connection Requests */}
-                  <div className="flex flex-col gap-2">
-                    <Button onClick={handleConnectionRequests} className="gap-2 relative">
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-3">
+                    <Button 
+                      onClick={handleConnectionRequests} 
+                      className="gap-2 relative bg-white text-blue-600 hover:bg-blue-50"
+                    >
                       <Users className="h-4 w-4" />
                       Connections ({userStats.connections})
                       {connectionRequests > 0 && (
@@ -252,41 +237,58 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
                         </Badge>
                       )}
                     </Button>
-                    <Button variant="outline" className="gap-2">
-                      <Share2 className="h-4 w-4" />
-                      Share Profile
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        className="gap-2 border-white text-white hover:bg-white hover:text-blue-600"
+                        onClick={handleShareProfile}
+                      >
+                        {isProfileShared ? <CheckCircle className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                        {isProfileShared ? 'Copied!' : 'Share'}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="border-white text-white hover:bg-white hover:text-blue-600"
+                        onClick={handleDownloadProfile}
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
+                {/* Bio Section */}
                 {currentUser.bio && (
-                  <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                    <h3 className="font-semibold mb-2">About</h3>
-                    <p className="text-gray-700">{currentUser.bio}</p>
+                  <div className="mb-6 p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      <BookOpen className="h-5 w-5" />
+                      About Me
+                    </h3>
+                    <p className="text-blue-50 leading-relaxed">{currentUser.bio}</p>
                   </div>
                 )}
 
-                {/* Enhanced Quick Stats Grid */}
+                {/* Enhanced Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                  <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">{userStats.groupsJoined}</div>
-                    <div className="text-sm text-gray-600">Groups</div>
+                  <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/20 transition-all">
+                    <div className="text-2xl font-bold">{userStats.groupsJoined}</div>
+                    <div className="text-xs text-blue-100">Communities</div>
                   </div>
-                  <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">{userStats.connections}</div>
-                    <div className="text-sm text-gray-600">Connections</div>
+                  <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/20 transition-all">
+                    <div className="text-2xl font-bold">{userStats.connections}</div>
+                    <div className="text-xs text-blue-100">Connections</div>
                   </div>
-                  <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">{userStats.reputation}</div>
-                    <div className="text-sm text-gray-600">Reputation</div>
+                  <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/20 transition-all">
+                    <div className="text-2xl font-bold">{userStats.reputation}</div>
+                    <div className="text-xs text-blue-100">Reputation</div>
                   </div>
-                  <div className="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg">
-                    <div className="text-2xl font-bold text-yellow-600">{userStats.profileViews}</div>
-                    <div className="text-sm text-gray-600">Profile Views</div>
+                  <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/20 transition-all">
+                    <div className="text-2xl font-bold">{userStats.profileViews}</div>
+                    <div className="text-xs text-blue-100">Profile Views</div>
                   </div>
-                  <div className="text-center p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-lg">
-                    <div className="text-2xl font-bold text-red-600">{userStats.endorsements}</div>
-                    <div className="text-sm text-gray-600">Endorsements</div>
+                  <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/20 transition-all">
+                    <div className="text-2xl font-bold">{userStats.endorsements}</div>
+                    <div className="text-xs text-blue-100">Endorsements</div>
                   </div>
                 </div>
               </div>
@@ -294,53 +296,72 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
           </CardContent>
         </Card>
 
-        {/* Enhanced Function Buttons */}
-        <div className="grid md:grid-cols-4 gap-4">
-          {/* Function 1: Direct Messages */}
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleDirectMessaging}>
-            <CardContent className="p-4 text-center">
-              <MessageSquare className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-              <h3 className="font-semibold">Direct Messages</h3>
-              <p className="text-sm text-gray-600">Private conversations</p>
+        {/* Enhanced Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer group border-0 bg-gradient-to-br from-blue-50 to-blue-100" onClick={handleDirectMessaging}>
+            <CardContent className="p-6 text-center">
+              <div className="mb-4 p-4 bg-blue-100 rounded-full w-fit mx-auto group-hover:bg-blue-200 transition-colors">
+                <MessageSquare className="h-8 w-8 text-blue-600" />
+              </div>
+              <h3 className="font-semibold text-blue-900 mb-2">Direct Messages</h3>
+              <p className="text-sm text-blue-700">Private conversations & networking</p>
             </CardContent>
           </Card>
 
-          {/* Function 4: Skills & Endorsements */}
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleSkillsEndorsements}>
-            <CardContent className="p-4 text-center">
-              <Target className="h-8 w-8 mx-auto mb-2 text-green-600" />
-              <h3 className="font-semibold">Skills & Endorsements</h3>
-              <p className="text-sm text-gray-600">Showcase expertise</p>
+          <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer group border-0 bg-gradient-to-br from-green-50 to-green-100" onClick={handleSkillsEndorsements}>
+            <CardContent className="p-6 text-center">
+              <div className="mb-4 p-4 bg-green-100 rounded-full w-fit mx-auto group-hover:bg-green-200 transition-colors">
+                <Target className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="font-semibold text-green-900 mb-2">Skills & Endorsements</h3>
+              <p className="text-sm text-green-700">Showcase your expertise</p>
             </CardContent>
           </Card>
 
-          {/* Function 6: Activity Analytics */}
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleActivityAnalytics}>
-            <CardContent className="p-4 text-center">
-              <TrendingUp className="h-8 w-8 mx-auto mb-2 text-purple-600" />
-              <h3 className="font-semibold">Analytics</h3>
-              <p className="text-sm text-gray-600">Track your progress</p>
+          <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer group border-0 bg-gradient-to-br from-purple-50 to-purple-100" onClick={handleActivityAnalytics}>
+            <CardContent className="p-6 text-center">
+              <div className="mb-4 p-4 bg-purple-100 rounded-full w-fit mx-auto group-hover:bg-purple-200 transition-colors">
+                <TrendingUp className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="font-semibold text-purple-900 mb-2">Analytics Dashboard</h3>
+              <p className="text-sm text-purple-700">Track your progress & growth</p>
             </CardContent>
           </Card>
 
-          {/* Function 7: Portfolio */}
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handlePortfolioManagement}>
-            <CardContent className="p-4 text-center">
-              <BookOpen className="h-8 w-8 mx-auto mb-2 text-yellow-600" />
-              <h3 className="font-semibold">Portfolio</h3>
-              <p className="text-sm text-gray-600">Showcase your work</p>
+          <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer group border-0 bg-gradient-to-br from-yellow-50 to-yellow-100" onClick={handlePortfolioManagement}>
+            <CardContent className="p-6 text-center">
+              <div className="mb-4 p-4 bg-yellow-100 rounded-full w-fit mx-auto group-hover:bg-yellow-200 transition-colors">
+                <BookOpen className="h-8 w-8 text-yellow-600" />
+              </div>
+              <h3 className="font-semibold text-yellow-900 mb-2">Portfolio Manager</h3>
+              <p className="text-sm text-yellow-700">Showcase your best work</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Enhanced Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="groups">My Groups</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="achievements">Achievements</TabsTrigger>
-            <TabsTrigger value="stats">Statistics</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 bg-white shadow-lg border-0 p-2 rounded-xl">
+            <TabsTrigger value="overview" className="gap-2 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700">
+              <Activity className="h-4 w-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="groups" className="gap-2 data-[state=active]:bg-green-100 data-[state=active]:text-green-700">
+              <Users className="h-4 w-4" />
+              My Groups
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="gap-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700">
+              <TrendingUp className="h-4 w-4" />
+              Activity Feed
+            </TabsTrigger>
+            <TabsTrigger value="achievements" className="gap-2 data-[state=active]:bg-yellow-100 data-[state=active]:text-yellow-700">
+              <Trophy className="h-4 w-4" />
+              Achievements
+            </TabsTrigger>
+            <TabsTrigger value="stats" className="gap-2 data-[state=active]:bg-pink-100 data-[state=active]:text-pink-700">
+              <Star className="h-4 w-4" />
+              Statistics
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -350,63 +371,62 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Activity className="h-5 w-5" />
-                    Recent Activity
+                    Recent Activity Highlights
                   </CardTitle>
-                  <CardDescription>Your latest interactions and achievements</CardDescription>
+                  <CardDescription>Your latest interactions and milestones</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {recentActivity.map((activity) => (
-                    <div key={activity.id} className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                      <div className={`p-2 rounded-full ${activity.color.includes('blue') ? 'bg-blue-100' : 
-                        activity.color.includes('green') ? 'bg-green-100' :
-                        activity.color.includes('yellow') ? 'bg-yellow-100' :
-                        activity.color.includes('red') ? 'bg-red-100' : 'bg-purple-100'}`}>
-                        <activity.icon className={`h-4 w-4 ${activity.color}`} />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{activity.title}</p>
-                        <p className="text-xs text-gray-500">{activity.description}</p>
-                        <p className="text-xs text-gray-400">{activity.time}</p>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                      <MessageSquare className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <p className="font-medium">Posted in React Developers</p>
+                        <p className="text-sm text-gray-600">2 hours ago</p>
                       </div>
                     </div>
-                  ))}
-                  <Button variant="outline" className="w-full mt-4">
-                    View All Activity
-                  </Button>
+                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                      <Users className="h-5 w-5 text-green-600" />
+                      <div>
+                        <p className="font-medium">Joined AI Enthusiasts</p>
+                        <p className="text-sm text-gray-600">1 day ago</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
+                      <Trophy className="h-5 w-5 text-yellow-600" />
+                      <div>
+                        <p className="font-medium">Earned "Active Member" badge</p>
+                        <p className="text-sm text-gray-600">3 days ago</p>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* Professional Summary */}
+              {/* Quick Actions */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Professional Summary</CardTitle>
-                  <CardDescription>Your professional journey</CardDescription>
+                  <CardTitle>Quick Actions</CardTitle>
+                  <CardDescription>Common tasks and shortcuts</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">Profile Completeness</span>
-                      <span className="text-sm text-gray-600">85%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-blue-600 h-2 rounded-full" style={{ width: '85%' }}></div>
-                    </div>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button variant="outline" className="h-20 flex-col gap-2">
+                      <Edit className="h-5 w-5" />
+                      Edit Profile
+                    </Button>
+                    <Button variant="outline" className="h-20 flex-col gap-2">
+                      <Settings className="h-5 w-5" />
+                      Settings
+                    </Button>
+                    <Button variant="outline" className="h-20 flex-col gap-2">
+                      <Shield className="h-5 w-5" />
+                      Privacy
+                    </Button>
+                    <Button variant="outline" className="h-20 flex-col gap-2">
+                      <Network className="h-5 w-5" />
+                      Network
+                    </Button>
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 pt-4">
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                      <div className="text-lg font-bold text-gray-900">4.8</div>
-                      <div className="text-xs text-gray-600">Avg Rating</div>
-                    </div>
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                      <div className="text-lg font-bold text-gray-900">92%</div>
-                      <div className="text-xs text-gray-600">Response Rate</div>
-                    </div>
-                  </div>
-
-                  <Button variant="outline" className="w-full mt-4" onClick={onEditProfile}>
-                    Complete Profile
-                  </Button>
                 </CardContent>
               </Card>
             </div>
@@ -428,24 +448,16 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
           </TabsContent>
 
           <TabsContent value="achievements" className="space-y-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {achievements.map((achievement) => (
-                <Card key={achievement.id} className={`${achievement.earned ? 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200' : 'bg-gray-50 border-gray-200'}`}>
-                  <CardContent className="p-4 text-center">
-                    <achievement.icon className={`h-12 w-12 mx-auto mb-3 ${achievement.earned ? 'text-yellow-600' : 'text-gray-400'}`} />
-                    <h3 className={`font-semibold mb-2 ${achievement.earned ? 'text-yellow-800' : 'text-gray-600'}`}>
-                      {achievement.title}
-                    </h3>
-                    <p className={`text-sm ${achievement.earned ? 'text-yellow-700' : 'text-gray-500'}`}>
-                      {achievement.description}
-                    </p>
-                    {achievement.earned && (
-                      <Badge className="mt-2 bg-yellow-600">Earned</Badge>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Achievements</h2>
+              <p className="text-gray-600">Celebrate your journey and milestones on ConnectPulse</p>
             </div>
+            <UserStats 
+              currentUser={currentUser}
+              stats={userStats}
+              messages={messages}
+              groups={joinedGroups}
+            />
           </TabsContent>
 
           <TabsContent value="stats">
