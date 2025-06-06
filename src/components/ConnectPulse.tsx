@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
 import WelcomeSection from './enhanced/WelcomeSection';
@@ -19,6 +18,18 @@ const ConnectPulse = () => {
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
   const [browsingFilter, setBrowsingFilter] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | null>(null);
   const [joinedGroups, setJoinedGroups] = useState<Group[]>([]);
+
+  // Handle navigation to profile page - ALWAYS available
+  const handleNavigateToProfile = () => {
+    console.log('Navigating to profile page', { currentUser });
+    if (currentUser) {
+      setCurrentStep('profile');
+    } else {
+      // If no user, create a demo user or redirect to user creation
+      console.log('No current user, redirecting to user creation');
+      setCurrentStep('user-type');
+    }
+  };
 
   const handleUserRegistration = (userData: Omit<User, 'id'>) => {
     const newUser: User = {
@@ -154,13 +165,6 @@ const ConnectPulse = () => {
     }
   };
 
-  // Handle navigation to profile page
-  const handleNavigateToProfile = () => {
-    if (currentUser) {
-      setCurrentStep('profile');
-    }
-  };
-
   // Show user profile page
   if (currentStep === 'profile' && currentUser) {
     return (
@@ -208,7 +212,7 @@ const ConnectPulse = () => {
             <WelcomeSection 
               onBrowse={() => setCurrentStep('browse')}
               onGetStarted={() => setCurrentStep('user-type')}
-              onMyProfile={currentUser ? handleNavigateToProfile : undefined}
+              onMyProfile={handleNavigateToProfile} // ALWAYS provide this function
               currentUser={currentUser}
             />
           )}

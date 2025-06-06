@@ -55,7 +55,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
 
   // Handle My Profile button click with better error handling
   const handleMyProfileClick = () => {
-    console.log('My Profile button clicked');
+    console.log('My Profile button clicked', { onMyProfile, currentUser });
     if (onMyProfile) {
       onMyProfile();
     } else {
@@ -72,6 +72,21 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
       <div className="absolute bottom-20 left-20 w-32 h-32 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000" />
       
       <div className="relative z-10 max-w-6xl mx-auto px-4 text-center">
+        {/* Top Right Profile Button - Always visible when onMyProfile is provided */}
+        {onMyProfile && (
+          <div className="fixed top-4 right-4 z-50">
+            <Button 
+              onClick={handleMyProfileClick} 
+              variant="outline" 
+              className="gap-2 bg-white/90 backdrop-blur-sm border-2 hover:bg-white hover:scale-105 transition-all duration-200 shadow-lg"
+              type="button"
+            >
+              <User className="h-4 w-4" />
+              {currentUser ? 'My Profile' : 'Profile'}
+            </Button>
+          </div>
+        )}
+
         {/* User Welcome Section */}
         {currentUser && (
           <Card className="mb-8 mx-auto max-w-md">
@@ -98,21 +113,6 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
               </Button>
             </CardContent>
           </Card>
-        )}
-
-        {/* Top Right Profile Button for All Users */}
-        {currentUser && onMyProfile && (
-          <div className="absolute top-4 right-4">
-            <Button 
-              onClick={handleMyProfileClick} 
-              variant="outline" 
-              className="gap-2"
-              type="button"
-            >
-              <User className="h-4 w-4" />
-              My Account
-            </Button>
-          </div>
         )}
 
         {/* Main Header */}
@@ -153,13 +153,13 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
               <Users className="ml-2 h-5 w-5" />
             </Button>
 
-            {/* My Profile Button for non-logged in users or additional access */}
+            {/* My Profile Button in main actions - only show when onMyProfile is available */}
             {onMyProfile && (
               <Button 
                 size="lg" 
                 variant="secondary" 
                 onClick={handleMyProfileClick} 
-                className="text-lg px-8 py-6"
+                className="text-lg px-8 py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0"
                 type="button"
               >
                 <User className="mr-2 h-5 w-5" />
