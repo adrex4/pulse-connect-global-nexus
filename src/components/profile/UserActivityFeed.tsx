@@ -1,12 +1,11 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
-  MessageSquare, Users, Heart, Share2, Trophy, 
-  Calendar, Search, Filter, Clock
+  MessageSquare, Users, Calendar, TrendingUp, Star, 
+  Award, Clock, Heart, Share2, UserPlus
 } from 'lucide-react';
 import { User, Group, Message } from '@/types/connectPulse';
 
@@ -16,212 +15,154 @@ interface UserActivityFeedProps {
   groups: Group[];
 }
 
+interface ActivityItem {
+  id: string;
+  type: 'message' | 'group_join' | 'achievement' | 'connection' | 'like' | 'share';
+  title: string;
+  description: string;
+  timestamp: Date;
+  icon: any;
+  color: string;
+  groupName?: string;
+  messageContent?: string;
+}
+
 const UserActivityFeed: React.FC<UserActivityFeedProps> = ({ currentUser, messages, groups }) => {
-  const [filter, setFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  // Generate activity feed based on user data
+  const generateActivityFeed = (): ActivityItem[] => {
+    const activities: ActivityItem[] = [];
 
-  // Generate activity feed
-  const activities = [
-    {
-      id: '1',
-      type: 'message',
-      title: 'Posted in React Developers Group',
-      description: 'Shared insights about React 18 features and best practices for modern web development.',
-      time: '2 hours ago',
-      icon: MessageSquare,
-      group: 'React Developers',
-      engagement: { likes: 12, replies: 5 }
-    },
-    {
-      id: '2',
-      type: 'group_join',
-      title: 'Joined Vue.js Enthusiasts',
-      description: 'Became a member of the Vue.js community to learn about Vue 3 and composition API.',
-      time: '5 hours ago',
-      icon: Users,
-      group: 'Vue.js Enthusiasts',
-      engagement: null
-    },
-    {
-      id: '3',
-      type: 'achievement',
-      title: 'Earned "Helpful Member" Badge',
-      description: 'Received recognition for providing valuable assistance to community members.',
-      time: '1 day ago',
-      icon: Trophy,
-      group: null,
-      engagement: null
-    },
-    {
-      id: '4',
-      type: 'message',
-      title: 'Posted in Web Design Trends',
-      description: 'Discussed the latest design trends and shared portfolio examples.',
-      time: '2 days ago',
-      icon: MessageSquare,
-      group: 'Web Design Trends',
-      engagement: { likes: 8, replies: 3 }
-    },
-    {
-      id: '5',
-      type: 'like',
-      title: 'Liked 5 posts',
-      description: 'Engaged with community content about JavaScript frameworks and tools.',
-      time: '3 days ago',
-      icon: Heart,
-      group: null,
-      engagement: null
-    },
-    {
-      id: '6',
-      type: 'group_create',
-      title: 'Created TypeScript Masters Group',
-      description: 'Started a new community focused on advanced TypeScript development.',
-      time: '1 week ago',
-      icon: Users,
-      group: 'TypeScript Masters',
-      engagement: { members: 45 }
-    }
-  ];
+    // Add group joining activities
+    groups.forEach((group, index) => {
+      activities.push({
+        id: `group-${group.id}`,
+        type: 'group_join',
+        title: `Joined ${group.name}`,
+        description: `Connected with ${group.memberCount} members in this community`,
+        timestamp: new Date(Date.now() - (index + 1) * 1000 * 60 * 60 * 24),
+        icon: Users,
+        color: 'text-blue-600',
+        groupName: group.name
+      });
+    });
 
-  const filteredActivities = activities.filter(activity => {
-    const matchesFilter = filter === 'all' || activity.type === filter;
-    const matchesSearch = activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         activity.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+    // Add message activities
+    const userMessages = messages.filter(msg => msg.userId === currentUser.id);
+    userMessages.slice(0, 5).forEach((message, index) => {
+      const group = groups.find(g => g.id === message.groupId);
+      activities.push({
+        id: `message-${message.id}`,
+        type: 'message',
+        title: `Posted in ${group?.name || 'Community'}`,
+        description: message.content.substring(0, 100) + (message.content.length > 100 ? '...' : ''),
+        timestamp: message.timestamp,
+        icon: MessageSquare,
+        color: 'text-green-600',
+        messageContent: message.content,
+        groupName: group?.name
+      });
+    });
 
-  const getActivityColor = (type: string) => {
+    // Add achievement activities
+    const achievementActivities = [
+      {
+        id: 'achievement-1',
+        type: 'achievement' as const,
+        title: 'First Message Posted',
+        description: 'Congratulations on your first contribution to the community!',
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48),
+        icon: Award,
+        color: 'text-yellow-600'
+      },
+      {
+        id: 'achievement-2',
+        type: 'achievement' as const,
+        title: 'Community Explorer',
+        description: 'Joined multiple groups and started networking',
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72),
+        icon: Star,
+        color: 'text-purple-600'
+      }
+    ];
+
+    activities.push(...achievementActivities);
+
+    // Sort by timestamp (newest first)
+    return activities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  };
+
+  const activityFeed = generateActivityFeed();
+
+  const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'message': return 'text-blue-600 bg-blue-100';
-      case 'group_join': return 'text-green-600 bg-green-100';
-      case 'achievement': return 'text-yellow-600 bg-yellow-100';
-      case 'like': return 'text-pink-600 bg-pink-100';
-      case 'group_create': return 'text-purple-600 bg-purple-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'message': return MessageSquare;
+      case 'group_join': return Users;
+      case 'achievement': return Award;
+      case 'connection': return UserPlus;
+      case 'like': return Heart;
+      case 'share': return Share2;
+      default: return Clock;
     }
   };
 
-  const filterOptions = [
-    { value: 'all', label: 'All Activity' },
-    { value: 'message', label: 'Messages' },
-    { value: 'group_join', label: 'Group Joins' },
-    { value: 'achievement', label: 'Achievements' },
-    { value: 'like', label: 'Likes' },
-  ];
+  const getActivityColor = (type: string) => {
+    switch (type) {
+      case 'message': return 'bg-green-100 text-green-600';
+      case 'group_join': return 'bg-blue-100 text-blue-600';
+      case 'achievement': return 'bg-yellow-100 text-yellow-600';
+      case 'connection': return 'bg-purple-100 text-purple-600';
+      case 'like': return 'bg-red-100 text-red-600';
+      case 'share': return 'bg-gray-100 text-gray-600';
+      default: return 'bg-gray-100 text-gray-600';
+    }
+  };
 
   return (
     <div className="space-y-6">
-      {/* Filters and Search */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search activity..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {filterOptions.map((option) => (
-                <Button
-                  key={option.value}
-                  variant={filter === option.value ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setFilter(option.value)}
-                >
-                  {option.label}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Activity Feed */}
-      <div className="space-y-4">
-        {filteredActivities.length === 0 ? (
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <div className="text-gray-500">
-                <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No activities found matching your filters.</p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          filteredActivities.map((activity) => (
-            <Card key={activity.id} className="hover:shadow-lg transition-shadow">
-              <CardContent className="pt-6">
-                <div className="flex gap-4">
-                  <div className={`p-3 rounded-full ${getActivityColor(activity.type)}`}>
-                    <activity.icon className="h-5 w-5" />
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            Your Activity Feed
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {activityFeed.map((activity) => {
+              const IconComponent = activity.icon;
+              return (
+                <div key={activity.id} className="flex items-start gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className={`p-2 rounded-full ${getActivityColor(activity.type)}`}>
+                    <IconComponent className="h-4 w-4" />
                   </div>
-                  
                   <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{activity.title}</h3>
-                        {activity.group && (
-                          <Badge variant="outline" className="mt-1">
-                            {activity.group}
-                          </Badge>
-                        )}
-                      </div>
-                      <span className="text-sm text-gray-500 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {activity.time}
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className="font-medium">{activity.title}</h4>
+                      <span className="text-sm text-gray-500">
+                        {activity.timestamp.toLocaleDateString()}
                       </span>
                     </div>
-                    
-                    <p className="text-gray-600 mb-3">{activity.description}</p>
-                    
-                    {activity.engagement && (
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        {activity.engagement.likes && (
-                          <span className="flex items-center gap-1">
-                            <Heart className="h-4 w-4" />
-                            {activity.engagement.likes} likes
-                          </span>
-                        )}
-                        {activity.engagement.replies && (
-                          <span className="flex items-center gap-1">
-                            <MessageSquare className="h-4 w-4" />
-                            {activity.engagement.replies} replies
-                          </span>
-                        )}
-                        {activity.engagement.members && (
-                          <span className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            {activity.engagement.members} members
-                          </span>
-                        )}
-                        <Button variant="ghost" size="sm" className="ml-auto">
-                          <Share2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                    <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
+                    {activity.groupName && (
+                      <Badge variant="outline" className="text-xs">
+                        {activity.groupName}
+                      </Badge>
                     )}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
-
-      {/* Load More */}
-      {filteredActivities.length > 0 && (
-        <div className="text-center">
-          <Button variant="outline">
-            Load More Activity
-          </Button>
-        </div>
-      )}
+              );
+            })}
+            
+            {activityFeed.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>No recent activity</p>
+                <p className="text-sm">Start engaging with the community to see your activity here!</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
