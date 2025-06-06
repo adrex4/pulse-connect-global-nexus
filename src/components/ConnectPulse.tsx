@@ -19,16 +19,88 @@ const ConnectPulse = () => {
   const [browsingFilter, setBrowsingFilter] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | null>(null);
   const [joinedGroups, setJoinedGroups] = useState<Group[]>([]);
 
-  // Handle navigation to profile page - ALWAYS available
+  // Create demo groups for demo user
+  const demoGroups: Group[] = [
+    {
+      id: '1',
+      name: 'Web Developers Community',
+      description: 'A community for web developers to share knowledge and collaborate',
+      memberCount: 1250,
+      category: 'Technology',
+      isPrivate: false,
+      tags: ['React', 'JavaScript', 'Web Development']
+    },
+    {
+      id: '2',
+      name: 'Digital Marketing Experts',
+      description: 'Connect with marketing professionals and share strategies',
+      memberCount: 850,
+      category: 'Marketing',
+      isPrivate: false,
+      tags: ['SEO', 'Social Media', 'Content Marketing']
+    },
+    {
+      id: '3',
+      name: 'Startup Founders Network',
+      description: 'A private network for startup founders to connect and support each other',
+      memberCount: 320,
+      category: 'Business',
+      isPrivate: true,
+      tags: ['Entrepreneurship', 'Funding', 'Growth']
+    }
+  ];
+
+  // Create demo messages for demo user
+  const demoMessages: Message[] = [
+    {
+      id: '1',
+      userId: 'demo-user',
+      userName: 'John Demo',
+      content: 'Hello everyone! Excited to be part of this community. Looking forward to learning from all of you!',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+      groupId: '1'
+    },
+    {
+      id: '2',
+      userId: 'demo-user',
+      userName: 'John Demo',
+      content: 'Just finished a React project using Next.js. Happy to share my experience if anyone is interested!',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+      groupId: '1'
+    },
+    {
+      id: '3',
+      userId: 'demo-user',
+      userName: 'John Demo',
+      content: 'What are the latest trends in digital marketing for 2024? Would love to hear your thoughts!',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
+      groupId: '2'
+    }
+  ];
+
+  // Handle navigation to profile page - Create demo user if none exists
   const handleNavigateToProfile = () => {
     console.log('Navigating to profile page', { currentUser });
-    if (currentUser) {
-      setCurrentStep('profile');
-    } else {
-      // If no user, create a demo user or redirect to user creation
-      console.log('No current user, redirecting to user creation');
-      setCurrentStep('user-type');
+    
+    if (!currentUser) {
+      // Create a demo user for profile viewing
+      const demoUser: User = {
+        id: 'demo-user',
+        name: 'John Demo',
+        email: 'john.demo@example.com',
+        niche: 'Full Stack Developer',
+        country: 'United States',
+        preferredScope: 'global',
+        bio: 'Passionate full-stack developer with 5+ years of experience in React, Node.js, and cloud technologies. Love building innovative solutions and collaborating with creative teams.',
+        avatar: undefined
+      };
+      setCurrentUser(demoUser);
+      setUserType('freelancer');
+      setJoinedGroups(demoGroups);
+      setMessages(demoMessages);
     }
+    
+    setCurrentStep('profile');
   };
 
   const handleUserRegistration = (userData: Omit<User, 'id'>) => {
@@ -212,7 +284,7 @@ const ConnectPulse = () => {
             <WelcomeSection 
               onBrowse={() => setCurrentStep('browse')}
               onGetStarted={() => setCurrentStep('user-type')}
-              onMyProfile={handleNavigateToProfile} // ALWAYS provide this function
+              onMyProfile={handleNavigateToProfile}
               currentUser={currentUser}
             />
           )}
