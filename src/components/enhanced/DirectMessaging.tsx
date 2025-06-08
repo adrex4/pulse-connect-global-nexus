@@ -15,7 +15,7 @@ import {
   UserPlus, UserMinus, Shield, Flag, Download, Copy, X, MessageSquare,
   Bell, Moon, Sun, Palette, User, Lock, HelpCircle, LogOut
 } from 'lucide-react';
-import { User } from '@/types/connectPulse';
+import { User as ConnectPulseUser } from '@/types/connectPulse';
 
 interface DirectMessage {
   id: string;
@@ -52,7 +52,7 @@ interface Contact {
 }
 
 interface DirectMessagingProps {
-  currentUser: User;
+  currentUser: ConnectPulseUser;
   onBack: () => void;
 }
 
