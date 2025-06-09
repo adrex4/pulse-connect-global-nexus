@@ -22,7 +22,10 @@ const sortingOptions = [
   { value: 'employees', label: 'Company Size' },
   { value: 'reviews', label: 'Most Reviewed' },
   { value: 'verified', label: 'Verified First' },
-  { value: 'location', label: 'Location' }
+  { value: 'location', label: 'Location' },
+  { value: 'relevance', label: 'Most Relevant' },
+  { value: 'trending', label: 'Trending Now' },
+  { value: 'industry', label: 'Industry Leader' }
 ];
 
 // Enhanced mock business data with media and social links
@@ -125,7 +128,6 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
   const [selectedCountry, setSelectedCountry] = useState('All Countries');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('rating');
-  const [showFilters, setShowFilters] = useState(false);
 
   const filteredBusinesses = mockBusinesses.filter(business => {
     const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -159,12 +161,26 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
 
   const handleDirectMessage = (business: any) => {
     console.log('Opening direct message with:', business.name);
-    // This would typically open a direct messaging interface
+    // Navigate to direct messaging interface
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // This would typically navigate to a direct messaging component
   };
 
   const handleViewProfile = (business: any) => {
     console.log('Viewing full profile for:', business.name);
+    // Navigate to full business profile page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     // This would typically navigate to the full business profile page
+  };
+
+  const handleCreateBusinessProfile = () => {
+    if (onCreateBusiness) {
+      onCreateBusiness();
+      // Auto-scroll to top to find exact location to start
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    }
   };
 
   return (
@@ -177,10 +193,22 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           Discover innovative companies, connect with industry leaders, and find business opportunities worldwide
         </p>
+        
+        {/* First Create Business Profile Button */}
+        <div className="pt-4">
+          <Button 
+            onClick={handleCreateBusinessProfile}
+            size="lg"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Building2 className="h-5 w-5 mr-2" />
+            Create Business Profile
+          </Button>
+        </div>
       </div>
 
-      {/* Search and Filters */}
-      <Card className="border-2 border-blue-100">
+      {/* Always Visible Filters */}
+      <Card className="border-2 border-blue-100 bg-gradient-to-r from-blue-50 to-purple-50">
         <CardContent className="p-6">
           <div className="space-y-4">
             {/* Search Bar */}
@@ -190,90 +218,77 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                 placeholder="Search businesses by name, description, or services..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-12 text-lg border-2 focus:border-blue-500"
+                className="pl-10 h-12 text-lg border-2 focus:border-blue-500 bg-white"
               />
             </div>
 
-            {/* Filter Toggle */}
-            <div className="flex items-center justify-between">
-              <Button
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className="gap-2"
-              >
-                <Filter className="h-4 w-4" />
-                {showFilters ? 'Hide Filters' : 'Show Filters'}
-              </Button>
-              <div className="text-sm text-gray-600">
-                Found {sortedBusinesses.length} businesses
+            {/* Enhanced Filters - Always Visible */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-white/70 backdrop-blur-sm rounded-lg border border-blue-200">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                  <SelectTrigger className="bg-white border-2 focus:border-blue-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All Countries">All Countries</SelectItem>
+                    {WORLD_COUNTRIES.map(country => (
+                      <SelectItem key={country} value={country}>{country}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="bg-white border-2 focus:border-blue-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All Categories">All Categories</SelectItem>
+                    {BUSINESS_TYPES.map(category => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="bg-white border-2 focus:border-blue-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sortingOptions.map(option => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-end">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSelectedCountry('All Countries');
+                    setSelectedCategory('All Categories');
+                    setSortBy('rating');
+                  }}
+                  className="w-full bg-white hover:bg-gray-50 border-2"
+                >
+                  Reset Filters
+                </Button>
               </div>
             </div>
 
-            {/* Enhanced Filters */}
-            {showFilters && (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                  <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="All Countries">All Countries</SelectItem>
-                      {WORLD_COUNTRIES.map(country => (
-                        <SelectItem key={country} value={country}>{country}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="All Categories">All Categories</SelectItem>
-                      {BUSINESS_TYPES.map(category => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {sortingOptions.map(option => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex items-end">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setSearchTerm('');
-                      setSelectedCountry('All Countries');
-                      setSelectedCategory('All Categories');
-                      setSortBy('rating');
-                    }}
-                    className="w-full"
-                  >
-                    Reset Filters
-                  </Button>
-                </div>
-              </div>
-            )}
+            <div className="text-center text-sm text-gray-600">
+              Found {sortedBusinesses.length} businesses
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -281,8 +296,8 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
       {/* Business Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {sortedBusinesses.map((business) => (
-          <Card key={business.id} className="hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-300">
-            <CardHeader className="pb-3">
+          <Card key={business.id} className="hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-300 bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+            <CardHeader className="pb-3 bg-gradient-to-r from-blue-600/5 to-purple-600/5">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
@@ -296,39 +311,39 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                   </div>
                   <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
                     <span className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
+                      <MapPin className="h-4 w-4 text-blue-600" />
                       {business.location}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
+                      <Calendar className="h-4 w-4 text-purple-600" />
                       Founded {business.founded}
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{business.rating}</span>
-                  <span className="text-sm text-gray-500">({business.reviewCount})</span>
+                  <span className="font-semibold text-yellow-700">{business.rating}</span>
+                  <span className="text-sm text-yellow-600">({business.reviewCount})</span>
                 </div>
               </div>
             </CardHeader>
             
             <CardContent className="space-y-4">
               <div>
-                <Badge variant="outline" className="mb-2">{business.category}</Badge>
+                <Badge variant="outline" className="mb-2 bg-blue-50 text-blue-700 border-blue-200">{business.category}</Badge>
                 <p className="text-gray-700 leading-relaxed">{business.description}</p>
               </div>
 
               {/* Media Section */}
               {(business.media.images.length > 0 || business.media.videos.length > 0) && (
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                    <Image className="h-4 w-4" />
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-lg border border-gray-200">
+                  <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <Image className="h-4 w-4 text-blue-600" />
                     Media Gallery
                   </h4>
                   <div className="grid grid-cols-3 gap-2">
                     {business.media.images.map((image, index) => (
-                      <div key={index} className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                      <div key={index} className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-white shadow-sm">
                         <img 
                           src={image} 
                           alt={`${business.name} image ${index + 1}`}
@@ -337,8 +352,8 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                       </div>
                     ))}
                     {business.media.videos.map((video, index) => (
-                      <div key={index} className="aspect-square bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
-                        <Play className="h-8 w-8 text-gray-600" />
+                      <div key={index} className="aspect-square bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:from-blue-200 hover:to-purple-200 transition-colors border-2 border-white shadow-sm">
+                        <Play className="h-8 w-8 text-blue-600" />
                       </div>
                     ))}
                   </div>
@@ -346,11 +361,11 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
               )}
 
               {/* Services */}
-              <div>
+              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
                 <h4 className="font-semibold text-gray-800 mb-2">Services</h4>
                 <div className="flex flex-wrap gap-2">
                   {business.services.map((service, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                    <Badge key={index} variant="secondary" className="text-xs bg-purple-100 text-purple-700 border border-purple-200">
                       {service}
                     </Badge>
                   ))}
@@ -358,9 +373,9 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
               </div>
 
               {/* Contact & Social Media */}
-              <div>
-                <h4 className="font-semibold text-gray-800 mb-2">Contact & Social</h4>
-                <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <h4 className="font-semibold text-gray-800 mb-3">Contact & Social</h4>
+                <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                   <div className="flex items-center gap-2">
                     <Globe className="h-4 w-4 text-blue-600" />
                     <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline truncate">
@@ -382,39 +397,39 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                 </div>
                 
                 {/* Social Media Links */}
-                <div className="flex gap-2 mt-2">
+                <div className="flex gap-2">
                   {business.socialMedia.facebook && (
                     <a href={business.socialMedia.facebook} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="p-2">
-                        <Facebook className="h-4 w-4" />
+                      <Button variant="outline" size="sm" className="p-2 hover:bg-blue-50 hover:border-blue-300">
+                        <Facebook className="h-4 w-4 text-blue-600" />
                       </Button>
                     </a>
                   )}
                   {business.socialMedia.twitter && (
                     <a href={business.socialMedia.twitter} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="p-2">
-                        <Twitter className="h-4 w-4" />
+                      <Button variant="outline" size="sm" className="p-2 hover:bg-blue-50 hover:border-blue-300">
+                        <Twitter className="h-4 w-4 text-blue-500" />
                       </Button>
                     </a>
                   )}
                   {business.socialMedia.linkedin && (
                     <a href={business.socialMedia.linkedin} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="p-2">
-                        <Linkedin className="h-4 w-4" />
+                      <Button variant="outline" size="sm" className="p-2 hover:bg-blue-50 hover:border-blue-300">
+                        <Linkedin className="h-4 w-4 text-blue-700" />
                       </Button>
                     </a>
                   )}
                   {business.socialMedia.instagram && (
                     <a href={business.socialMedia.instagram} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="p-2">
-                        <Instagram className="h-4 w-4" />
+                      <Button variant="outline" size="sm" className="p-2 hover:bg-pink-50 hover:border-pink-300">
+                        <Instagram className="h-4 w-4 text-pink-600" />
                       </Button>
                     </a>
                   )}
                   {business.socialMedia.youtube && (
                     <a href={business.socialMedia.youtube} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="p-2">
-                        <Youtube className="h-4 w-4" />
+                      <Button variant="outline" size="sm" className="p-2 hover:bg-red-50 hover:border-red-300">
+                        <Youtube className="h-4 w-4 text-red-600" />
                       </Button>
                     </a>
                   )}
@@ -422,12 +437,12 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-2 pt-4 border-t">
+              <div className="flex gap-2 pt-4 border-t border-gray-200">
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={() => handleDirectMessage(business)}
-                  className="flex-1"
+                  className="flex-1 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                 >
                   <MessageSquare className="h-4 w-4 mr-1" />
                   Message
@@ -435,7 +450,7 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                 <Button 
                   size="sm" 
                   onClick={() => handleViewProfile(business)}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                 >
                   <Eye className="h-4 w-4 mr-1" />
                   View Profile
@@ -448,7 +463,7 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
 
       {/* No Results */}
       {sortedBusinesses.length === 0 && (
-        <Card className="text-center py-12">
+        <Card className="text-center py-12 bg-gradient-to-br from-gray-50 to-blue-50">
           <CardContent>
             <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-700 mb-2">No businesses found</h3>
@@ -472,9 +487,9 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
             Connect with thousands of businesses worldwide. Create your business profile and start networking today.
           </p>
           <Button 
-            onClick={onCreateBusiness}
+            onClick={handleCreateBusinessProfile}
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <Building2 className="h-5 w-5 mr-2" />
             Create Business Profile

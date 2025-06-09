@@ -71,7 +71,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover amazing creators, businesses, and communities before joining our platform.
+            Discover amazing creators, businesses, and groups before joining our platform.
           </p>
         </div>
 
@@ -93,7 +93,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
           <Button 
             onClick={onGetStarted}
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
           >
             Get Started Now
             <ArrowRight className="h-5 w-5 ml-2" />
@@ -111,7 +111,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover talented freelancers, innovative businesses, and thriving communities.
+            Discover talented freelancers, innovative businesses, and thriving groups.
           </p>
         </div>
 
@@ -128,7 +128,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
           <Button 
             onClick={onGetStarted}
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
           >
             Get Started Now
             <ArrowRight className="h-5 w-5 ml-2" />
@@ -151,30 +151,30 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
     );
   }
 
-  // Groups tab - enhanced with community content
+  // Groups tab - enhanced with group content
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Communities</h2>
+        <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Groups</h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Join vibrant communities where professionals, creators, and businesses connect and collaborate.
+          Join vibrant groups where professionals, creators, and businesses connect and collaborate.
         </p>
       </div>
 
       {/* Tabs */}
       <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* Community Highlights */}
+      {/* Group Highlights */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
           <h3 className="text-xl font-semibold text-blue-800 mb-3">Professional Networks</h3>
           <p className="text-blue-700 mb-4">Connect with industry leaders, share insights, and grow your professional network.</p>
-          <div className="text-sm text-blue-600">• Business Communities • Industry Forums • Networking Groups</div>
+          <div className="text-sm text-blue-600">• Business Groups • Industry Forums • Networking Groups</div>
         </div>
         
         <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-lg border border-pink-200">
-          <h3 className="text-xl font-semibold text-pink-800 mb-3">Creator Communities</h3>
+          <h3 className="text-xl font-semibold text-pink-800 mb-3">Creator Groups</h3>
           <p className="text-pink-700 mb-4">Collaborate with fellow creators, share content strategies, and find brand partnerships.</p>
           <div className="text-sm text-pink-600">• Influencer Networks • Content Creator Groups • Brand Partnerships</div>
         </div>
@@ -182,7 +182,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
         <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
           <h3 className="text-xl font-semibold text-green-800 mb-3">Skill-Based Groups</h3>
           <p className="text-green-700 mb-4">Learn from experts, share knowledge, and collaborate on projects in your field.</p>
-          <div className="text-sm text-green-600">• Tech Communities • Design Groups • Freelancer Networks</div>
+          <div className="text-sm text-green-600">• Tech Groups • Design Groups • Freelancer Networks</div>
         </div>
       </div>
 
@@ -213,11 +213,11 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       {/* Call to Action */}
       <div className="text-center space-y-4 py-8">
         <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
-        <p className="text-gray-600">Create your profile and start connecting with amazing communities in your industry.</p>
+        <p className="text-gray-600">Create your profile and start connecting with amazing groups in your industry.</p>
         <Button 
           onClick={onGetStarted}
           size="lg"
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
         >
           Get Started Now
           <ArrowRight className="h-5 w-5 ml-2" />
