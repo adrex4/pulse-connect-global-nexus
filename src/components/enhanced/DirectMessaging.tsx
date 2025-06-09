@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,13 +10,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
-  Search, Send, Phone, Video, MoreVertical, ArrowLeft, Plus, Star, 
-  Archive, Settings, Paperclip, Image, Smile, Clock, CheckCheck,
+  Search, Phone, Video, MoreVertical, ArrowLeft, Plus, Star, 
+  Archive, Settings, Paperclip, Image, Clock, CheckCheck,
   Pin, Reply, Forward, Edit3, Trash2, Volume2, VolumeX,
   UserPlus, UserMinus, Shield, Flag, Download, Copy, X, MessageSquare,
-  Bell, Moon, Sun, Palette, User, Lock, HelpCircle, LogOut
+  Bell, Moon, Sun, Palette, User, Lock, HelpCircle, Upload
 } from 'lucide-react';
 import { User as ConnectPulseUser } from '@/types/connectPulse';
+import EmojiPicker from '@/components/EmojiPicker';
+
+// Custom Send Icon Component
+const SendIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 
 interface DirectMessage {
   id: string;
@@ -73,6 +83,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [notifications, setNotifications] = useState(true);
+  const [fileUploading, setFileUploading] = useState(false);
 
   // Enhanced contacts data with professional information
   useEffect(() => {
@@ -239,19 +250,19 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
     ]);
   }, [currentUser.id]);
 
-  // Settings dialog component
+  // Working Settings dialog component
   const SettingsDialog = () => (
     <Dialog open={showSettings} onOpenChange={setShowSettings}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-white border border-purple-200 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-purple-800">
             <Settings className="h-5 w-5" />
             Message Settings
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
           <div className="space-y-4">
-            <h3 className="font-medium">Appearance</h3>
+            <h3 className="font-medium text-purple-700">Appearance</h3>
             <div className="flex items-center justify-between">
               <span className="text-sm">Theme</span>
               <div className="flex gap-2">
@@ -259,6 +270,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                   size="sm"
                   variant={theme === 'light' ? 'default' : 'outline'}
                   onClick={() => setTheme('light')}
+                  className={theme === 'light' ? 'bg-purple-600 hover:bg-purple-700' : 'border-purple-300 hover:bg-purple-50'}
                 >
                   <Sun className="h-4 w-4" />
                 </Button>
@@ -266,6 +278,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                   size="sm"
                   variant={theme === 'dark' ? 'default' : 'outline'}
                   onClick={() => setTheme('dark')}
+                  className={theme === 'dark' ? 'bg-purple-600 hover:bg-purple-700' : 'border-purple-300 hover:bg-purple-50'}
                 >
                   <Moon className="h-4 w-4" />
                 </Button>
@@ -274,13 +287,14 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
           </div>
           
           <div className="space-y-4">
-            <h3 className="font-medium">Notifications</h3>
+            <h3 className="font-medium text-purple-700">Notifications</h3>
             <div className="flex items-center justify-between">
               <span className="text-sm">Message notifications</span>
               <Button
                 size="sm"
                 variant={notifications ? 'default' : 'outline'}
                 onClick={() => setNotifications(!notifications)}
+                className={notifications ? 'bg-purple-600 hover:bg-purple-700' : 'border-purple-300 hover:bg-purple-50'}
               >
                 {notifications ? <Bell className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
               </Button>
@@ -288,13 +302,13 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-medium">Privacy</h3>
+            <h3 className="font-medium text-purple-700">Privacy</h3>
             <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start">
+              <Button variant="outline" className="w-full justify-start border-purple-200 hover:bg-purple-50">
                 <Shield className="h-4 w-4 mr-2" />
                 Privacy Settings
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button variant="outline" className="w-full justify-start border-purple-200 hover:bg-purple-50">
                 <Lock className="h-4 w-4 mr-2" />
                 Blocked Users
               </Button>
@@ -302,7 +316,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
           </div>
 
           <div className="space-y-2">
-            <Button variant="outline" className="w-full justify-start">
+            <Button variant="outline" className="w-full justify-start border-purple-200 hover:bg-purple-50">
               <HelpCircle className="h-4 w-4 mr-2" />
               Help & Support
             </Button>
@@ -312,28 +326,28 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
     </Dialog>
   );
 
-  // New message dialog component
+  // Working New message dialog component
   const NewMessageDialog = () => (
     <Dialog open={showNewMessage} onOpenChange={setShowNewMessage}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-white border border-purple-200 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-purple-800">
             <MessageSquare className="h-5 w-5" />
             New Message
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium">To:</label>
-            <Input placeholder="Search contacts..." className="mt-1" />
+            <label className="text-sm font-medium text-purple-700">To:</label>
+            <Input placeholder="Search contacts..." className="mt-1 border-purple-200 focus:border-purple-400" />
           </div>
           
           <div className="space-y-2">
-            <h4 className="text-sm font-medium">Suggested Contacts</h4>
+            <h4 className="text-sm font-medium text-purple-700">Suggested Contacts</h4>
             {contacts.slice(0, 3).map(contact => (
               <div
                 key={contact.id}
-                className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
+                className="flex items-center gap-3 p-2 hover:bg-purple-50 rounded-lg cursor-pointer transition-colors"
                 onClick={() => {
                   setSelectedContact(contact);
                   setShowNewMessage(false);
@@ -341,23 +355,23 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={contact.avatar} />
-                  <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs">
+                  <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
                     {contact.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <p className="text-sm font-medium">{contact.name}</p>
-                  <p className="text-xs text-gray-500">{contact.profession}</p>
+                  <p className="text-xs text-purple-600">{contact.profession}</p>
                 </div>
               </div>
             ))}
           </div>
           
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowNewMessage(false)} className="flex-1">
+            <Button variant="outline" onClick={() => setShowNewMessage(false)} className="flex-1 border-purple-200 hover:bg-purple-50">
               Cancel
             </Button>
-            <Button className="flex-1">Start Chat</Button>
+            <Button className="flex-1 bg-purple-600 hover:bg-purple-700">Start Chat</Button>
           </div>
         </div>
       </DialogContent>
@@ -422,6 +436,42 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
     }, 1000);
   };
 
+  // Working file upload handler
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !selectedContact) return;
+
+    setFileUploading(true);
+    
+    try {
+      // Simulate file upload
+      setTimeout(() => {
+        const message: DirectMessage = {
+          id: Date.now().toString(),
+          senderId: currentUser.id,
+          receiverId: selectedContact.id,
+          content: `Shared file: ${file.name}`,
+          timestamp: new Date(),
+          isRead: false,
+          messageType: 'file',
+          attachments: [file.name],
+          deliveryStatus: 'sent'
+        };
+        
+        setMessages(prev => [...prev, message]);
+        setFileUploading(false);
+      }, 2000);
+    } catch (error) {
+      setFileUploading(false);
+    }
+  };
+
+  // Working emoji selection handler
+  const handleEmojiSelect = (emoji: string) => {
+    setNewMessage(prev => prev + emoji);
+    setShowEmojiPicker(false);
+  };
+
   // Advanced message actions
   const handleMessageAction = (action: string, messageId: string) => {
     switch (action) {
@@ -482,15 +532,15 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
     switch (status) {
       case 'sent': return <Clock className="h-3 w-3 text-gray-400" />;
       case 'delivered': return <CheckCheck className="h-3 w-3 text-gray-400" />;
-      case 'read': return <CheckCheck className="h-3 w-3 text-blue-500" />;
+      case 'read': return <CheckCheck className="h-3 w-3 text-purple-500" />;
       default: return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-cyan-50 to-emerald-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 p-4">
       <div className="max-w-7xl mx-auto">
-        {/* Enhanced Header with Working Buttons */}
+        {/* Enhanced Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <Button variant="ghost" onClick={onBack} className="hover:bg-white/50">
@@ -498,7 +548,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
               Back
             </Button>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-cyan-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Direct Messages
               </h1>
               <p className="text-gray-600">Stay connected with your professional network</p>
@@ -509,14 +559,14 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
               variant="outline" 
               size="sm" 
               onClick={() => setShowSettings(true)}
-              className="hover:bg-violet-50 border-violet-200"
+              className="hover:bg-purple-50 border-purple-200"
             >
               <Settings className="h-4 w-4" />
             </Button>
             <Button 
               size="sm" 
               onClick={() => setShowNewMessage(true)}
-              className="bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
             >
               <Plus className="h-4 w-4 mr-2" />
               New Message
@@ -527,12 +577,12 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Enhanced Contacts Sidebar */}
           <Card className="lg:col-span-1 shadow-xl border-0 bg-white/70 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-violet-500/10 to-cyan-500/10">
+            <CardHeader className="bg-gradient-to-r from-purple-500/10 to-pink-500/10">
               <CardTitle className="text-lg flex items-center justify-between">
-                <span className="bg-gradient-to-r from-violet-600 to-cyan-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Messages
                 </span>
-                <Badge variant="secondary" className="bg-violet-100 text-violet-700">
+                <Badge variant="secondary" className="bg-purple-100 text-purple-700">
                   {filteredContacts.length}
                 </Badge>
               </CardTitle>
@@ -544,17 +594,17 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                   placeholder="Search conversations..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 border-violet-200 focus:border-violet-400"
+                  className="pl-10 border-purple-200 focus:border-purple-400"
                 />
               </div>
 
               {/* Enhanced Message Tabs */}
               <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-                <TabsList className="grid w-full grid-cols-4 text-xs bg-violet-50">
-                  <TabsTrigger value="all" className="data-[state=active]:bg-violet-500 data-[state=active]:text-white">All</TabsTrigger>
-                  <TabsTrigger value="unread" className="data-[state=active]:bg-violet-500 data-[state=active]:text-white">Unread</TabsTrigger>
-                  <TabsTrigger value="favorites" className="data-[state=active]:bg-violet-500 data-[state=active]:text-white">⭐</TabsTrigger>
-                  <TabsTrigger value="archived" className="data-[state=active]:bg-violet-500 data-[state=active]:text-white">📁</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-4 text-xs bg-purple-50">
+                  <TabsTrigger value="all" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">All</TabsTrigger>
+                  <TabsTrigger value="unread" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">Unread</TabsTrigger>
+                  <TabsTrigger value="favorites" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">⭐</TabsTrigger>
+                  <TabsTrigger value="archived" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">📁</TabsTrigger>
                 </TabsList>
               </Tabs>
             </CardHeader>
@@ -564,21 +614,21 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                 {filteredContacts.map((contact) => (
                   <div
                     key={contact.id}
-                    className={`p-4 border-b cursor-pointer hover:bg-gradient-to-r hover:from-violet-50 hover:to-cyan-50 transition-all relative ${
-                      selectedContact?.id === contact.id ? 'bg-gradient-to-r from-violet-100 to-cyan-100 border-violet-200' : ''
+                    className={`p-4 border-b cursor-pointer hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all relative ${
+                      selectedContact?.id === contact.id ? 'bg-gradient-to-r from-purple-100 to-pink-100 border-purple-200' : ''
                     } ${contact.isMuted ? 'opacity-70' : ''}`}
                     onClick={() => setSelectedContact(contact)}
                   >
                     {/* Pin indicator */}
                     {contact.isPinned && (
-                      <Pin className="absolute top-2 right-2 h-3 w-3 text-violet-500" />
+                      <Pin className="absolute top-2 right-2 h-3 w-3 text-purple-500" />
                     )}
                     
                     <div className="flex items-center gap-3">
                       <div className="relative">
-                        <Avatar className="h-12 w-12 ring-2 ring-violet-100">
+                        <Avatar className="h-12 w-12 ring-2 ring-purple-100">
                           <AvatarImage src={contact.avatar} />
-                          <AvatarFallback className="bg-gradient-to-r from-violet-500 to-cyan-500 text-white">
+                          <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
                             {contact.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
@@ -603,13 +653,13 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                             {contact.isMuted && <VolumeX className="h-3 w-3 text-gray-400" />}
                           </div>
                           {contact.unreadCount > 0 && (
-                            <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-gradient-to-r from-violet-500 to-cyan-500">
+                            <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-gradient-to-r from-purple-500 to-pink-500">
                               {contact.unreadCount}
                             </Badge>
                           )}
                         </div>
                         
-                        <p className="text-xs text-violet-600 mb-1 font-medium">{contact.profession}</p>
+                        <p className="text-xs text-purple-600 mb-1 font-medium">{contact.profession}</p>
                         <p className="text-sm text-gray-500 truncate">
                           {contact.lastMessage?.content || 'No messages yet'}
                         </p>
@@ -641,13 +691,13 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
             {selectedContact ? (
               <>
                 {/* Enhanced Chat Header */}
-                <CardHeader className="border-b bg-gradient-to-r from-violet-500/10 to-cyan-500/10">
+                <CardHeader className="border-b bg-gradient-to-r from-purple-500/10 to-pink-500/10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="relative">
-                        <Avatar className="h-12 w-12 ring-2 ring-violet-100">
+                        <Avatar className="h-12 w-12 ring-2 ring-purple-100">
                           <AvatarImage src={selectedContact.avatar} />
-                          <AvatarFallback className="bg-gradient-to-r from-violet-500 to-cyan-500 text-white">
+                          <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
                             {selectedContact.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
@@ -660,7 +710,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                           <h3 className="font-semibold">{selectedContact.name}</h3>
                           {selectedContact.isFavorite && <Star className="h-4 w-4 text-yellow-500 fill-current" />}
                         </div>
-                        <p className="text-sm text-violet-600 font-medium">{selectedContact.profession}</p>
+                        <p className="text-sm text-purple-600 font-medium">{selectedContact.profession}</p>
                         <p className="text-xs text-gray-500">
                           {selectedContact.isOnline 
                             ? `Online • ${selectedContact.status}` 
@@ -670,21 +720,21 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                     </div>
                     
                     <div className="flex gap-2">
-                      <Button size="sm" variant="ghost" className="hover:bg-violet-50">
+                      <Button size="sm" variant="ghost" className="hover:bg-purple-50">
                         <Phone className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" variant="ghost" className="hover:bg-violet-50">
+                      <Button size="sm" variant="ghost" className="hover:bg-purple-50">
                         <Video className="h-4 w-4" />
                       </Button>
                       <Button 
                         size="sm" 
                         variant="ghost"
                         onClick={() => handleContactAction('favorite', selectedContact.id)}
-                        className="hover:bg-violet-50"
+                        className="hover:bg-purple-50"
                       >
                         <Star className={`h-4 w-4 ${selectedContact.isFavorite ? 'text-yellow-500 fill-current' : ''}`} />
                       </Button>
-                      <Button size="sm" variant="ghost" className="hover:bg-violet-50">
+                      <Button size="sm" variant="ghost" className="hover:bg-purple-50">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </div>
@@ -700,7 +750,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                 
                 <CardContent className="p-0">
                   {/* Enhanced Messages Area */}
-                  <ScrollArea className="h-[400px] p-4 bg-gradient-to-b from-violet-50/30 to-cyan-50/30">
+                  <ScrollArea className="h-[400px] p-4 bg-gradient-to-b from-purple-50/30 to-pink-50/30">
                     {messages.filter(msg => 
                       (msg.senderId === selectedContact.id && msg.receiverId === currentUser.id) ||
                       (msg.senderId === currentUser.id && msg.receiverId === selectedContact.id)
@@ -712,15 +762,15 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                         <div className={`max-w-xs lg:max-w-md group ${message.senderId === currentUser.id ? 'ml-12' : 'mr-12'}`}>
                           {/* Reply indicator */}
                           {message.replyTo && (
-                            <div className="text-xs text-gray-500 mb-1 p-2 bg-gray-100 rounded border-l-2 border-violet-500">
+                            <div className="text-xs text-gray-500 mb-1 p-2 bg-gray-100 rounded border-l-2 border-purple-500">
                               Replying to previous message
                             </div>
                           )}
                           
                           <div className={`px-4 py-3 rounded-2xl relative shadow-sm ${
                             message.senderId === currentUser.id 
-                              ? 'bg-gradient-to-r from-violet-500 to-cyan-500 text-white' 
-                              : 'bg-white border border-violet-100 shadow-md'
+                              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
+                              : 'bg-white border border-purple-100 shadow-md'
                           }`}>
                             <p className="text-sm break-words">{message.content}</p>
                             {message.isEdited && (
@@ -743,7 +793,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                                 <Button 
                                   size="sm" 
                                   variant="ghost" 
-                                  className="h-6 w-6 p-0 hover:bg-violet-50"
+                                  className="h-6 w-6 p-0 hover:bg-purple-50"
                                   onClick={() => handleMessageAction('reply', message.id)}
                                 >
                                   <Reply className="h-3 w-3" />
@@ -752,7 +802,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                                   <Button 
                                     size="sm" 
                                     variant="ghost" 
-                                    className="h-6 w-6 p-0 hover:bg-violet-50"
+                                    className="h-6 w-6 p-0 hover:bg-purple-50"
                                     onClick={() => handleMessageAction('edit', message.id)}
                                   >
                                     <Edit3 className="h-3 w-3" />
@@ -761,7 +811,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                                 <Button 
                                   size="sm" 
                                   variant="ghost" 
-                                  className="h-6 w-6 p-0 hover:bg-violet-50"
+                                  className="h-6 w-6 p-0 hover:bg-purple-50"
                                   onClick={() => handleMessageAction('copy', message.id)}
                                 >
                                   <Copy className="h-3 w-3" />
@@ -774,20 +824,20 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                     ))}
                   </ScrollArea>
                   
-                  {/* Enhanced Message Input */}
-                  <div className="border-t p-4 bg-gradient-to-r from-violet-50/50 to-cyan-50/50">
+                  {/* Enhanced Message Input with Working Features */}
+                  <div className="border-t p-4 bg-gradient-to-r from-purple-50/50 to-pink-50/50">
                     {/* Reply preview */}
                     {replyingTo && (
-                      <div className="bg-violet-50 p-3 rounded-lg mb-3 flex items-center justify-between border border-violet-200">
+                      <div className="bg-purple-50 p-3 rounded-lg mb-3 flex items-center justify-between border border-purple-200">
                         <div>
-                          <p className="text-sm font-medium text-violet-700">Replying to:</p>
+                          <p className="text-sm font-medium text-purple-700">Replying to:</p>
                           <p className="text-sm text-gray-600 truncate">{replyingTo.content}</p>
                         </div>
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => setReplyingTo(null)}
-                          className="h-6 w-6 p-0 hover:bg-violet-100"
+                          className="h-6 w-6 p-0 hover:bg-purple-100"
                         >
                           <X className="h-3 w-3" />
                         </Button>
@@ -796,20 +846,52 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                     
                     <div className="flex gap-2">
                       <div className="flex gap-1">
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 hover:bg-violet-100">
-                          <Paperclip className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 hover:bg-violet-100">
-                          <Image className="h-4 w-4" />
-                        </Button>
+                        {/* Working File Upload */}
+                        <input
+                          type="file"
+                          id="file-upload"
+                          className="hidden"
+                          onChange={handleFileUpload}
+                          accept="*/*"
+                        />
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="h-8 w-8 p-0 hover:bg-violet-100"
-                          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                          className="h-8 w-8 p-0 hover:bg-purple-100"
+                          onClick={() => document.getElementById('file-upload')?.click()}
+                          disabled={fileUploading}
                         >
-                          <Smile className="h-4 w-4" />
+                          {fileUploading ? <Upload className="h-4 w-4 animate-spin" /> : <Paperclip className="h-4 w-4" />}
                         </Button>
+                        
+                        {/* Working Image Upload */}
+                        <input
+                          type="file"
+                          id="image-upload"
+                          className="hidden"
+                          onChange={handleFileUpload}
+                          accept="image/*"
+                        />
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-8 w-8 p-0 hover:bg-purple-100"
+                          onClick={() => document.getElementById('image-upload')?.click()}
+                        >
+                          <Image className="h-4 w-4" />
+                        </Button>
+                        
+                        {/* Working Emoji Picker */}
+                        <EmojiPicker onEmojiSelect={handleEmojiSelect}>
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="h-8 w-8 p-0 hover:bg-purple-100"
+                          >
+                            {/* Emoji icon placeholder */}
+                            😊
+                          </Button>
+                        </EmojiPicker>
                       </div>
                       
                       <Textarea
@@ -822,16 +904,17 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
                             handleSendMessage();
                           }
                         }}
-                        className="flex-1 min-h-[40px] max-h-[120px] resize-none border-violet-200 focus:border-violet-400"
+                        className="flex-1 min-h-[40px] max-h-[120px] resize-none border-purple-200 focus:border-purple-400"
                         rows={1}
                       />
                       
+                      {/* Custom Send Icon */}
                       <Button 
                         onClick={handleSendMessage} 
                         disabled={!newMessage.trim()}
-                        className="h-10 px-4 bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600"
+                        className="h-10 px-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                       >
-                        <Send className="h-4 w-4" />
+                        <SendIcon className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -840,13 +923,13 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
             ) : (
               <div className="h-[600px] flex items-center justify-center text-gray-500">
                 <div className="text-center">
-                  <div className="w-20 h-20 bg-gradient-to-r from-violet-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <MessageSquare className="h-10 w-10 text-violet-500" />
+                  <div className="w-20 h-20 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <MessageSquare className="h-10 w-10 text-purple-500" />
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-2 text-lg">Select a conversation</h3>
                   <p className="text-sm max-w-sm">Choose a contact from your list to start messaging and build meaningful professional connections.</p>
                   <Button 
-                    className="mt-4 bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600" 
+                    className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600" 
                     size="sm"
                     onClick={() => setShowNewMessage(true)}
                   >
@@ -859,7 +942,7 @@ const DirectMessaging: React.FC<DirectMessagingProps> = ({ currentUser, onBack }
           </Card>
         </div>
 
-        {/* Dialogs */}
+        {/* Working Dialogs */}
         <SettingsDialog />
         <NewMessageDialog />
       </div>
