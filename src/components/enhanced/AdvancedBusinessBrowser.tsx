@@ -58,6 +58,15 @@ const mockBusinesses = [
         'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400'
       ],
       videos: ['https://example.com/video1.mp4']
+    },
+    products: ['Enterprise AI Solutions', 'Custom Web Applications', 'Mobile App Development', 'Cloud Migration Services'],
+    fullProfile: {
+      aboutUs: 'TechFlow Solutions was founded in 2018 with a mission to democratize AI technology for businesses of all sizes. Our team of expert developers and data scientists work together to create cutting-edge solutions that drive real business value.',
+      achievements: ['500+ Projects Completed', 'ISO 27001 Certified', 'Top AI Company 2023'],
+      clientTestimonials: [
+        { client: 'Fortune 500 Company', quote: 'TechFlow transformed our business processes with their AI solutions.' },
+        { client: 'StartupXYZ', quote: 'The mobile app they built exceeded our expectations.' }
+      ]
     }
   },
   {
@@ -86,6 +95,14 @@ const mockBusinesses = [
         'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400'
       ],
       videos: []
+    },
+    products: ['Solar Panel Systems', 'Wind Turbines', 'Energy Storage Solutions', 'Smart Grid Technology'],
+    fullProfile: {
+      aboutUs: 'GreenEnergy Innovations has been at the forefront of the renewable energy revolution since 2015. We believe in a sustainable future powered by clean energy.',
+      achievements: ['1000+ Installations', 'Carbon Neutral Certified', 'Green Energy Award Winner'],
+      clientTestimonials: [
+        { client: 'City of Berlin', quote: 'Outstanding solar installation services for our municipal buildings.' }
+      ]
     }
   },
   {
@@ -115,6 +132,14 @@ const mockBusinesses = [
         'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400'
       ],
       videos: ['https://example.com/demo-video.mp4']
+    },
+    products: ['SEO Optimization', 'Social Media Campaigns', 'Google Ads Management', 'Content Creation'],
+    fullProfile: {
+      aboutUs: 'Digital Marketing Pro specializes in helping small to medium businesses establish a strong digital presence. Our data-driven approach ensures measurable results.',
+      achievements: ['200+ Successful Campaigns', 'Google Partner Certified', 'HubSpot Gold Partner'],
+      clientTestimonials: [
+        { client: 'Local Restaurant Chain', quote: 'Increased our online sales by 300% in just 6 months.' }
+      ]
     }
   }
 ];
@@ -128,6 +153,8 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
   const [selectedCountry, setSelectedCountry] = useState('All Countries');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('rating');
+  const [showDirectMessage, setShowDirectMessage] = useState<any>(null);
+  const [showFullProfile, setShowFullProfile] = useState<any>(null);
 
   const filteredBusinesses = mockBusinesses.filter(business => {
     const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -161,27 +188,294 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
 
   const handleDirectMessage = (business: any) => {
     console.log('Opening direct message with:', business.name);
-    // Navigate to direct messaging interface
+    setShowDirectMessage(business);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // This would typically navigate to a direct messaging component
   };
 
   const handleViewProfile = (business: any) => {
     console.log('Viewing full profile for:', business.name);
-    // Navigate to full business profile page
+    setShowFullProfile(business);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // This would typically navigate to the full business profile page
   };
 
   const handleCreateBusinessProfile = () => {
     if (onCreateBusiness) {
       onCreateBusiness();
-      // Auto-scroll to top to find exact location to start
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 100);
     }
   };
+
+  // Direct Message View
+  if (showDirectMessage) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <Card className="shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-2xl flex items-center gap-3">
+                <MessageSquare className="h-8 w-8" />
+                Direct Message with {showDirectMessage.name}
+              </CardTitle>
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowDirectMessage(null)}
+                className="text-white hover:bg-white/20"
+              >
+                Back to Browse
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-8">
+            <div className="space-y-6">
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
+                <h3 className="text-xl font-semibold text-blue-900 mb-2">Start a Conversation</h3>
+                <p className="text-blue-700 mb-4">
+                  Send a direct message to {showDirectMessage.name} to discuss business opportunities, partnerships, or ask questions about their services.
+                </p>
+                <div className="space-y-4">
+                  <textarea 
+                    className="w-full p-4 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    rows={4}
+                    placeholder={`Type your message to ${showDirectMessage.name}...`}
+                  />
+                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                    Send Message
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                  <h4 className="font-semibold text-gray-800 mb-3">Business Info</h4>
+                  <div className="space-y-2 text-sm">
+                    <p><span className="font-medium">Category:</span> {showDirectMessage.category}</p>
+                    <p><span className="font-medium">Location:</span> {showDirectMessage.location}</p>
+                    <p><span className="font-medium">Rating:</span> ⭐ {showDirectMessage.rating} ({showDirectMessage.reviewCount} reviews)</p>
+                  </div>
+                </div>
+                
+                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                  <h4 className="font-semibold text-gray-800 mb-3">Contact Info</h4>
+                  <div className="space-y-2 text-sm">
+                    <p><span className="font-medium">Email:</span> {showDirectMessage.email}</p>
+                    <p><span className="font-medium">Phone:</span> {showDirectMessage.phone}</p>
+                    <p><span className="font-medium">Website:</span> 
+                      <a href={showDirectMessage.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">
+                        Visit
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Full Profile View
+  if (showFullProfile) {
+    return (
+      <div className="max-w-6xl mx-auto space-y-6">
+        <Card className="shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-3xl flex items-center gap-3">
+                  <Building2 className="h-8 w-8" />
+                  {showFullProfile.name}
+                </CardTitle>
+                <p className="text-blue-100 mt-2">{showFullProfile.category}</p>
+              </div>
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowFullProfile(null)}
+                className="text-white hover:bg-white/20"
+              >
+                Back to Browse
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-8">
+            <div className="space-y-8">
+              {/* Business Overview */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-6">
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
+                    <h3 className="text-2xl font-semibold text-blue-900 mb-4">About {showFullProfile.name}</h3>
+                    <p className="text-blue-800 leading-relaxed mb-4">{showFullProfile.description}</p>
+                    <p className="text-blue-700">{showFullProfile.fullProfile?.aboutUs}</p>
+                  </div>
+
+                  {/* Products & Services */}
+                  <div className="bg-green-50 p-6 rounded-lg border border-green-200">
+                    <h3 className="text-xl font-semibold text-green-900 mb-4">Products & Services</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {showFullProfile.products?.map((product: string, index: number) => (
+                        <div key={index} className="bg-white p-4 rounded-lg border border-green-300 shadow-sm">
+                          <p className="font-medium text-green-800">{product}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Media Gallery */}
+                  {(showFullProfile.media.images.length > 0 || showFullProfile.media.videos.length > 0) && (
+                    <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
+                      <h3 className="text-xl font-semibold text-purple-900 mb-4">Media Gallery</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {showFullProfile.media.images.map((image: string, index: number) => (
+                          <div key={index} className="aspect-square bg-white rounded-lg overflow-hidden border-2 border-purple-200 shadow-sm">
+                            <img 
+                              src={image} 
+                              alt={`${showFullProfile.name} image ${index + 1}`}
+                              className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
+                            />
+                          </div>
+                        ))}
+                        {showFullProfile.media.videos.map((video: string, index: number) => (
+                          <div key={index} className="aspect-square bg-gradient-to-br from-purple-100 to-blue-100 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:from-purple-200 hover:to-blue-200 transition-colors border-2 border-purple-200 shadow-sm">
+                            <Play className="h-12 w-12 text-purple-600" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Sidebar */}
+                <div className="space-y-6">
+                  {/* Contact & Rating */}
+                  <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
+                    <CardContent className="p-6">
+                      <div className="text-center mb-4">
+                        <div className="flex items-center justify-center gap-1 mb-2">
+                          <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+                          <span className="text-2xl font-bold text-yellow-700">{showFullProfile.rating}</span>
+                        </div>
+                        <p className="text-yellow-600">({showFullProfile.reviewCount} reviews)</p>
+                      </div>
+                      
+                      <div className="space-y-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-orange-600" />
+                          <span className="text-orange-700">{showFullProfile.location}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4 text-orange-600" />
+                          <span className="text-orange-700">{showFullProfile.employees} employees</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-orange-600" />
+                          <span className="text-orange-700">Founded {showFullProfile.founded}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Contact Info */}
+                  <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+                    <CardContent className="p-6">
+                      <h4 className="font-semibold text-blue-900 mb-4">Contact Information</h4>
+                      <div className="space-y-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          <Globe className="h-4 w-4 text-blue-600" />
+                          <a href={showFullProfile.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                            Visit Website
+                          </a>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-4 w-4 text-blue-600" />
+                          <span className="text-blue-700">{showFullProfile.email}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4 text-blue-600" />
+                          <span className="text-blue-700">{showFullProfile.phone}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Social Media */}
+                  <Card className="bg-gradient-to-br from-pink-50 to-purple-50 border-pink-200">
+                    <CardContent className="p-6">
+                      <h4 className="font-semibold text-pink-900 mb-4">Follow Us</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {showFullProfile.socialMedia.facebook && (
+                          <a href={showFullProfile.socialMedia.facebook} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline" size="sm" className="p-2 hover:bg-blue-50 hover:border-blue-300">
+                              <Facebook className="h-4 w-4 text-blue-600" />
+                            </Button>
+                          </a>
+                        )}
+                        {showFullProfile.socialMedia.twitter && (
+                          <a href={showFullProfile.socialMedia.twitter} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline" size="sm" className="p-2 hover:bg-blue-50 hover:border-blue-300">
+                              <Twitter className="h-4 w-4 text-blue-500" />
+                            </Button>
+                          </a>
+                        )}
+                        {showFullProfile.socialMedia.linkedin && (
+                          <a href={showFullProfile.socialMedia.linkedin} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline" size="sm" className="p-2 hover:bg-blue-50 hover:border-blue-300">
+                              <Linkedin className="h-4 w-4 text-blue-700" />
+                            </Button>
+                          </a>
+                        )}
+                        {showFullProfile.socialMedia.instagram && (
+                          <a href={showFullProfile.socialMedia.instagram} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline" size="sm" className="p-2 hover:bg-pink-50 hover:border-pink-300">
+                              <Instagram className="h-4 w-4 text-pink-600" />
+                            </Button>
+                          </a>
+                        )}
+                        {showFullProfile.socialMedia.youtube && (
+                          <a href={showFullProfile.socialMedia.youtube} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline" size="sm" className="p-2 hover:bg-red-50 hover:border-red-300">
+                              <Youtube className="h-4 w-4 text-red-600" />
+                            </Button>
+                          </a>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Action Buttons */}
+                  <div className="space-y-3">
+                    <Button 
+                      onClick={() => handleDirectMessage(showFullProfile)}
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    >
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Send Message
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Achievements */}
+              {showFullProfile.fullProfile?.achievements && (
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
+                  <h3 className="text-xl font-semibold text-green-900 mb-4">Achievements & Certifications</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {showFullProfile.fullProfile.achievements.map((achievement: string, index: number) => (
+                      <div key={index} className="bg-white p-4 rounded-lg border border-green-300 shadow-sm flex items-center gap-3">
+                        <Award className="h-6 w-6 text-green-600" />
+                        <span className="font-medium text-green-800">{achievement}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">

@@ -93,7 +93,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
           <Button 
             onClick={onGetStarted}
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
           >
             Get Started Now
             <ArrowRight className="h-5 w-5 ml-2" />
@@ -128,7 +128,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
           <Button 
             onClick={onGetStarted}
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
           >
             Get Started Now
             <ArrowRight className="h-5 w-5 ml-2" />
@@ -168,7 +168,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       {/* Group Highlights */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
-          <h3 className="text-xl font-semibold text-blue-800 mb-3">Professional Networks</h3>
+          <h3 className="text-xl font-semibold text-blue-800 mb-3">Professional Groups</h3>
           <p className="text-blue-700 mb-4">Connect with industry leaders, share insights, and grow your professional network.</p>
           <div className="text-sm text-blue-600">• Business Groups • Industry Forums • Networking Groups</div>
         </div>
@@ -217,7 +217,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
         <Button 
           onClick={onGetStarted}
           size="lg"
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
         >
           Get Started Now
           <ArrowRight className="h-5 w-5 ml-2" />
