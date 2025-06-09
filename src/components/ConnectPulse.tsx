@@ -4,15 +4,10 @@ import WelcomeSection from './enhanced/WelcomeSection';
 import StepManager from './enhanced/StepManager';
 import UserProfilePage from './UserProfilePage';
 import GlobalNavigation from './GlobalNavigation';
-import Card from './Card';
-import CardHeader from './CardHeader';
-import CardTitle from './CardTitle';
-import CardContent from './CardContent';
-import Badge from './Badge';
-import Button from './Button';
-import Users from './Users';
-import Palette from './Palette';
-import Building from './Building';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Users, Palette, Building } from 'lucide-react';
 
 const ConnectPulse: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<Step>('welcome');
