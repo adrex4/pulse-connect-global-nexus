@@ -3,8 +3,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Home, Users, MessageSquare, Search, MapPin, 
-  Briefcase, User, Settings, Bell, Plus
+  Home, Users, MessageSquare, Search, 
+  User, Settings, Bell, Plus
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -41,21 +41,9 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ currentUserType, on
       badge: '12' 
     },
     { 
-      path: '/marketplace', 
-      icon: Briefcase, 
-      label: 'Marketplace', 
-      badge: null 
-    },
-    { 
       path: '/profiles', 
       icon: Users, 
       label: 'Profiles', 
-      badge: null 
-    },
-    { 
-      path: '/locations', 
-      icon: MapPin, 
-      label: 'Locations', 
       badge: null 
     }
   ];
