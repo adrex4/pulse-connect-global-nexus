@@ -7,116 +7,112 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Search, Filter, MapPin, Building2, Users, Star, 
-  Globe, Phone, Mail, Calendar, TrendingUp, Award
+  Globe, Phone, Mail, Calendar, TrendingUp, Award,
+  MessageSquare, Eye, Facebook, Twitter, Instagram,
+  Linkedin, Youtube, Play, Image
 } from 'lucide-react';
+import { WORLD_COUNTRIES } from '@/data/worldCountries';
+import { BUSINESS_TYPES } from '@/data/businessTypes';
 
-// Comprehensive list of countries
-const countries = [
-  'All Countries', 'United States', 'Canada', 'United Kingdom', 'Germany', 'France', 
-  'Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 'Austria', 'Sweden', 
-  'Norway', 'Denmark', 'Finland', 'Poland', 'Czech Republic', 'Hungary', 'Portugal',
-  'Australia', 'New Zealand', 'Japan', 'South Korea', 'Singapore', 'Hong Kong',
-  'China', 'India', 'Brazil', 'Mexico', 'Argentina', 'Chile', 'Colombia', 'Peru',
-  'South Africa', 'Nigeria', 'Kenya', 'Egypt', 'Morocco', 'Israel', 'UAE', 'Saudi Arabia',
-  'Russia', 'Ukraine', 'Turkey', 'Greece', 'Ireland', 'Luxembourg', 'Iceland'
+// Enhanced sorting options
+const sortingOptions = [
+  { value: 'rating', label: 'Highest Rated' },
+  { value: 'name', label: 'Name (A-Z)' },
+  { value: 'founded', label: 'Newest First' },
+  { value: 'employees', label: 'Company Size' },
+  { value: 'reviews', label: 'Most Reviewed' },
+  { value: 'verified', label: 'Verified First' },
+  { value: 'location', label: 'Location' }
 ];
 
-// Comprehensive business categories
-const businessCategories = [
-  'All Categories',
-  'Technology & Software',
-  'Digital Marketing & Advertising',
-  'E-commerce & Retail',
-  'Financial Services & Fintech',
-  'Healthcare & Medical',
-  'Education & Training',
-  'Consulting & Professional Services',
-  'Real Estate & Property',
-  'Manufacturing & Industrial',
-  'Food & Beverage',
-  'Travel & Hospitality',
-  'Media & Entertainment',
-  'Fashion & Beauty',
-  'Automotive',
-  'Energy & Utilities',
-  'Agriculture & Farming',
-  'Construction & Architecture',
-  'Legal Services',
-  'Transportation & Logistics',
-  'Sports & Recreation',
-  'Non-profit & Social Impact',
-  'Arts & Creative Services',
-  'Home & Garden',
-  'Pet Services',
-  'Event Planning & Management'
-];
-
-// Mock business data
+// Enhanced mock business data with media and social links
 const mockBusinesses = [
   {
     id: '1',
     name: 'TechFlow Solutions',
     category: 'Technology & Software',
     country: 'United States',
-    description: 'Leading software development company specializing in AI and machine learning solutions.',
+    description: 'Leading software development company specializing in AI and machine learning solutions for enterprise clients worldwide.',
     rating: 4.8,
     employees: '50-200',
     founded: 2018,
     verified: true,
-    services: ['AI Development', 'Web Applications', 'Mobile Apps'],
-    location: 'San Francisco, CA'
+    reviewCount: 156,
+    services: ['AI Development', 'Web Applications', 'Mobile Apps', 'Cloud Solutions'],
+    location: 'San Francisco, CA',
+    website: 'https://techflow.com',
+    email: 'contact@techflow.com',
+    phone: '+1 (555) 123-4567',
+    socialMedia: {
+      facebook: 'https://facebook.com/techflow',
+      twitter: 'https://twitter.com/techflow',
+      linkedin: 'https://linkedin.com/company/techflow',
+      instagram: 'https://instagram.com/techflow'
+    },
+    media: {
+      images: [
+        'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400',
+        'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400'
+      ],
+      videos: ['https://example.com/video1.mp4']
+    }
   },
   {
     id: '2',
     name: 'GreenEnergy Innovations',
     category: 'Energy & Utilities',
     country: 'Germany',
-    description: 'Sustainable energy solutions provider focusing on solar and wind power installations.',
+    description: 'Sustainable energy solutions provider focusing on solar and wind power installations for residential and commercial properties.',
     rating: 4.9,
     employees: '200-500',
     founded: 2015,
     verified: true,
-    services: ['Solar Installation', 'Wind Power', 'Energy Consulting'],
-    location: 'Berlin, Germany'
+    reviewCount: 203,
+    services: ['Solar Installation', 'Wind Power', 'Energy Consulting', 'Battery Storage'],
+    location: 'Berlin, Germany',
+    website: 'https://greenenergy.de',
+    email: 'info@greenenergy.de',
+    phone: '+49 30 12345678',
+    socialMedia: {
+      linkedin: 'https://linkedin.com/company/greenenergy',
+      youtube: 'https://youtube.com/greenenergy'
+    },
+    media: {
+      images: [
+        'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400',
+        'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400'
+      ],
+      videos: []
+    }
   },
   {
     id: '3',
     name: 'Digital Marketing Pro',
     category: 'Digital Marketing & Advertising',
     country: 'United Kingdom',
-    description: 'Full-service digital marketing agency helping businesses grow their online presence.',
+    description: 'Full-service digital marketing agency helping businesses grow their online presence through innovative strategies and data-driven campaigns.',
     rating: 4.6,
     employees: '10-50',
     founded: 2020,
     verified: true,
-    services: ['SEO', 'Social Media Marketing', 'PPC Advertising'],
-    location: 'London, UK'
-  },
-  {
-    id: '4',
-    name: 'HealthTech Dynamics',
-    category: 'Healthcare & Medical',
-    country: 'Canada',
-    description: 'Innovative healthcare technology solutions improving patient care and medical efficiency.',
-    rating: 4.7,
-    employees: '100-300',
-    founded: 2017,
-    verified: true,
-    services: ['Medical Software', 'Telemedicine', 'Health Analytics'],
-    location: 'Toronto, Canada'
-  },
-  {
-    id: '5',
-    name: 'EduFuture Learning',
-    category: 'Education & Training',
-    country: 'Australia',
-    description: 'Online education platform providing professional development and certification courses.',
-    rating: 4.5,
-    employees: '20-100',
-    founded: 2019,
-    verified: false,
-    services: ['Online Courses', 'Corporate Training', 'Certification Programs'],
-    location: 'Sydney, Australia'
+    reviewCount: 89,
+    services: ['SEO', 'Social Media Marketing', 'PPC Advertising', 'Content Strategy'],
+    location: 'London, UK',
+    website: 'https://digitalmarketingpro.co.uk',
+    email: 'hello@digitalmarketingpro.co.uk',
+    phone: '+44 20 7123 4567',
+    socialMedia: {
+      facebook: 'https://facebook.com/digitalmarketingpro',
+      twitter: 'https://twitter.com/dmprouk',
+      linkedin: 'https://linkedin.com/company/digital-marketing-pro',
+      instagram: 'https://instagram.com/digitalmarketingpro'
+    },
+    media: {
+      images: [
+        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400'
+      ],
+      videos: ['https://example.com/demo-video.mp4']
+    }
   }
 ];
 
@@ -150,10 +146,26 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
         return a.name.localeCompare(b.name);
       case 'founded':
         return b.founded - a.founded;
+      case 'employees':
+        return b.employees.localeCompare(a.employees);
+      case 'reviews':
+        return b.reviewCount - a.reviewCount;
+      case 'verified':
+        return (b.verified ? 1 : 0) - (a.verified ? 1 : 0);
       default:
         return 0;
     }
   });
+
+  const handleDirectMessage = (business: any) => {
+    console.log('Opening direct message with:', business.name);
+    // This would typically open a direct messaging interface
+  };
+
+  const handleViewProfile = (business: any) => {
+    console.log('Viewing full profile for:', business.name);
+    // This would typically navigate to the full business profile page
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -197,7 +209,7 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
               </div>
             </div>
 
-            {/* Filters */}
+            {/* Enhanced Filters */}
             {showFilters && (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
                 <div>
@@ -207,7 +219,8 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {countries.map(country => (
+                      <SelectItem value="All Countries">All Countries</SelectItem>
+                      {WORLD_COUNTRIES.map(country => (
                         <SelectItem key={country} value={country}>{country}</SelectItem>
                       ))}
                     </SelectContent>
@@ -221,7 +234,8 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {businessCategories.map(category => (
+                      <SelectItem value="All Categories">All Categories</SelectItem>
+                      {BUSINESS_TYPES.map(category => (
                         <SelectItem key={category} value={category}>{category}</SelectItem>
                       ))}
                     </SelectContent>
@@ -235,9 +249,11 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="rating">Rating</SelectItem>
-                      <SelectItem value="name">Name</SelectItem>
-                      <SelectItem value="founded">Founded Year</SelectItem>
+                      {sortingOptions.map(option => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -278,7 +294,7 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                       </Badge>
                     )}
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
                     <span className="flex items-center gap-1">
                       <MapPin className="h-4 w-4" />
                       {business.location}
@@ -292,15 +308,44 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                 <div className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   <span className="font-semibold">{business.rating}</span>
+                  <span className="text-sm text-gray-500">({business.reviewCount})</span>
                 </div>
               </div>
             </CardHeader>
+            
             <CardContent className="space-y-4">
               <div>
                 <Badge variant="outline" className="mb-2">{business.category}</Badge>
                 <p className="text-gray-700 leading-relaxed">{business.description}</p>
               </div>
 
+              {/* Media Section */}
+              {(business.media.images.length > 0 || business.media.videos.length > 0) && (
+                <div>
+                  <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                    <Image className="h-4 w-4" />
+                    Media Gallery
+                  </h4>
+                  <div className="grid grid-cols-3 gap-2">
+                    {business.media.images.map((image, index) => (
+                      <div key={index} className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                        <img 
+                          src={image} 
+                          alt={`${business.name} image ${index + 1}`}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
+                        />
+                      </div>
+                    ))}
+                    {business.media.videos.map((video, index) => (
+                      <div key={index} className="aspect-square bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
+                        <Play className="h-8 w-8 text-gray-600" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Services */}
               <div>
                 <h4 className="font-semibold text-gray-800 mb-2">Services</h4>
                 <div className="flex flex-wrap gap-2">
@@ -312,28 +357,89 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t">
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <span className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    {business.employees}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Globe className="h-4 w-4" />
-                    {business.country}
-                  </span>
+              {/* Contact & Social Media */}
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2">Contact & Social</h4>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-4 w-4 text-blue-600" />
+                    <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline truncate">
+                      Website
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-gray-600" />
+                    <span className="text-gray-600 truncate">{business.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-gray-600" />
+                    <span className="text-gray-600">{business.phone}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-gray-600" />
+                    <span className="text-gray-600">{business.employees} employees</span>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    <Mail className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Phone className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                    Connect
-                  </Button>
+                
+                {/* Social Media Links */}
+                <div className="flex gap-2 mt-2">
+                  {business.socialMedia.facebook && (
+                    <a href={business.socialMedia.facebook} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="p-2">
+                        <Facebook className="h-4 w-4" />
+                      </Button>
+                    </a>
+                  )}
+                  {business.socialMedia.twitter && (
+                    <a href={business.socialMedia.twitter} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="p-2">
+                        <Twitter className="h-4 w-4" />
+                      </Button>
+                    </a>
+                  )}
+                  {business.socialMedia.linkedin && (
+                    <a href={business.socialMedia.linkedin} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="p-2">
+                        <Linkedin className="h-4 w-4" />
+                      </Button>
+                    </a>
+                  )}
+                  {business.socialMedia.instagram && (
+                    <a href={business.socialMedia.instagram} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="p-2">
+                        <Instagram className="h-4 w-4" />
+                      </Button>
+                    </a>
+                  )}
+                  {business.socialMedia.youtube && (
+                    <a href={business.socialMedia.youtube} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="p-2">
+                        <Youtube className="h-4 w-4" />
+                      </Button>
+                    </a>
+                  )}
                 </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2 pt-4 border-t">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleDirectMessage(business)}
+                  className="flex-1"
+                >
+                  <MessageSquare className="h-4 w-4 mr-1" />
+                  Message
+                </Button>
+                <Button 
+                  size="sm" 
+                  onClick={() => handleViewProfile(business)}
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  View Profile
+                </Button>
               </div>
             </CardContent>
           </Card>
