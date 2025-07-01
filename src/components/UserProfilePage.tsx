@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,6 +20,9 @@ import DirectMessaging from './enhanced/DirectMessaging';
 import UserActivityFeed from './profile/UserActivityFeed';
 import UserStats from './profile/UserStats';
 import JoinedGroupsList from './profile/JoinedGroupsList';
+import SkillsEndorsements from './profile/SkillsEndorsements';
+import AnalyticsDashboard from './profile/AnalyticsDashboard';
+import PortfolioShowcase from './profile/PortfolioShowcase';
 
 interface UserProfilePageProps {
   currentUser: UserType;
@@ -133,7 +135,7 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
   };
 
   const handleSkillsEndorsements = () => {
-    console.log('Managing skills and endorsements');
+    setActiveTab('skills');
   };
 
   const handlePrivacySettings = () => {
@@ -141,11 +143,11 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
   };
 
   const handleActivityAnalytics = () => {
-    console.log('Viewing activity analytics');
+    setActiveTab('analytics');
   };
 
   const handlePortfolioManagement = () => {
-    console.log('Managing professional portfolio');
+    setActiveTab('portfolio');
   };
 
   const handleSaveProfile = () => {
@@ -533,12 +535,15 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
         <Card className="shadow-xl border-0 bg-white/70 backdrop-blur-sm">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <div className="p-6 pb-0">
-              <TabsList className="grid w-full grid-cols-5 bg-gradient-to-r from-violet-50 to-cyan-50">
+              <TabsList className="grid w-full grid-cols-7 bg-gradient-to-r from-violet-50 to-cyan-50">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">Overview</TabsTrigger>
                 <TabsTrigger value="groups" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">My Groups</TabsTrigger>
                 <TabsTrigger value="activity" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">Activity</TabsTrigger>
                 <TabsTrigger value="achievements" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">Achievements</TabsTrigger>
                 <TabsTrigger value="stats" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">Statistics</TabsTrigger>
+                <TabsTrigger value="skills" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">Skills</TabsTrigger>
+                <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">Analytics</TabsTrigger>
+                <TabsTrigger value="portfolio" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white">Portfolio</TabsTrigger>
               </TabsList>
             </div>
 
@@ -655,6 +660,18 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
                   messages={messages}
                   groups={joinedGroups}
                 />
+              </TabsContent>
+
+              <TabsContent value="skills">
+                <SkillsEndorsements />
+              </TabsContent>
+
+              <TabsContent value="analytics">
+                <AnalyticsDashboard />
+              </TabsContent>
+
+              <TabsContent value="portfolio">
+                <PortfolioShowcase />
               </TabsContent>
             </div>
           </Tabs>
