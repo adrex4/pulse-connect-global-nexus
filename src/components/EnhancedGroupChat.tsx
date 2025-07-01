@@ -56,7 +56,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  // Enhanced mock messages with professional networking context
+  // Enhanced mock messages with realistic content
   const generateEnhancedMessages = (group: Group): ExtendedMessage[] => {
     const mockMessages: ExtendedMessage[] = [
       {
@@ -64,7 +64,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
         userId: 'admin',
         userName: 'Admin',
         content: '📋 Welcome to the Bookkeeping & Financial Services Professionals group! Please review our community guidelines pinned above.',
-        timestamp: new Date(Date.now() - 86400000), // 1 day ago
+        timestamp: new Date(Date.now() - 86400000),
         groupId: group.id,
         type: 'announcement',
         isPinned: true,
@@ -89,7 +89,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
       {
         id: '3',
         userId: 'user2',
-        userName: 'Mike Chen, Bookkeeper',
+        userName: 'Mike Chen',
         content: '@Sarah Johnson, CPA Yes! I just completed a project with IFRS 17. Happy to share insights. Are you available for a quick call this week?',
         timestamp: new Date(Date.now() - 6000000),
         groupId: group.id,
@@ -106,8 +106,8 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
       {
         id: '4',
         userId: 'user3',
-        userName: 'Emma Rodriguez, Tax Consultant',
-        content: '🔗 Sharing a great resource on tax compliance updates: [Link to Professional Tax Update Guide]',
+        userName: 'Emma Rodriguez',
+        content: '🔗 Sharing a great resource on tax compliance updates: [Professional Tax Update Guide]',
         timestamp: new Date(Date.now() - 4800000),
         groupId: group.id,
         type: 'text',
@@ -119,7 +119,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
       {
         id: '5',
         userId: 'user4',
-        userName: 'David Kumar, Financial Advisor',
+        userName: 'David Kumar',
         content: 'Networking Event Reminder: Local chapter meeting this Friday at 6 PM. Who\'s planning to attend? 📅',
         timestamp: new Date(Date.now() - 1800000),
         groupId: group.id,
@@ -148,19 +148,19 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newMessage.trim()) {
-      const messageContent = replyTo 
-        ? `@${replyTo.userName} ${newMessage.trim()}`
-        : newMessage.trim();
-      
-      onSendMessage(messageContent);
-      setNewMessage('');
-      setReplyTo(null);
-      
-      // Simulate typing indicator
-      setTypingUsers(['Someone']);
-      setTimeout(() => setTypingUsers([]), 2000);
-    }
+    if (!newMessage.trim()) return;
+
+    const messageContent = replyTo 
+      ? `@${replyTo.userName} ${newMessage.trim()}`
+      : newMessage.trim();
+    
+    onSendMessage(messageContent);
+    setNewMessage('');
+    setReplyTo(null);
+    
+    // Simulate typing indicator
+    setTypingUsers(['Someone']);
+    setTimeout(() => setTypingUsers([]), 2000);
   };
 
   const handleReaction = (messageId: string, emoji: string) => {
@@ -195,7 +195,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
     }
   };
 
-   const filteredMessages = searchQuery 
+  const filteredMessages = searchQuery 
     ? allMessages.filter(msg => 
         msg.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
         msg.userName.toLowerCase().includes(searchQuery.toLowerCase())
@@ -246,7 +246,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
       
       <div className="flex-1 max-w-7xl mx-auto w-full flex flex-col">
         <Card className="flex-1 flex flex-col shadow-xl border-0 bg-white overflow-hidden m-2 sm:m-4 rounded-xl">
-          {/* Enhanced Header with Professional Styling */}
+          {/* Improved Header */}
           <CardHeader className="flex-shrink-0 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white border-b">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
@@ -256,9 +256,9 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                 </Button>
                 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm flex-shrink-0">
-                      <MessageSquare className="h-4 w-4 sm:h-6 sm:w-6" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm flex-shrink-0">
+                      <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <CardTitle className="text-lg sm:text-xl font-bold truncate">{group.name}</CardTitle>
@@ -272,7 +272,6 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                         <span className="flex items-center gap-1 bg-white/10 px-2 py-1 rounded-full">
                           <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span className="font-medium">{group.memberCount.toLocaleString()}</span>
-                          <span className="hidden sm:inline">members</span>
                         </span>
                         <span className="flex items-center gap-1 bg-green-500/20 px-2 py-1 rounded-full">
                           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -282,16 +281,16 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                       </div>
                     </div>
                   </div>
-                  <p className="text-blue-100 text-xs sm:text-sm leading-relaxed hidden sm:block">{group.description}</p>
+                  <p className="text-blue-100 text-xs sm:text-sm leading-relaxed hidden sm:block truncate">{group.description}</p>
                 </div>
               </div>
               
-              {/* Enhanced Action Buttons */}
+              {/* Action Buttons */}
               <div className="flex items-center gap-1 flex-shrink-0">
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="text-white hover:bg-white/20 transition-colors"
+                  className="text-white hover:bg-white/20 transition-colors p-2"
                   onClick={() => setShowSearch(!showSearch)}
                 >
                   <Search className="h-4 w-4" />
@@ -299,12 +298,12 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="text-white hover:bg-white/20 transition-colors"
+                  className="text-white hover:bg-white/20 transition-colors p-2"
                   onClick={() => setShowPinned(!showPinned)}
                 >
                   <Pin className="h-4 w-4" />
                   {pinnedMessages.length > 0 && (
-                    <Badge variant="secondary" className="ml-1 text-xs px-1">
+                    <Badge variant="secondary" className="ml-1 text-xs px-1 h-4">
                       {pinnedMessages.length}
                     </Badge>
                   )}
@@ -312,21 +311,14 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="text-white hover:bg-white/20 transition-colors hidden sm:inline-flex"
-                >
-                  <Video className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-white hover:bg-white/20 transition-colors"
+                  className="text-white hover:bg-white/20 transition-colors p-2"
                   onClick={() => setShowOnlineUsers(!showOnlineUsers)}
                 >
                   {showOnlineUsers ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 transition-colors">
+                    <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 transition-colors p-2">
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -338,10 +330,6 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                     <DropdownMenuItem>
                       <UserPlus className="h-4 w-4 mr-2" />
                       Invite Members
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Schedule Event
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-red-600">
@@ -371,7 +359,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                       variant="ghost" 
                       size="sm" 
                       onClick={() => {setShowSearch(false); setSearchQuery('');}}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -388,7 +376,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                         <Pin className="h-4 w-4" />
                         Pinned Messages
                       </h3>
-                      <Button variant="ghost" size="sm" onClick={() => setShowPinned(false)}>
+                      <Button variant="ghost" size="sm" onClick={() => setShowPinned(false)} className="p-1">
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
@@ -422,16 +410,16 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                         {replyTo.content}
                       </p>
                     </div>
-                    <Button variant="ghost" size="sm" onClick={() => setReplyTo(null)} className="text-blue-600 hover:bg-blue-100 flex-shrink-0">
+                    <Button variant="ghost" size="sm" onClick={() => setReplyTo(null)} className="text-blue-600 hover:bg-blue-100 flex-shrink-0 p-1">
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
               )}
 
-              {/* Enhanced Messages with Better Responsiveness */}
+              {/* Enhanced Messages with Better Sizing */}
               <ScrollArea className="flex-1 px-2 sm:px-4">
-                <div className="space-y-4 sm:space-y-6 py-4 max-w-4xl mx-auto">
+                <div className="space-y-3 sm:space-y-4 py-4 max-w-5xl mx-auto">
                   {filteredMessages.map((message, index) => {
                     const showDate = index === 0 || 
                       formatDate(filteredMessages[index - 1].timestamp) !== formatDate(message.timestamp);
@@ -441,13 +429,13 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                     return (
                       <div key={message.id}>
                         {showDate && (
-                          <div className="text-center my-6 sm:my-8">
+                          <div className="text-center my-4 sm:my-6">
                             <div className="relative">
                               <div className="absolute inset-0 flex items-center">
                                 <div className="w-full border-t border-gray-300"></div>
                               </div>
                               <div className="relative flex justify-center">
-                                <span className="bg-white text-gray-600 text-xs sm:text-sm px-4 sm:px-6 py-2 rounded-full shadow-sm border font-medium">
+                                <span className="bg-white text-gray-600 text-xs sm:text-sm px-3 sm:px-4 py-1 rounded-full shadow-sm border font-medium">
                                   {formatDate(message.timestamp)}
                                 </span>
                               </div>
@@ -456,8 +444,8 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                         )}
                         
                         <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-[85%] sm:max-w-xs lg:max-w-2xl group relative ${isOwn ? 'ml-4' : 'mr-4'}`}>
-                            <div className={`px-3 sm:px-4 py-2 sm:py-3 rounded-xl sm:rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md relative break-words ${
+                          <div className={`max-w-[80%] sm:max-w-[70%] lg:max-w-[60%] group relative ${isOwn ? 'ml-4' : 'mr-4'}`}>
+                            <div className={`px-3 py-2 sm:px-4 sm:py-3 rounded-lg sm:rounded-xl shadow-sm transition-all duration-200 hover:shadow-md relative break-words text-sm sm:text-base ${
                               isAnnouncement 
                                 ? 'bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 text-amber-900'
                                 : isOwn 
@@ -466,7 +454,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                             }`}>
                               {/* Pin indicator */}
                               {message.isPinned && (
-                                <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
+                                <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
                                   <Pin className="h-2 w-2 sm:h-3 sm:w-3 text-white" />
                                 </div>
                               )}
@@ -479,7 +467,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                                   <p className="text-xs font-semibold opacity-80 flex items-center gap-2">
                                     <span className="truncate">{message.userName}</span>
                                     {message.userName.includes('CPA') && (
-                                      <Badge variant="outline" className="text-xs px-1 py-0">Verified</Badge>
+                                      <Badge variant="outline" className="text-xs px-1 py-0 h-4">Verified</Badge>
                                     )}
                                   </p>
                                 </div>
@@ -493,11 +481,11 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                                 </div>
                               )}
                               
-                              <p className="text-sm leading-relaxed break-words">{message.content}</p>
+                              <p className="leading-relaxed break-words">{message.content}</p>
                               
                               {/* Reactions */}
                               {message.reactions && message.reactions.length > 0 && (
-                                <div className="flex gap-1 mt-3 flex-wrap">
+                                <div className="flex gap-1 mt-2 flex-wrap">
                                   {message.reactions.map((reaction, idx) => (
                                     <button
                                       key={idx}
@@ -529,13 +517,13 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                               </div>
                             </div>
                             
-                            {/* Enhanced Message Actions */}
+                            {/* Message Actions */}
                             <div className="absolute top-0 right-0 transform translate-x-full opacity-0 group-hover:opacity-100 transition-opacity bg-white rounded-lg shadow-lg border p-1 ml-2 z-10">
                               <div className="flex flex-col gap-1">
                                 <Button 
                                   variant="ghost" 
                                   size="sm" 
-                                  className="h-6 w-6 sm:h-7 sm:w-7 p-0"
+                                  className="h-6 w-6 p-0"
                                   onClick={() => setReplyTo(message)}
                                 >
                                   <Reply className="h-3 w-3" />
@@ -543,7 +531,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                                 <Button 
                                   variant="ghost" 
                                   size="sm" 
-                                  className="h-6 w-6 sm:h-7 sm:w-7 p-0"
+                                  className="h-6 w-6 p-0"
                                   onClick={() => handleReaction(message.id, '👍')}
                                 >
                                   <ThumbsUp className="h-3 w-3" />
@@ -551,37 +539,11 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                                 <Button 
                                   variant="ghost" 
                                   size="sm" 
-                                  className="h-6 w-6 sm:h-7 sm:w-7 p-0"
+                                  className="h-6 w-6 p-0"
                                   onClick={() => handlePinMessage(message.id)}
                                 >
                                   <Pin className="h-3 w-3" />
                                 </Button>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="h-6 w-6 sm:h-7 sm:w-7 p-0">
-                                      <MoreVertical className="h-3 w-3" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuItem>
-                                      <Copy className="h-3 w-3 mr-2" />
-                                      Copy
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                      <Forward className="h-3 w-3 mr-2" />
-                                      Forward
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                      <Bookmark className="h-3 w-3 mr-2" />
-                                      Save
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="text-red-600">
-                                      <Flag className="h-3 w-3 mr-2" />
-                                      Report
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
                               </div>
                             </div>
                           </div>
@@ -593,7 +555,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                   {/* Enhanced Typing Indicator */}
                   {typingUsers.length > 0 && (
                     <div className="flex justify-start">
-                      <div className="bg-white text-gray-600 px-3 sm:px-4 py-2 sm:py-3 rounded-xl sm:rounded-2xl shadow-sm border max-w-xs">
+                      <div className="bg-white text-gray-600 px-3 py-2 rounded-lg shadow-sm border max-w-xs">
                         <div className="flex items-center gap-3">
                           <div className="flex gap-1">
                             <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
@@ -615,9 +577,9 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                 </div>
               </ScrollArea>
 
-              {/* Enhanced Message Input with Better Mobile UX */}
+              {/* Enhanced Message Input */}
               <form onSubmit={handleSendMessage} className="p-3 sm:p-4 border-t bg-white">
-                <div className="flex gap-2 sm:gap-3 items-end max-w-4xl mx-auto">
+                <div className="flex gap-2 sm:gap-3 items-end max-w-5xl mx-auto">
                   <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                     <Button type="button" variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 p-2">
                       <Image className="h-4 w-4" />
@@ -625,18 +587,14 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                     <Button type="button" variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 p-2 hidden sm:inline-flex">
                       <Paperclip className="h-4 w-4" />
                     </Button>
-                    <Button type="button" variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 p-2 hidden sm:inline-flex">
-                      <Link className="h-4 w-4" />
-                    </Button>
                   </div>
                   
                   <div className="flex-1 relative">
-                    <Textarea
+                    <Input
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder={replyTo ? `Replying to ${replyTo.userName}...` : "Share your insights, ask questions, or connect with fellow professionals..."}
-                      className="min-h-0 resize-none border-2 focus:border-blue-500 rounded-xl pr-16 sm:pr-24 bg-white text-sm sm:text-base"
-                      rows={1}
+                      placeholder={replyTo ? `Replying to ${replyTo.userName}...` : "Type your message..."}
+                      className="border-2 focus:border-blue-500 rounded-lg pr-12 sm:pr-16 bg-white text-sm sm:text-base"
                       onKeyPress={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault();
@@ -644,7 +602,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                         }
                       }}
                     />
-                    <div className="absolute right-2 bottom-2 flex gap-1">
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-1">
                       <Button type="button" variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 p-1">
                         <Smile className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Button>
@@ -652,9 +610,9 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
                         <Button 
                           type="submit"
                           size="sm"
-                          className="bg-blue-500 hover:bg-blue-600 text-white rounded-full h-7 w-7 sm:h-8 sm:w-8 p-0"
+                          className="bg-blue-500 hover:bg-blue-600 text-white rounded-full h-6 w-6 sm:h-7 sm:w-7 p-0"
                         >
-                          <ArrowUp className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <Send className="h-3 w-3 sm:h-4 sm:w-4" />
                         </Button>
                       ) : (
                         <Button type="button" size="sm" variant="ghost" className="p-1">
@@ -667,7 +625,7 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
               </form>
             </div>
 
-            {/* Enhanced Online Users Sidebar with Better Mobile Handling */}
+            {/* Online Users Sidebar */}
             {showOnlineUsers && (
               <div className="w-64 sm:w-80 border-l bg-white shadow-lg">
                 <div className="p-3 sm:p-4 border-b bg-gray-50">

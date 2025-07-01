@@ -9,6 +9,8 @@ import SocialMediaGroupList from '../SocialMediaGroupList';
 import LocalServiceGroupList from '../LocalServiceGroupList';
 import GroupChat from '../../GroupChat';
 import GroupList from '../../GroupList';
+import EnhancedGroupChat from '../../EnhancedGroupChat';
+import UserProfile from '../../profile/UserProfile';
 
 interface SharedStepManagerProps {
   currentStep: Step;
@@ -18,12 +20,14 @@ interface SharedStepManagerProps {
   selectedGroup: Group | null;
   messages: Message[];
   portfolioItems: any[];
+  joinedGroups?: Group[];
   onStepChange: (step: Step) => void;
   onUserRegistration: (userData: Omit<User, 'id'>) => void;
   onGroupJoin: (group: Group) => void;
   onSendMessage: (content: string) => void;
   onPortfolioSave: (items: any[]) => void;
   onLocationSave: (data: any) => void;
+  onUpdateUser?: (user: User) => void;
   setProfileData: (data: any) => void;
 }
 
@@ -35,14 +39,32 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
   selectedGroup,
   messages,
   portfolioItems,
+  joinedGroups = [],
   onStepChange,
   onUserRegistration,
   onGroupJoin,
   onSendMessage,
   onPortfolioSave,
   onLocationSave,
+  onUpdateUser,
   setProfileData
 }) => {
+  // Handle profile step
+  if (currentStep === 'profile' && currentUser && onUpdateUser) {
+    return (
+      <UserProfile
+        user={currentUser}
+        onUpdateUser={onUpdateUser}
+        joinedGroups={joinedGroups}
+        onJoinGroup={onGroupJoin}
+        onOpenChat={(group) => {
+          onGroupJoin(group);
+          onStepChange('chat');
+        }}
+      />
+    );
+  }
+
   if (currentStep === 'service-selection' && userType && userType !== 'business' && userType !== 'social_media_influencer') {
     return (
       <ServiceSelector 
@@ -181,7 +203,7 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
     };
     
     return (
-      <GroupChat
+      <EnhancedGroupChat
         user={user}
         group={selectedGroup}
         messages={messages.filter(m => m.groupId === selectedGroup.id)}

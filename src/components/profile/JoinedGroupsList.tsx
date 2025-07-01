@@ -14,9 +14,14 @@ import { User, Group } from '@/types/connectPulse';
 interface JoinedGroupsListProps {
   groups: Group[];
   currentUser: User;
+  onOpenChat?: (group: Group) => void;
 }
 
-const JoinedGroupsList: React.FC<JoinedGroupsListProps> = ({ groups, currentUser }) => {
+const JoinedGroupsList: React.FC<JoinedGroupsListProps> = ({ 
+  groups, 
+  currentUser, 
+  onOpenChat 
+}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
 
@@ -42,6 +47,12 @@ const JoinedGroupsList: React.FC<JoinedGroupsListProps> = ({ groups, currentUser
       case 'local': return 'text-green-600 bg-green-100';
       case 'regional': return 'text-purple-600 bg-purple-100';
       default: return 'text-gray-600 bg-gray-100';
+    }
+  };
+
+  const handleOpenChat = (group: Group) => {
+    if (onOpenChat) {
+      onOpenChat(group);
     }
   };
 
@@ -94,11 +105,11 @@ const JoinedGroupsList: React.FC<JoinedGroupsListProps> = ({ groups, currentUser
       </Card>
 
       {/* Groups Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
         {filteredGroups.map((group) => {
           const ScopeIcon = getScopeIcon(group.scope);
           return (
-            <Card key={group.id} className="hover:shadow-lg transition-shadow">
+            <Card key={group.id} className="hover:shadow-lg transition-all duration-200 border-2 hover:border-blue-200">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
@@ -107,8 +118,8 @@ const JoinedGroupsList: React.FC<JoinedGroupsListProps> = ({ groups, currentUser
                         {group.name.substring(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg leading-tight">{group.name}</h3>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-lg leading-tight truncate">{group.name}</h3>
                       <div className="flex items-center gap-2 mt-1">
                         <Badge variant="outline" className={getScopeColor(group.scope)}>
                           <ScopeIcon className="h-3 w-3 mr-1" />
@@ -148,7 +159,11 @@ const JoinedGroupsList: React.FC<JoinedGroupsListProps> = ({ groups, currentUser
                 </div>
 
                 <div className="flex gap-2">
-                  <Button size="sm" className="flex-1">
+                  <Button 
+                    size="sm" 
+                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    onClick={() => handleOpenChat(group)}
+                  >
                     <MessageSquare className="h-4 w-4 mr-1" />
                     Chat
                   </Button>
