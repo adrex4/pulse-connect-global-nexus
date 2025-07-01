@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -76,6 +75,7 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
   const [selectedPlatform, setSelectedPlatform] = useState('all');
   const [sortBy, setSortBy] = useState('followers');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedCreator, setSelectedCreator] = useState<SocialMediaInfluencer | null>(null);
 
   const searchValue = searchTerm || localSearchTerm;
   const handleSearchChange = onSearchChange || setLocalSearchTerm;
@@ -125,6 +125,162 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
     }
   };
 
+  const handleViewProfile = (creator: SocialMediaInfluencer) => {
+    setSelectedCreator(creator);
+    // Simulate navigation to profile
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleMessage = (creator: SocialMediaInfluencer) => {
+    alert(`Starting conversation with ${creator.name}...`);
+  };
+
+  const handleConnect = (creator: SocialMediaInfluencer) => {
+    alert(`Sending connection request to ${creator.name}...`);
+  };
+
+  const handleCollaborate = (creator: SocialMediaInfluencer) => {
+    alert(`Starting collaboration with ${creator.name}...`);
+  };
+
+  // Show creator profile if selected
+  if (selectedCreator) {
+    return (
+      <div className="space-y-8">
+        <Button variant="ghost" onClick={() => setSelectedCreator(null)} className="mb-4">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Creators
+        </Button>
+        
+        {/* Creator Profile View */}
+        <div className="max-w-4xl mx-auto">
+          {/* Profile Header */}
+          <Card className="overflow-hidden shadow-2xl border-0">
+            <div className="relative h-64 bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600">
+              <div className="absolute inset-0 bg-black/20"></div>
+              <div className="absolute bottom-6 left-6 right-6">
+                <div className="flex items-end gap-6">
+                  <div className="relative">
+                    <div className="w-32 h-32 rounded-full bg-white p-2 shadow-2xl">
+                      <div className="w-full h-full rounded-full bg-gradient-to-r from-pink-400 to-purple-600 flex items-center justify-center">
+                        <span className="text-white font-bold text-4xl">
+                          {selectedCreator.name.charAt(0)}
+                        </span>
+                      </div>
+                    </div>
+                    {selectedCreator.verified && (
+                      <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center border-4 border-white">
+                        <Star className="h-5 w-5 text-white fill-current" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 text-white pb-4">
+                    <h1 className="text-4xl font-bold mb-2">{selectedCreator.name}</h1>
+                    <p className="text-xl text-blue-100 mb-2">{selectedCreator.username}</p>
+                    <div className="flex items-center gap-4 mb-4">
+                      <Badge className="bg-white/20 text-white border-white/30 px-4 py-2">
+                        {selectedCreator.niche}
+                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                        <span className="font-semibold">{selectedCreator.rating}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <Button onClick={() => handleMessage(selectedCreator)} className="bg-white text-purple-600 hover:bg-white/90">
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Message
+                      </Button>
+                      <Button onClick={() => handleConnect(selectedCreator)} variant="outline" className="border-white text-white hover:bg-white/10">
+                        <Heart className="h-4 w-4 mr-2" />
+                        Connect
+                      </Button>
+                      <Button onClick={() => handleCollaborate(selectedCreator)} variant="outline" className="border-white text-white hover:bg-white/10">
+                        <Star className="h-4 w-4 mr-2" />
+                        Collaborate
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Profile Content */}
+          <div className="grid md:grid-cols-3 gap-8 mt-8">
+            <div className="md:col-span-2 space-y-6">
+              {/* About */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>About</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 leading-relaxed">{selectedCreator.bio}</p>
+                  <div className="flex items-center gap-2 mt-4 text-gray-600">
+                    <MapPin className="h-4 w-4" />
+                    <span>{selectedCreator.location}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Platforms */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Platforms</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-3">
+                    {selectedCreator.platforms.map((platform) => (
+                      <div key={platform} className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium ${getPlatformColor(platform)}`}>
+                        {getPlatformIcon(platform)}
+                        <span>{platform}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="space-y-6">
+              {/* Stats */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Stats</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-600">{selectedCreator.followers}</div>
+                    <div className="text-sm text-gray-600">Followers</div>
+                  </div>
+                  <div className="text-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg">
+                    <div className="text-2xl font-bold text-green-600">{selectedCreator.engagement}</div>
+                    <div className="text-sm text-gray-600">Engagement Rate</div>
+                  </div>
+                  <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">{selectedCreator.recentPosts}</div>
+                    <div className="text-sm text-gray-600">Recent Posts</div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Content Type */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Content Focus</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Badge variant="outline" className="w-full justify-center py-2">
+                    {selectedCreator.contentType}
+                  </Badge>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {onBack && (
@@ -134,41 +290,102 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
         </Button>
       )}
 
-      {/* Enhanced Header */}
-      <div className="text-center space-y-6">
-        <div className="flex items-center justify-center gap-3">
-          <div className="p-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full">
-            <Camera className="h-8 w-8 text-white" />
+      {/* AWESOME Enhanced Header */}
+      <div className="relative overflow-hidden">
+        {/* Background with animated gradients */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900 opacity-90"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(139,69,255,0.3),transparent_50%)]"></div>
+        
+        {/* Floating elements */}
+        <div className="absolute top-10 left-10 w-4 h-4 bg-white/20 rounded-full animate-pulse"></div>
+        <div className="absolute top-20 right-20 w-6 h-6 bg-pink-400/30 rounded-full animate-bounce"></div>
+        <div className="absolute bottom-20 left-20 w-3 h-3 bg-blue-400/40 rounded-full animate-ping"></div>
+        
+        <div className="relative text-center py-20 px-6">
+          <div className="max-w-4xl mx-auto">
+            {/* Main title with enhanced styling */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                <Camera className="h-12 w-12 text-white" />
+              </div>
+              <div className="text-center">
+                <h1 className="text-6xl font-bold bg-gradient-to-r from-white via-pink-200 to-purple-200 bg-clip-text text-transparent leading-tight">
+                  Social Media
+                </h1>
+                <div className="flex items-center gap-3 justify-center mt-2">
+                  <Sparkles className="h-8 w-8 text-yellow-400 animate-pulse" />
+                  <h2 className="text-4xl font-bold text-white">Creators</h2>
+                  <Sparkles className="h-8 w-8 text-yellow-400 animate-pulse" />
+                </div>
+              </div>
+              <div className="p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                <TrendingUp className="h-12 w-12 text-white" />
+              </div>
+            </div>
+            
+            {/* Subtitle with typing effect simulation */}
+            <p className="text-xl text-white/90 mb-8 leading-relaxed max-w-3xl mx-auto font-light">
+              Connect with talented content creators and influencers who are 
+              <span className="font-semibold text-pink-300"> shaping digital culture </span>
+              across platforms. Discover 
+              <span className="font-semibold text-purple-300"> authentic voices</span>, 
+              <span className="font-semibold text-blue-300"> creative talents</span>, and 
+              <span className="font-semibold text-yellow-300"> brand partnership opportunities</span>.
+            </p>
+            
+            {/* Animated CTA buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              {onCreateProfile && (
+                <Button 
+                  onClick={onCreateProfile}
+                  size="lg"
+                  className="bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600 hover:from-pink-600 hover:via-purple-700 hover:to-blue-700 text-white font-semibold px-8 py-4 rounded-full shadow-2xl hover:shadow-pink-500/25 transition-all duration-300 transform hover:scale-105"
+                >
+                  <Star className="h-5 w-5 mr-3" />
+                  Join the Creator Community
+                  <Sparkles className="h-5 w-5 ml-3" />
+                </Button>
+              )}
+              <Button 
+                variant="outline"
+                size="lg"
+                className="border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm px-8 py-4 rounded-full font-semibold transition-all duration-300 transform hover:scale-105"
+              >
+                <Eye className="h-5 w-5 mr-3" />
+                Explore Creators
+              </Button>
+            </div>
           </div>
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-            Social Media Creators
-          </h2>
         </div>
-        <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-          Connect with talented content creators and influencers who are shaping digital culture across platforms. 
-          Discover authentic voices, creative talents, and brand partnership opportunities.
-        </p>
+        
+        {/* Bottom wave effect */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-12 fill-white">
+            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"></path>
+          </svg>
+        </div>
       </div>
 
-      {/* Enhanced Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-        <div className="text-center p-6 bg-gradient-to-br from-pink-50 via-pink-100 to-rose-100 rounded-2xl border border-pink-200 shadow-lg">
-          <div className="text-3xl font-bold text-pink-600 mb-2">{sortedInfluencers.length}</div>
+      {/* Enhanced Stats with animation */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto -mt-8 relative z-10">
+        <div className="text-center p-6 bg-white rounded-2xl shadow-2xl border-t-4 border-pink-500 transform hover:scale-105 transition-all duration-300">
+          <div className="text-3xl font-bold text-pink-600 mb-2 animate-pulse">{sortedInfluencers.length}</div>
           <div className="text-pink-700 text-sm font-medium">Active Creators</div>
           <div className="text-pink-500 text-xs mt-1">Ready to Connect</div>
         </div>
-        <div className="text-center p-6 bg-gradient-to-br from-purple-50 via-purple-100 to-violet-100 rounded-2xl border border-purple-200 shadow-lg">
-          <div className="text-3xl font-bold text-purple-600 mb-2">{niches.length}+</div>
+        <div className="text-center p-6 bg-white rounded-2xl shadow-2xl border-t-4 border-purple-500 transform hover:scale-105 transition-all duration-300">
+          <div className="text-3xl font-bold text-purple-600 mb-2 animate-pulse">{niches.length}+</div>
           <div className="text-purple-700 text-sm font-medium">Content Niches</div>
           <div className="text-purple-500 text-xs mt-1">Diverse Expertise</div>
         </div>
-        <div className="text-center p-6 bg-gradient-to-br from-blue-50 via-blue-100 to-cyan-100 rounded-2xl border border-blue-200 shadow-lg">
-          <div className="text-3xl font-bold text-blue-600 mb-2">15M+</div>
+        <div className="text-center p-6 bg-white rounded-2xl shadow-2xl border-t-4 border-blue-500 transform hover:scale-105 transition-all duration-300">
+          <div className="text-3xl font-bold text-blue-600 mb-2 animate-pulse">15M+</div>
           <div className="text-blue-700 text-sm font-medium">Total Reach</div>
           <div className="text-blue-500 text-xs mt-1">Combined Followers</div>
         </div>
-        <div className="text-center p-6 bg-gradient-to-br from-green-50 via-green-100 to-emerald-100 rounded-2xl border border-green-200 shadow-lg">
-          <div className="text-3xl font-bold text-green-600 mb-2">4.8★</div>
+        <div className="text-center p-6 bg-white rounded-2xl shadow-2xl border-t-4 border-green-500 transform hover:scale-105 transition-all duration-300">
+          <div className="text-3xl font-bold text-green-600 mb-2 animate-pulse">4.8★</div>
           <div className="text-green-700 text-sm font-medium">Avg Rating</div>
           <div className="text-green-500 text-xs mt-1">Quality Content</div>
         </div>
@@ -249,29 +466,6 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
         </Card>
       )}
 
-      {/* Create Profile CTA */}
-      {onCreateProfile && (
-        <div className="text-center p-8 bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 rounded-2xl border-2 border-pink-200 shadow-xl">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="h-8 w-8 text-pink-500" />
-            <h3 className="text-2xl font-bold text-gray-800">Are you a Content Creator?</h3>
-            <Sparkles className="h-8 w-8 text-purple-500" />
-          </div>
-          <p className="text-gray-600 mb-6 text-lg max-w-2xl mx-auto">
-            Join our vibrant community of creators and connect with brands, fellow influencers, and your audience like never before.
-          </p>
-          <Button 
-            onClick={onCreateProfile}
-            size="lg"
-            className="bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600 hover:from-pink-600 hover:via-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-semibold px-8 py-4"
-          >
-            <Camera className="h-5 w-5 mr-3" />
-            Create Your Creator Profile
-            <Star className="h-5 w-5 ml-3" />
-          </Button>
-        </div>
-      )}
-
       {/* Enhanced Creators Grid */}
       <div className={viewMode === 'grid' ? "grid md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-6"}>
         {sortedInfluencers.map((influencer) => (
@@ -281,13 +475,16 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
               <div className="absolute inset-0 bg-black/10"></div>
               <div className="absolute -bottom-6 left-6">
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-full bg-white p-1 shadow-lg">
+                  <button 
+                    onClick={() => handleViewProfile(influencer)}
+                    className="w-16 h-16 rounded-full bg-white p-1 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
+                  >
                     <div className="w-full h-full rounded-full bg-gradient-to-r from-pink-400 to-purple-600 flex items-center justify-center">
                       <span className="text-white font-bold text-lg">
                         {influencer.name.charAt(0)}
                       </span>
                     </div>
-                  </div>
+                  </button>
                   {influencer.verified && (
                     <div className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
                       <Star className="h-3 w-3 text-white fill-current" />
@@ -366,6 +563,7 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
               {/* Enhanced Actions */}
               <div className="flex gap-2 pt-2">
                 <Button 
+                  onClick={() => handleViewProfile(influencer)}
                   variant="default" 
                   size="sm" 
                   className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium"
@@ -373,13 +571,28 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
                   <Eye className="h-4 w-4 mr-2" />
                   View Profile
                 </Button>
-                <Button variant="outline" size="sm" className="hover:bg-pink-50 border-pink-200">
-                  <Heart className="h-4 w-4 text-pink-500" />
+                <Button 
+                  onClick={() => handleMessage(influencer)}
+                  variant="outline" 
+                  size="sm" 
+                  className="hover:bg-pink-50 border-pink-200"
+                >
+                  <MessageSquare className="h-4 w-4 text-pink-500" />
                 </Button>
-                <Button variant="outline" size="sm" className="hover:bg-purple-50 border-purple-200">
-                  <MessageSquare className="h-4 w-4 text-purple-500" />
+                <Button 
+                  onClick={() => handleConnect(influencer)}
+                  variant="outline" 
+                  size="sm" 
+                  className="hover:bg-purple-50 border-purple-200"
+                >
+                  <Heart className="h-4 w-4 text-purple-500" />
                 </Button>
-                <Button variant="outline" size="sm" className="hover:bg-blue-50 border-blue-200">
+                <Button 
+                  onClick={() => handleCollaborate(influencer)}
+                  variant="outline" 
+                  size="sm" 
+                  className="hover:bg-blue-50 border-blue-200"
+                >
                   <Share className="h-4 w-4 text-blue-500" />
                 </Button>
               </div>
