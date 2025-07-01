@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -323,10 +322,10 @@ const PortfolioShowcase: React.FC = () => {
                   {item.featured && <Star className="h-4 w-4 text-yellow-500 fill-current" />}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge className={getTypeColor(item.type)} size="sm">
+                  <Badge className={getTypeColor(item.type)}>
                     {item.type}
                   </Badge>
-                  <Badge variant="outline" size="sm">{item.category}</Badge>
+                  <Badge variant="outline">{item.category}</Badge>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
