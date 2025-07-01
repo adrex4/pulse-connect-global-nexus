@@ -1,10 +1,10 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
 import WelcomeSection from './enhanced/WelcomeSection';
 import StepManager from './enhanced/StepManager';
 import UserProfilePage from './UserProfilePage';
 import GlobalNavigation from './GlobalNavigation';
+import { supabase } from '@/integrations/supabase/client';
 
 const ConnectPulse: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<Step>('welcome');
@@ -19,6 +19,65 @@ const ConnectPulse: React.FC = () => {
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
   const [browsingFilter, setBrowsingFilter] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | null>(null);
   const [joinedGroups, setJoinedGroups] = useState<Group[]>([]);
+
+  // Real-time message subscription
+  useEffect(() => {
+    if (!selectedGroup) return;
+
+    const channel = supabase
+      .channel(`group-messages-${selectedGroup.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `group_id=eq.${selectedGroup.id}`
+        },
+        (payload) => {
+          const newMessage = payload.new as any;
+          setMessages(prev => [...prev, {
+            id: newMessage.id,
+            userId: newMessage.user_id,
+            userName: newMessage.user_name || 'Unknown User',
+            content: newMessage.content,
+            timestamp: new Date(newMessage.created_at),
+            groupId: newMessage.group_id
+          }]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [selectedGroup]);
+
+  // Real-time group updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('group-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'groups'
+        },
+        (payload) => {
+          console.log('Group updated:', payload);
+          // Refresh joined groups when groups are updated
+          if (currentUser) {
+            // This would typically fetch updated group data
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [currentUser]);
 
   // Create demo groups for demo user
   const demoGroups: Group[] = [
@@ -82,12 +141,10 @@ const ConnectPulse: React.FC = () => {
     }
   ];
 
-  // Handle navigation to profile page - Create demo user if none exists
   const handleNavigateToProfile = () => {
     console.log('Navigating to profile page', { currentUser });
     
     if (!currentUser) {
-      // Create a demo user for profile viewing
       const demoUser: User = {
         id: 'demo-user',
         name: 'John Demo',
@@ -113,13 +170,13 @@ const ConnectPulse: React.FC = () => {
       ...userData
     };
     setCurrentUser(newUser);
-    setCurrentStep('groups');
+    // REAL-TIME FLOW: After profile creation, go to explore community
+    setCurrentStep('browse');
   };
 
   const handleGroupJoin = (group: Group) => {
     console.log('Joining group:', group);
     
-    // Create user if doesn't exist
     if (!currentUser) {
       const newUser: User = {
         id: Date.now().toString(),
@@ -131,7 +188,6 @@ const ConnectPulse: React.FC = () => {
       setCurrentUser(newUser);
     }
     
-    // Add group to joined groups if not already joined
     if (!joinedGroups.find(g => g.id === group.id)) {
       setJoinedGroups(prev => [...prev, group]);
     }
@@ -153,6 +209,14 @@ const ConnectPulse: React.FC = () => {
     };
 
     setMessages(prev => [...prev, newMessage]);
+    
+    // In a real app, this would save to Supabase
+    // supabase.from('messages').insert({
+    //   user_id: currentUser.id,
+    //   user_name: currentUser.name,
+    //   content,
+    //   group_id: selectedGroup.id
+    // });
   };
 
   const handlePortfolioSave = (items: any[]) => {
@@ -168,33 +232,33 @@ const ConnectPulse: React.FC = () => {
   const handleLocationSave = (data: any) => {
     setLocationData(data);
     
-    // Different routing based on user type and action
+    // REAL-TIME FLOW: After location, go to profile preview
     if (userType === 'business') {
       if (userAction === 'create' && businessData) {
         setCurrentStep('business-profile-preview');
       } else if (userAction === 'join') {
-        setCurrentStep('business-groups');
+        setCurrentStep('browse'); // Go to explore community
       }
     } else if (userType === 'freelancer') {
       if (userAction === 'create') {
         setCurrentStep('freelancer-profile-preview');
       } else {
-        setCurrentStep('freelancer-groups');
+        setCurrentStep('browse'); // Go to explore community
       }
     } else if (userType === 'social_media_influencer') {
       if (userAction === 'create') {
         setCurrentStep('social-media-profile-preview');
       } else {
-        setCurrentStep('groups');
+        setCurrentStep('browse'); // Go to explore community
       }
     } else if (userType === 'occupation_provider') {
       if (userAction === 'create') {
         setCurrentStep('local-service-profile-preview');
       } else {
-        setCurrentStep('groups');
+        setCurrentStep('browse'); // Go to explore community
       }
     } else {
-      setCurrentStep('groups');
+      setCurrentStep('browse'); // Default to explore community
     }
   };
 
@@ -207,19 +271,17 @@ const ConnectPulse: React.FC = () => {
     setUserType(type);
     setUserAction(action);
     
-    // Don't handle view actions here - let GeneralStepManager handle them
     if (action === 'view') {
+      setCurrentStep('browse');
       return;
     }
     
-    // FIXED: Handle social media influencer join action
     if (type === 'social_media_influencer' && action === 'join') {
-      console.log('Social media influencer joining - going to groups');
-      setCurrentStep('groups');
+      console.log('Social media influencer joining - going to browse');
+      setCurrentStep('browse');
       return;
     }
     
-    // Determine next step based on user type and action
     if (type === 'business') {
       if (action === 'create') {
         setCurrentStep('business-profile');
@@ -241,7 +303,20 @@ const ConnectPulse: React.FC = () => {
     }
   };
 
-  // Show user profile page
+  // Enhanced navigation handler
+  const handleGlobalNavigation = (path: string) => {
+    if (path === '/profile') {
+      handleNavigateToProfile();
+    } else if (path === '/') {
+      setCurrentStep('welcome');
+    } else if (path === '/groups') {
+      setCurrentStep('groups');
+    } else if (path === '/profiles') {
+      setCurrentStep('browse');
+      setBrowsingFilter('freelancers');
+    }
+  };
+
   if (currentStep === 'profile' && currentUser) {
     return (
       <UserProfilePage
@@ -250,7 +325,6 @@ const ConnectPulse: React.FC = () => {
         messages={messages}
         onBack={() => setCurrentStep('welcome')}
         onEditProfile={() => {
-          // Navigate to appropriate edit profile step based on user type
           if (userType === 'business') {
             setCurrentStep('business-profile');
           } else if (userType === 'freelancer') {
@@ -273,12 +347,7 @@ const ConnectPulse: React.FC = () => {
       {currentUser && currentStep !== 'welcome' && (
         <GlobalNavigation 
           currentUserType={userType}
-          onNavigate={(path) => {
-            if (path === '/profile') {
-              handleNavigateToProfile();
-            }
-            // Add other navigation handlers as needed
-          }}
+          onNavigate={handleGlobalNavigation}
         />
       )}
       

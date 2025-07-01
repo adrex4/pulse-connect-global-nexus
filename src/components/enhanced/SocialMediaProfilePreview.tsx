@@ -1,9 +1,8 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Camera, Users, Star, TrendingUp, Edit, Rocket, Home, Globe, Heart, Zap } from 'lucide-react';
+import { ArrowLeft, Edit, Globe, Users, Star, ExternalLink } from 'lucide-react';
 
 interface SocialMediaProfilePreviewProps {
   profileData: {
@@ -14,12 +13,9 @@ interface SocialMediaProfilePreviewProps {
     contentType: string;
     bio: string;
     rates: string;
+    profileImage?: string;
   };
-  locationData?: {
-    country: string;
-    state?: string;
-    city?: string;
-  };
+  locationData: any;
   portfolioItems: any[];
   onEdit: () => void;
   onPublish: () => void;
@@ -34,153 +30,210 @@ const SocialMediaProfilePreview: React.FC<SocialMediaProfilePreviewProps> = ({
   onPublish,
   onHome
 }) => {
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const handlePublish = async () => {
+    setIsPublishing(true);
+    
+    // Simulate publishing process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // After publishing, redirect to explore community
+    onPublish();
+    
+    setIsPublishing(false);
+  };
+
+  const getPlatformIcon = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'instagram': return '📷';
+      case 'youtube': return '🎥';
+      case 'tiktok': return '🎬';
+      case 'twitter': return '🐦';
+      case 'facebook': return '👥';
+      case 'linkedin': return '💼';
+      case 'twitch': return '🎮';
+      case 'snapchat': return '👻';
+      default: return '📱';
+    }
+  };
+
+  const getPlatformColor = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'instagram': return 'from-pink-500 to-purple-600';
+      case 'youtube': return 'from-red-500 to-red-600';
+      case 'tiktok': return 'from-black to-gray-800';
+      case 'twitter': return 'from-blue-400 to-blue-600';
+      case 'facebook': return 'from-blue-600 to-blue-700';
+      case 'linkedin': return 'from-blue-700 to-blue-800';
+      case 'twitch': return 'from-purple-500 to-purple-700';
+      case 'snapchat': return 'from-yellow-400 to-yellow-500';
+      default: return 'from-gray-500 to-gray-600';
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto animate-fade-in">
-      <Card className="shadow-lg border-0">
-        <CardHeader className="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Camera className="h-6 w-6" />
-              <CardTitle className="text-xl">Your Influencer Profile</CardTitle>
+    <div className="max-w-4xl mx-auto animate-fade-in p-4">
+      <Card className="shadow-2xl border-0 bg-white overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 p-6">
+          <div className="flex items-center justify-between text-white">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onEdit}
+                className="text-white hover:bg-white/20"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Edit
+              </Button>
             </div>
-            <Button variant="ghost" size="sm" onClick={onHome} className="text-white hover:bg-white/20">
-              <Home className="h-4 w-4 mr-2" />
-              Home
-            </Button>
-          </div>
-        </CardHeader>
-        
-        <CardContent className="p-8 space-y-6">
-          {/* Profile Header */}
-          <div className="text-center space-y-4">
-            <div className="w-24 h-24 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
-              <Camera className="h-12 w-12 text-white" />
-            </div>
-            <div>
-              <h2 className="text-3xl font-bold text-gray-800">{profileData.influencerName}</h2>
-              <p className="text-gray-600 text-lg">{profileData.niche} Influencer</p>
-              {locationData && (
-                <p className="text-gray-500">{locationData.city}, {locationData.country}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Platforms */}
-          <div className="space-y-3">
-            <h3 className="text-xl font-semibold flex items-center gap-2">
-              <Users className="h-5 w-5 text-pink-500" />
-              Active Platforms
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {profileData.platforms.map((platform) => (
-                <Badge key={platform} variant="secondary" className="bg-pink-100 text-pink-700 hover:bg-pink-200">
-                  {platform}
-                </Badge>
-              ))}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onEdit}
+                className="text-white hover:bg-white/20"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Profile
+              </Button>
             </div>
           </div>
+        </div>
 
-          {/* Follower Range */}
-          <div className="space-y-3">
-            <h3 className="text-xl font-semibold flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-pink-500" />
-              Audience Size
-            </h3>
-            <Badge className="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-lg px-4 py-2">
-              {profileData.totalFollowers}
-            </Badge>
+        <CardContent className="p-8 bg-gradient-to-br from-gray-50 to-white">
+          {/* Success Message */}
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Star className="h-10 w-10 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Profile Ready!</h2>
+            <p className="text-gray-600 text-lg">Your creator profile looks amazing. Ready to connect with brands?</p>
           </div>
 
-          {/* Content Details */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <h3 className="text-lg font-semibold">Content Niche</h3>
-              <Badge variant="outline" className="border-pink-500 text-pink-700">
-                {profileData.niche}
-              </Badge>
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-lg font-semibold">Content Type</h3>
-              <Badge variant="outline" className="border-purple-500 text-purple-700">
-                {profileData.contentType}
-              </Badge>
-            </div>
-          </div>
+          {/* Profile Preview */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div className="flex items-start gap-6 mb-6">
+              {/* Profile Image */}
+              <div className="w-24 h-24 bg-gradient-to-r from-pink-400 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                {profileData.profileImage ? (
+                  <img 
+                    src={profileData.profileImage} 
+                    alt={profileData.influencerName}
+                    className="w-24 h-24 rounded-full object-cover"
+                  />
+                ) : (
+                  profileData.influencerName.charAt(0).toUpperCase()
+                )}
+              </div>
 
-          {/* Bio */}
-          {profileData.bio && (
-            <div className="space-y-3">
-              <h3 className="text-xl font-semibold">Bio</h3>
-              <p className="text-gray-700 bg-gray-50 p-4 rounded-lg leading-relaxed">
-                {profileData.bio}
-              </p>
-            </div>
-          )}
-
-          {/* Rates */}
-          {profileData.rates && (
-            <div className="space-y-3">
-              <h3 className="text-xl font-semibold">Collaboration Rates</h3>
-              <p className="text-gray-700 bg-green-50 p-4 rounded-lg border border-green-200">
-                {profileData.rates}
-              </p>
-            </div>
-          )}
-
-          {/* Portfolio */}
-          {portfolioItems.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="text-xl font-semibold">Portfolio</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {portfolioItems.map((item, index) => (
-                  <div key={index} className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-                    <Star className="h-8 w-8 text-gray-400" />
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{profileData.influencerName}</h3>
+                <p className="text-gray-600 mb-3">{profileData.bio}</p>
+                
+                {/* Stats */}
+                <div className="flex items-center gap-6 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-gray-500" />
+                    <span className="font-semibold">{profileData.totalFollowers}</span>
+                    <span className="text-gray-500">followers</span>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-4 w-4 text-gray-500" />
+                    <span className="text-gray-600">{locationData?.country}</span>
+                  </div>
+                </div>
 
-          {/* Stats */}
-          <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4 text-center">Profile Highlights</h3>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="space-y-2">
-                <Globe className="h-8 w-8 mx-auto text-pink-500" />
-                <div className="text-sm text-gray-600">Reach</div>
-                <div className="font-semibold">{profileData.platforms.length} Platforms</div>
-              </div>
-              <div className="space-y-2">
-                <Heart className="h-8 w-8 mx-auto text-red-500" />
-                <div className="text-sm text-gray-600">Engagement</div>
-                <div className="font-semibold">High Quality</div>
-              </div>
-              <div className="space-y-2">
-                <Zap className="h-8 w-8 mx-auto text-yellow-500" />
-                <div className="text-sm text-gray-600">Content</div>
-                <div className="font-semibold">{profileData.contentType}</div>
+                {/* Platforms */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {profileData.platforms.map((platform, index) => (
+                    <Badge
+                      key={index}
+                      className={`bg-gradient-to-r ${getPlatformColor(platform)} text-white px-3 py-1`}
+                    >
+                      {getPlatformIcon(platform)} {platform}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Niche & Content Type */}
+                <div className="flex gap-4 mb-4">
+                  <Badge variant="outline" className="px-3 py-1">
+                    {profileData.niche}
+                  </Badge>
+                  <Badge variant="outline" className="px-3 py-1">
+                    {profileData.contentType}
+                  </Badge>
+                </div>
+
+                {/* Rates */}
+                {profileData.rates && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <p className="text-sm text-green-800">
+                      <strong>Collaboration Rates:</strong> {profileData.rates}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Portfolio Preview */}
+            {portfolioItems.length > 0 && (
+              <div>
+                <h4 className="text-lg font-semibold mb-4">Content Portfolio</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {portfolioItems.slice(0, 4).map((item, index) => (
+                    <div key={index} className="bg-gray-100 rounded-lg p-4 text-center">
+                      <div className="text-2xl mb-2">{item.type === 'image' ? '🖼️' : '🎥'}</div>
+                      <p className="text-sm text-gray-600 truncate">{item.title}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 pt-6">
+          <div className="flex justify-center gap-4">
             <Button
-              onClick={onEdit}
               variant="outline"
-              className="flex-1 h-12 border-2 border-pink-500 text-pink-700 hover:bg-pink-50"
+              onClick={onEdit}
+              className="px-8 py-3 text-lg"
             >
-              <Edit className="h-4 w-4 mr-2" />
+              <Edit className="h-5 w-5 mr-2" />
               Edit Profile
             </Button>
+            
             <Button
-              onClick={onPublish}
-              className="flex-1 h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+              onClick={handlePublish}
+              disabled={isPublishing}
+              className="px-8 py-3 text-lg bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 hover:from-pink-600 hover:via-purple-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
             >
-              <Rocket className="h-4 w-4 mr-2" />
-              Publish Profile
+              {isPublishing ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Publishing...
+                </>
+              ) : (
+                <>
+                  <ExternalLink className="h-5 w-5 mr-2" />
+                  Publish & Explore Community
+                </>
+              )}
             </Button>
           </div>
+
+          {isPublishing && (
+            <div className="mt-6 text-center">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-blue-800">
+                  🎉 Publishing your profile and redirecting to explore community...
+                </p>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
