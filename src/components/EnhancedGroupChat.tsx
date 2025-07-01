@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -242,7 +241,6 @@ const EnhancedGroupChat: React.FC<EnhancedGroupChatProps> = ({ user, group, mess
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <GlobalNavigation currentUserType="business" onNavigate={() => {}} />
       
       <div className="flex-1 max-w-7xl mx-auto w-full flex flex-col">
         <Card className="flex-1 flex flex-col shadow-xl border-0 bg-white overflow-hidden m-2 sm:m-4 rounded-xl">

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Camera, Users, Star, TrendingUp, Instagram, Youtube, Heart, MessageSquare, Share, Eye, Filter, Search, MapPin, Sparkles, Play, Award } from 'lucide-react';
+import { ArrowLeft, Camera, Users, Star, TrendingUp, Instagram, Youtube, Heart, MessageSquare, Share, Eye, Filter, Search, MapPin, Sparkles, Play, Award, ExternalLink } from 'lucide-react';
 
 interface SocialMediaInfluencer {
   id: string;
@@ -143,6 +143,33 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
     alert(`Starting collaboration with ${creator.name}...`);
   };
 
+  const handleViewPlatform = (creator: SocialMediaInfluencer, platform: string) => {
+    let url = '';
+    const username = creator.username.replace('@', '');
+    
+    switch (platform) {
+      case 'Instagram':
+        url = `https://instagram.com/${username}`;
+        break;
+      case 'YouTube':
+        url = `https://youtube.com/@${username}`;
+        break;
+      case 'TikTok':
+        url = `https://tiktok.com/@${username}`;
+        break;
+      case 'Twitter/X':
+        url = `https://x.com/${username}`;
+        break;
+      case 'LinkedIn':
+        url = `https://linkedin.com/in/${username}`;
+        break;
+      default:
+        return;
+    }
+    
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   // Show creator profile if selected
   if (selectedCreator) {
     return (
@@ -152,51 +179,58 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
           Back to Creators
         </Button>
         
-        {/* Creator Profile View */}
+        {/* Enhanced Creator Profile View */}
         <div className="max-w-4xl mx-auto">
-          {/* Profile Header */}
+          {/* Profile Header with Better Colors */}
           <Card className="overflow-hidden shadow-2xl border-0">
-            <div className="relative h-64 bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600">
-              <div className="absolute inset-0 bg-black/20"></div>
+            <div className="relative h-72 bg-gradient-to-br from-indigo-600 via-purple-700 via-pink-600 to-orange-500">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+              
+              {/* Animated Background Elements */}
+              <div className="absolute top-6 left-6 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
+              <div className="absolute top-12 right-8 w-16 h-16 bg-pink-400/20 rounded-full animate-bounce"></div>
+              <div className="absolute bottom-20 right-20 w-12 h-12 bg-yellow-400/30 rounded-full animate-ping"></div>
+              
               <div className="absolute bottom-6 left-6 right-6">
                 <div className="flex items-end gap-6">
                   <div className="relative">
-                    <div className="w-32 h-32 rounded-full bg-white p-2 shadow-2xl">
-                      <div className="w-full h-full rounded-full bg-gradient-to-r from-pink-400 to-purple-600 flex items-center justify-center">
-                        <span className="text-white font-bold text-4xl">
+                    <div className="w-36 h-36 rounded-full bg-white p-3 shadow-2xl ring-4 ring-white/20">
+                      <div className="w-full h-full rounded-full bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-600 flex items-center justify-center relative overflow-hidden">
+                        <span className="text-white font-bold text-5xl z-10">
                           {selectedCreator.name.charAt(0)}
                         </span>
+                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20"></div>
                       </div>
                     </div>
                     {selectedCreator.verified && (
-                      <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center border-4 border-white">
-                        <Star className="h-5 w-5 text-white fill-current" />
+                      <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                        <Star className="h-6 w-6 text-white fill-current" />
                       </div>
                     )}
                   </div>
                   <div className="flex-1 text-white pb-4">
-                    <h1 className="text-4xl font-bold mb-2">{selectedCreator.name}</h1>
-                    <p className="text-xl text-blue-100 mb-2">{selectedCreator.username}</p>
-                    <div className="flex items-center gap-4 mb-4">
-                      <Badge className="bg-white/20 text-white border-white/30 px-4 py-2">
+                    <h1 className="text-5xl font-bold mb-3 drop-shadow-lg">{selectedCreator.name}</h1>
+                    <p className="text-2xl text-white/90 mb-3 font-medium">{selectedCreator.username}</p>
+                    <div className="flex items-center gap-4 mb-6">
+                      <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 px-4 py-2 text-sm font-semibold">
                         {selectedCreator.niche}
                       </Badge>
-                      <div className="flex items-center gap-2">
-                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                        <span className="font-semibold">{selectedCreator.rating}</span>
+                      <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-2 rounded-full">
+                        <Star className="h-5 w-5 text-yellow-300 fill-current" />
+                        <span className="font-bold text-lg">{selectedCreator.rating}</span>
                       </div>
                     </div>
-                    <div className="flex gap-3">
-                      <Button onClick={() => handleMessage(selectedCreator)} className="bg-white text-purple-600 hover:bg-white/90">
-                        <MessageSquare className="h-4 w-4 mr-2" />
+                    <div className="flex gap-3 flex-wrap">
+                      <Button onClick={() => handleMessage(selectedCreator)} className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30 font-semibold">
+                        <MessageSquare className="h-5 w-5 mr-2" />
                         Message
                       </Button>
-                      <Button onClick={() => handleConnect(selectedCreator)} variant="outline" className="border-white text-white hover:bg-white/10">
-                        <Heart className="h-4 w-4 mr-2" />
+                      <Button onClick={() => handleConnect(selectedCreator)} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg">
+                        <Heart className="h-5 w-5 mr-2" />
                         Connect
                       </Button>
-                      <Button onClick={() => handleCollaborate(selectedCreator)} variant="outline" className="border-white text-white hover:bg-white/10">
-                        <Star className="h-4 w-4 mr-2" />
+                      <Button onClick={() => handleCollaborate(selectedCreator)} className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold shadow-lg">
+                        <Star className="h-5 w-5 mr-2" />
                         Collaborate
                       </Button>
                     </div>
@@ -210,68 +244,84 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
           <div className="grid md:grid-cols-3 gap-8 mt-8">
             <div className="md:col-span-2 space-y-6">
               {/* About */}
-              <Card>
+              <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-gray-50">
                 <CardHeader>
-                  <CardTitle>About</CardTitle>
+                  <CardTitle className="text-2xl text-gray-800">About</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-700 leading-relaxed">{selectedCreator.bio}</p>
+                  <p className="text-gray-700 leading-relaxed text-lg">{selectedCreator.bio}</p>
                   <div className="flex items-center gap-2 mt-4 text-gray-600">
-                    <MapPin className="h-4 w-4" />
-                    <span>{selectedCreator.location}</span>
+                    <MapPin className="h-5 w-5" />
+                    <span className="font-medium">{selectedCreator.location}</span>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Platforms */}
-              <Card>
+              {/* Enhanced Platforms with Click Integration */}
+              <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-purple-50">
                 <CardHeader>
-                  <CardTitle>Platforms</CardTitle>
+                  <CardTitle className="text-2xl text-gray-800 flex items-center gap-2">
+                    <Share className="h-6 w-6 text-purple-600" />
+                    Social Platforms
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="grid sm:grid-cols-2 gap-4">
                     {selectedCreator.platforms.map((platform) => (
-                      <div key={platform} className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium ${getPlatformColor(platform)}`}>
-                        {getPlatformIcon(platform)}
-                        <span>{platform}</span>
-                      </div>
+                      <button
+                        key={platform}
+                        onClick={() => handleViewPlatform(selectedCreator, platform)}
+                        className={`flex items-center justify-between gap-3 px-6 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg group ${getPlatformColor(platform)}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          {getPlatformIcon(platform)}
+                          <span className="text-lg">{platform}</span>
+                        </div>
+                        <ExternalLink className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
+                      </button>
                     ))}
                   </div>
+                  <p className="text-sm text-gray-600 mt-4 text-center font-medium">
+                    Click on any platform to visit {selectedCreator.name}'s profile
+                  </p>
                 </CardContent>
               </Card>
             </div>
 
             <div className="space-y-6">
-              {/* Stats */}
-              <Card>
+              {/* Enhanced Stats */}
+              <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-blue-50">
                 <CardHeader>
-                  <CardTitle>Stats</CardTitle>
+                  <CardTitle className="text-xl text-gray-800">Performance Stats</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">{selectedCreator.followers}</div>
-                    <div className="text-sm text-gray-600">Followers</div>
+                  <div className="text-center p-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl border border-purple-200">
+                    <div className="text-3xl font-bold text-purple-700 mb-1">{selectedCreator.followers}</div>
+                    <div className="text-sm font-medium text-purple-600">Total Followers</div>
                   </div>
-                  <div className="text-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">{selectedCreator.engagement}</div>
-                    <div className="text-sm text-gray-600">Engagement Rate</div>
+                  <div className="text-center p-6 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl border border-green-200">
+                    <div className="text-3xl font-bold text-green-700 mb-1">{selectedCreator.engagement}</div>
+                    <div className="text-sm font-medium text-green-600">Engagement Rate</div>
                   </div>
-                  <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">{selectedCreator.recentPosts}</div>
-                    <div className="text-sm text-gray-600">Recent Posts</div>
+                  <div className="text-center p-6 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl border border-blue-200">
+                    <div className="text-3xl font-bold text-blue-700 mb-1">{selectedCreator.recentPosts}</div>
+                    <div className="text-sm font-medium text-blue-600">Recent Posts</div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Content Type */}
-              <Card>
+              <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-orange-50">
                 <CardHeader>
-                  <CardTitle>Content Focus</CardTitle>
+                  <CardTitle className="text-xl text-gray-800">Content Focus</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Badge variant="outline" className="w-full justify-center py-2">
-                    {selectedCreator.contentType}
-                  </Badge>
+                  <div className="p-4 bg-gradient-to-r from-orange-100 to-red-100 rounded-xl border border-orange-200">
+                    <div className="flex items-center justify-center gap-2">
+                      <Award className="h-5 w-5 text-orange-600" />
+                      <span className="font-semibold text-orange-700">{selectedCreator.contentType}</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
