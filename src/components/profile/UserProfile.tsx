@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -688,18 +689,17 @@ const UserProfile: React.FC<UserProfileProps> = ({
                           </Button>
                         </div>
                       )}
-                      <div className="flex gap-2">
+                      <form onSubmit={handleSendMessage} className="flex gap-2">
                         <Input
                           placeholder="Type a message..."
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                           className="flex-1"
                         />
-                        <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>
+                        <Button type="submit" disabled={!newMessage.trim()}>
                           <Send className="h-4 w-4" />
                         </Button>
-                      </div>
+                      </form>
                     </div>
                   </CardContent>
                 </>
@@ -717,17 +717,17 @@ const UserProfile: React.FC<UserProfileProps> = ({
 
         {/* Skills Tab */}
         {activeTab === 'skills' && (
-          <SkillsEndorsements user={user} onUpdateUser={onUpdateUser} />
+          <SkillsEndorsements />
         )}
 
         {/* Portfolio Tab */}
         {activeTab === 'portfolio' && (
-          <PortfolioShowcase user={user} />
+          <PortfolioShowcase />
         )}
 
         {/* Analytics Tab */}
         {activeTab === 'analytics' && (
-          <AnalyticsDashboard user={user} />
+          <AnalyticsDashboard />
         )}
       </div>
     </div>
