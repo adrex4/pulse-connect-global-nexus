@@ -30,19 +30,11 @@ export interface User {
   id: string;
   name: string;
   email?: string;
-  password?: string;
   avatar?: string;
   bio?: string;
   niche: string;
   country: string;
   preferredScope: 'local' | 'regional' | 'global';
-  // Additional properties for registration
-  location_string?: string;
-  skills?: string[];
-  experience?: string;
-  category?: string;
-  title?: string;
-  description?: string;
 }
 
 export interface Group {
@@ -69,5 +61,4 @@ export interface Message {
   content: string;
   timestamp: Date;
   groupId: string;
-  senderId: string;
 }

@@ -10,16 +10,13 @@ import ResultsSection from './browser/ResultsSection';
 import AdvancedBusinessBrowser from './AdvancedBusinessBrowser';
 import FreelancerMarketplace from '../FreelancerMarketplace';
 import SocialMediaBrowser from './SocialMediaBrowser';
-import LocalServiceBrowser from './LocalServiceBrowser';
 
 const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarted, initialFilter = null }) => {
-  const [activeTab, setActiveTab] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services'>(
+  const [activeTab, setActiveTab] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media'>(
     initialFilter === 'social_media' ? 'social_media' : 
     initialFilter === 'businesses' ? 'businesses' :
     initialFilter === 'freelancers' ? 'freelancers' :
-    initialFilter === 'groups' ? 'groups' :
-    initialFilter === 'local_services' ? 'local_services' :
-    'businesses'
+    initialFilter === 'groups' ? 'groups' : 'businesses'
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('all_locations');
@@ -39,7 +36,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
 
   useEffect(() => {
     fetchLocations();
-    if (activeTab !== 'freelancers' && activeTab !== 'social_media' && activeTab !== 'local_services') {
+    if (activeTab !== 'freelancers' && activeTab !== 'social_media') {
       fetchCategories(activeTab as 'businesses' | 'groups');
     }
   }, []);
@@ -52,10 +49,10 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
     }
   }, [activeTab, searchTerm, selectedLocation, selectedCategory]);
 
-  const handleTabChange = (tab: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services') => {
+  const handleTabChange = (tab: 'businesses' | 'freelancers' | 'groups' | 'social_media') => {
     setActiveTab(tab);
     setSelectedCategory('all_categories');
-    if (tab !== 'freelancers' && tab !== 'social_media' && tab !== 'local_services') {
+    if (tab !== 'freelancers' && tab !== 'social_media') {
       fetchCategories(tab as 'businesses' | 'groups');
     }
   };
@@ -65,46 +62,6 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
     setSelectedLocation('all_locations');
     setSelectedCategory('all_categories');
   };
-
-  // If local services tab is active, show the LocalServiceBrowser component
-  if (activeTab === 'local_services') {
-    return (
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Find trusted local service providers in your area for all your needs.
-          </p>
-        </div>
-
-        {/* Tabs */}
-        <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
-
-        {/* Local Service Browser */}
-        <LocalServiceBrowser
-          onCreateProfile={onGetStarted}
-          showFilters={true}
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-        />
-
-        {/* Call to Action */}
-        <div className="text-center space-y-4 py-8">
-          <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
-          <p className="text-gray-600">Start offering your services and connect with customers in your area.</p>
-          <Button 
-            onClick={onGetStarted}
-            size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
-          >
-            Get Started Now
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   // If social media tab is active, show the SocialMediaBrowser component
   if (activeTab === 'social_media') {

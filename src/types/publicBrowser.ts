@@ -1,7 +1,6 @@
-
 export interface PublicProfileBrowserProps {
   onGetStarted: () => void;
-  initialFilter?: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null;
+  initialFilter?: 'businesses' | 'freelancers' | 'groups' | 'social_media' | null;
 }
 
 export interface Profile {
