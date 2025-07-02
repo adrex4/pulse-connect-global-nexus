@@ -28,7 +28,7 @@ const ConnectPulse: React.FC = () => {
   const [businessData, setBusinessData] = useState<BusinessData | null>(null);
   const [locationData, setLocationData] = useState<any>(null);
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
-  const [browsingFilter, setBrowsingFilter] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | null>(null);
+  const [browsingFilter, setBrowsingFilter] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null>(null);
 
   // Real-time subscription for profile updates
   useEffect(() => {
@@ -73,8 +73,8 @@ const ConnectPulse: React.FC = () => {
   const handleUserRegistration = async (userData: Omit<User, 'id'>) => {
     try {
       const { data: user, error } = await supabase.auth.signUp({
-        email: userData.email,
-        password: userData.password,
+        email: userData.email || '',
+        password: userData.password || '',
         options: {
           data: {
             name: userData.name,
@@ -116,6 +116,8 @@ const ConnectPulse: React.FC = () => {
       id: Math.random().toString(),
       groupId: selectedGroup.id,
       senderId: currentUser?.id || 'temp-user',
+      userId: currentUser?.id || 'temp-user',
+      userName: currentUser?.name || 'Anonymous',
       content,
       timestamp: new Date(),
     };
