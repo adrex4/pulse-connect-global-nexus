@@ -6,10 +6,10 @@ import PublicProfileBrowser from '../PublicProfileBrowser';
 
 interface GeneralStepManagerProps {
   currentStep: Step;
-  browsingFilter: 'businesses' | 'freelancers' | 'groups' | 'social_media' | null;
+  browsingFilter: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null;
   onStepChange: (step: Step) => void;
   onUserTypeSelect: (type: UserType, action: UserAction) => void;
-  setBrowsingFilter: (filter: 'businesses' | 'freelancers' | 'groups' | 'social_media' | null) => void;
+  setBrowsingFilter: (filter: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null) => void;
 }
 
 const GeneralStepManager: React.FC<GeneralStepManagerProps> = ({
@@ -41,8 +41,10 @@ const GeneralStepManager: React.FC<GeneralStepManagerProps> = ({
               setBrowsingFilter('freelancers');
             } else if (type === 'social_media_influencer') {
               setBrowsingFilter('social_media');
+            } else if (type === 'occupation_provider') {
+              setBrowsingFilter('local_services');
             } else {
-              // For occupation_provider or other types, default to businesses
+              // For other types, default to businesses
               setBrowsingFilter('businesses');
             }
             onStepChange('browse');

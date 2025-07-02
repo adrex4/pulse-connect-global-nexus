@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Building2, Briefcase, Users, Camera } from 'lucide-react';
+import { Building2, Briefcase, Users, Camera, Wrench } from 'lucide-react';
 
 interface BrowserTabsProps {
-  activeTab: 'businesses' | 'freelancers' | 'groups' | 'social_media';
-  onTabChange: (tab: 'businesses' | 'freelancers' | 'groups' | 'social_media') => void;
+  activeTab: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services';
+  onTabChange: (tab: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services') => void;
 }
 
 const BrowserTabs: React.FC<BrowserTabsProps> = ({ activeTab, onTabChange }) => {
@@ -13,6 +13,7 @@ const BrowserTabs: React.FC<BrowserTabsProps> = ({ activeTab, onTabChange }) => 
     { id: 'businesses' as const, label: 'Businesses', icon: Building2, color: 'blue' },
     { id: 'freelancers' as const, label: 'Freelancers', icon: Briefcase, color: 'green' },
     { id: 'social_media' as const, label: 'Creators', icon: Camera, color: 'pink' },
+    { id: 'local_services' as const, label: 'Local Services', icon: Wrench, color: 'orange' },
     { id: 'groups' as const, label: 'Communities', icon: Users, color: 'purple' }
   ];
 
