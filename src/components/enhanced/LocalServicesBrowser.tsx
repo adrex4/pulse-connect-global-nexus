@@ -30,8 +30,27 @@ import {
   Utensils,
   Baby,
   Heart,
-  Music
+  Music,
+  Briefcase,
+  Building,
+  Truck,
+  Monitor,
+  PaintBucket,
+  Dumbbell,
+  Stethoscope,
+  Gavel,
+  Calculator,
+  Globe,
+  Package,
+  Shirt,
+  Video,
+  Mail,
+  Award,
+  CheckCircle,
+  Calendar,
+  MessageCircle
 } from 'lucide-react';
+import { WORLD_COUNTRIES } from '@/data/worldCountries';
 
 interface LocalServicesBrowserProps {
   onCreateProfile: () => void;
@@ -59,7 +78,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       currency: 'USD',
       availability: 'Available today',
       verified: true,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=400&h=300&fit=crop',
       specialties: ['Emergency Repairs', '24/7 Service', 'Licensed & Insured'],
       description: 'Professional plumbing services with over 15 years of experience. Specializing in emergency repairs, installations, and maintenance.',
       phone: '+1-555-0123',
@@ -80,7 +99,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       currency: 'USD',
       availability: 'Next available: Tomorrow',
       verified: true,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop',
       specialties: ['Bridal Hair', 'Color Specialist', 'Mobile Service'],
       description: 'Mobile hair styling service bringing salon-quality treatments to your doorstep. Certified colorist and bridal specialist.',
       phone: '+1-555-0124',
@@ -101,7 +120,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       currency: 'GBP',
       availability: 'Available this week',
       verified: true,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=300&fit=crop',
       specialties: ['Rewiring', 'Smart Home Installation', 'Emergency Call-outs'],
       description: 'Certified electrician providing comprehensive electrical services across London. Specializing in modern smart home installations.',
       phone: '+44-20-7946-0958',
@@ -122,7 +141,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       currency: 'CAD',
       availability: 'Available today',
       verified: false,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop',
       specialties: ['Garden Design', 'Seasonal Cleanup', 'Tree Services'],
       description: 'Professional landscaping services transforming outdoor spaces. From design to maintenance, we handle all your garden needs.',
       phone: '+1-416-555-0789',
@@ -143,7 +162,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       currency: 'AUD',
       availability: 'Available next week',
       verified: true,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop',
       specialties: ['Mobile Service', 'Diagnostics', 'Brake Repair'],
       description: 'Mobile automotive repair service coming to your location. Full diagnostic capabilities and honest, transparent pricing.',
       phone: '+61-2-9876-5432',
@@ -164,7 +183,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       currency: 'EUR',
       availability: 'Available today',
       verified: true,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
       specialties: ['Laptop Repair', 'Data Recovery', 'Virus Removal'],
       description: 'Expert computer technician providing comprehensive IT support for homes and small businesses. Quick turnaround guaranteed.',
       phone: '+49-30-12345678',
@@ -185,7 +204,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       currency: 'INR',
       availability: 'Available today',
       verified: true,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop',
       specialties: ['Deep Cleaning', 'Regular Maintenance', 'Eco-Friendly Products'],
       description: 'Professional cleaning service using eco-friendly products. Reliable, trustworthy team with flexible scheduling options.',
       phone: '+91-98765-43210',
@@ -206,7 +225,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       currency: 'JPY',
       availability: 'Available tomorrow',
       verified: true,
-      image: '/placeholder.svg',
+      image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop',
       specialties: ['Shiatsu', 'Deep Tissue', 'Relaxation'],
       description: 'Licensed massage therapist specializing in traditional Japanese techniques combined with modern therapeutic methods.',
       phone: '+81-3-1234-5678',
@@ -227,26 +246,31 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
     'Security Services',
     'Food & Catering',
     'Pet Services',
-    'Entertainment'
+    'Entertainment',
+    'Legal Services',
+    'Financial Services',
+    'Real Estate',
+    'Photography',
+    'Event Planning',
+    'Marketing & Design',
+    'Construction',
+    'Moving & Storage',
+    'Travel & Tourism',
+    'Consulting',
+    'Healthcare',
+    'Childcare',
+    'Elder Care',
+    'Fitness Training',
+    'Music Lessons',
+    'Art & Crafts',
+    'Writing & Translation',
+    'Delivery Services',
+    'Repair Services',
+    'Installation Services',
+    'Maintenance Services'
   ];
 
-  const countries = [
-    'all',
-    'United States',
-    'United Kingdom', 
-    'Canada',
-    'Australia',
-    'Germany',
-    'India',
-    'Japan',
-    'France',
-    'Brazil',
-    'Mexico',
-    'Italy',
-    'Spain',
-    'Netherlands',
-    'Sweden'
-  ];
+  const countries = ['all', ...WORLD_COUNTRIES];
 
   const filteredProviders = serviceProviders.filter(provider => {
     const matchesSearch = provider.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -265,7 +289,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       case 'electrical work': return <Zap className="h-5 w-5" />;
       case 'landscaping': return <Trees className="h-5 w-5" />;
       case 'car repair': return <Car className="h-5 w-5" />;
-      case 'computer repair': return <Camera className="h-5 w-5" />;
+      case 'computer repair': return <Monitor className="h-5 w-5" />;
       case 'house cleaning': return <Home className="h-5 w-5" />;
       case 'massage therapy': return <Heart className="h-5 w-5" />;
       default: return <Wrench className="h-5 w-5" />;
@@ -300,111 +324,143 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
           ← Back to Browse Providers
         </Button>
 
-        <div className="max-w-4xl mx-auto">
-          <Card className="shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-                    {getServiceIcon(provider.service)}
-                  </div>
-                  <div>
-                    <CardTitle className="text-2xl">{provider.name}</CardTitle>
-                    <p className="text-orange-100 text-lg">{provider.service}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <MapPin className="h-4 w-4" />
-                      <span>{provider.location}</span>
+        <div className="max-w-5xl mx-auto">
+          <Card className="shadow-2xl border-0 overflow-hidden">
+            {/* Hero Header with Image */}
+            <div className="relative h-64 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500">
+              <div className="absolute inset-0 bg-black/20"></div>
+              <img 
+                src={provider.image} 
+                alt={provider.service}
+                className="w-full h-full object-cover mix-blend-overlay"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                <div className="flex items-end justify-between">
+                  <div className="flex items-center gap-6">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl">
+                      {getServiceIcon(provider.service)}
+                    </div>
+                    <div>
+                      <h1 className="text-3xl font-bold mb-2">{provider.name}</h1>
+                      <p className="text-xl text-orange-100 mb-2">{provider.service}</p>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-5 w-5" />
+                        <span className="text-lg">{provider.location}</span>
+                      </div>
                     </div>
                   </div>
+                  {provider.verified && (
+                    <Badge className="bg-green-500 text-white text-lg px-4 py-2">
+                      <Shield className="h-5 w-5 mr-2" />
+                      Verified Professional
+                    </Badge>
+                  )}
                 </div>
-                {provider.verified && (
-                  <Badge className="bg-green-500 text-white">
-                    <Shield className="h-4 w-4 mr-1" />
-                    Verified
-                  </Badge>
-                )}
               </div>
-            </CardHeader>
+            </div>
 
             <CardContent className="p-8 space-y-8">
-              {/* Rating and Basic Info */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                    <span className="text-2xl font-bold">{provider.rating}</span>
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="text-center p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl border border-yellow-200">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+                    <span className="text-3xl font-bold text-yellow-800">{provider.rating}</span>
                   </div>
-                  <p className="text-gray-600">{provider.reviews} reviews</p>
+                  <p className="text-yellow-700 font-medium">{provider.reviews} reviews</p>
                 </div>
                 
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <DollarSign className="h-5 w-5" />
-                    <span className="text-2xl font-bold">
+                <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <DollarSign className="h-6 w-6 text-green-600" />
+                    <span className="text-3xl font-bold text-green-800">
                       {getCurrencySymbol(provider.currency)}{provider.hourlyRate}
                     </span>
                   </div>
-                  <p className="text-gray-600">per hour</p>
+                  <p className="text-green-700 font-medium">per hour</p>
                 </div>
                 
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <Clock className="h-5 w-5" />
-                    <span className="text-lg font-bold">{provider.experience}</span>
+                <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <Clock className="h-6 w-6 text-blue-600" />
+                    <span className="text-2xl font-bold text-blue-800">{provider.experience}</span>
                   </div>
-                  <p className="text-gray-600">experience</p>
+                  <p className="text-blue-700 font-medium">experience</p>
+                </div>
+
+                <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <CheckCircle className="h-6 w-6 text-purple-600" />
+                    <span className="text-lg font-bold text-purple-800">Professional</span>
+                  </div>
+                  <p className="text-purple-700 font-medium">service provider</p>
                 </div>
               </div>
 
-              {/* Description */}
-              <div>
-                <h3 className="text-xl font-semibold mb-3">About</h3>
-                <p className="text-gray-700 leading-relaxed">{provider.description}</p>
+              {/* About Section */}
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h3 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-3">
+                  <Users className="h-6 w-6" />
+                  About {provider.name}
+                </h3>
+                <p className="text-gray-700 leading-relaxed text-lg">{provider.description}</p>
               </div>
 
               {/* Specialties */}
               <div>
-                <h3 className="text-xl font-semibold mb-3">Specialties</h3>
-                <div className="flex flex-wrap gap-2">
+                <h3 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-3">
+                  <Award className="h-6 w-6" />
+                  Specialties & Services
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {provider.specialties.map((specialty, index) => (
-                    <Badge key={index} variant="outline" className="px-3 py-1">
-                      {specialty}
-                    </Badge>
+                    <div key={index} className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
+                      <span className="text-orange-800 font-medium">{specialty}</span>
+                    </div>
                   ))}
                 </div>
               </div>
 
-              {/* Languages */}
-              <div>
-                <h3 className="text-xl font-semibold mb-3">Languages</h3>
-                <div className="flex flex-wrap gap-2">
-                  {provider.languages.map((language, index) => (
-                    <Badge key={index} variant="secondary" className="px-3 py-1">
-                      {language}
-                    </Badge>
-                  ))}
+              {/* Languages & Communication */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-xl font-bold mb-3 text-gray-800 flex items-center gap-2">
+                    <Globe className="h-5 w-5" />
+                    Languages
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {provider.languages.map((language, index) => (
+                      <Badge key={index} variant="secondary" className="px-4 py-2 text-sm">
+                        {language}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Availability */}
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="h-5 w-5 text-green-600" />
-                  <h3 className="text-lg font-semibold text-green-800">Availability</h3>
+                <div>
+                  <h3 className="text-xl font-bold mb-3 text-gray-800 flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Availability
+                  </h3>
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <p className="text-green-700 font-medium">{provider.availability}</p>
+                  </div>
                 </div>
-                <p className="text-green-700">{provider.availability}</p>
               </div>
 
               {/* Contact Actions */}
-              <div className="flex gap-4 pt-4">
-                <Button size="lg" className="flex-1 bg-orange-600 hover:bg-orange-700">
-                  <Phone className="h-5 w-5 mr-2" />
-                  Call {provider.phone}
-                </Button>
-                <Button size="lg" variant="outline" className="flex-1">
-                  <Users className="h-5 w-5 mr-2" />
-                  Send Message
-                </Button>
+              <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200">
+                <h3 className="text-xl font-bold mb-4 text-gray-800">Ready to get started?</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Button size="lg" className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium shadow-lg hover:shadow-xl transition-all">
+                    <Phone className="h-5 w-5 mr-2" />
+                    Call {provider.phone}
+                  </Button>
+                  <Button size="lg" variant="outline" className="border-2 border-orange-300 text-orange-700 hover:bg-orange-50 font-medium">
+                    <MessageCircle className="h-5 w-5 mr-2" />
+                    Send Message
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -417,49 +473,89 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold text-gray-800">Local Service Providers</h2>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+        <h2 className="text-4xl font-bold text-gray-800">Local Service Providers</h2>
+        <p className="text-gray-600 text-xl max-w-3xl mx-auto">
           Find trusted local professionals for all your service needs. From home repairs to beauty services, connect with verified providers worldwide.
         </p>
       </div>
 
-      {/* Service Categories Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-        <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-lg border border-orange-200">
-          <div className="flex items-center gap-3 mb-3">
-            <Home className="h-6 w-6 text-orange-600" />
-            <h3 className="text-lg font-semibold text-orange-800">Home Services</h3>
+      {/* Enhanced Service Categories with Images */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        <div className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
+          <div className="absolute inset-0">
+            <img 
+              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=300&fit=crop" 
+              alt="Home Services" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-orange-600/90 to-orange-400/50"></div>
           </div>
-          <p className="text-orange-700 text-sm">Plumbing, electrical, cleaning, repairs, and more home maintenance services.</p>
+          <div className="relative p-6 text-white h-48 flex flex-col justify-end">
+            <div className="flex items-center gap-3 mb-3">
+              <Home className="h-7 w-7" />
+              <h3 className="text-xl font-bold">Home Services</h3>
+            </div>
+            <p className="text-orange-100 text-sm leading-relaxed">Plumbing, electrical, cleaning, repairs, and more home maintenance services.</p>
+          </div>
         </div>
         
-        <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-lg border border-pink-200">
-          <div className="flex items-center gap-3 mb-3">
-            <Scissors className="h-6 w-6 text-pink-600" />
-            <h3 className="text-lg font-semibold text-pink-800">Beauty & Wellness</h3>
+        <div className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
+          <div className="absolute inset-0">
+            <img 
+              src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=300&fit=crop" 
+              alt="Beauty & Wellness" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-pink-600/90 to-pink-400/50"></div>
           </div>
-          <p className="text-pink-700 text-sm">Hair styling, massage therapy, personal training, and wellness services.</p>
+          <div className="relative p-6 text-white h-48 flex flex-col justify-end">
+            <div className="flex items-center gap-3 mb-3">
+              <Scissors className="h-7 w-7" />
+              <h3 className="text-xl font-bold">Beauty & Wellness</h3>
+            </div>
+            <p className="text-pink-100 text-sm leading-relaxed">Hair styling, massage therapy, personal training, and wellness services.</p>
+          </div>
         </div>
         
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
-          <div className="flex items-center gap-3 mb-3">
-            <Car className="h-6 w-6 text-blue-600" />
-            <h3 className="text-lg font-semibold text-blue-800">Automotive</h3>
+        <div className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
+          <div className="absolute inset-0">
+            <img 
+              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&h=300&fit=crop" 
+              alt="Automotive" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-blue-600/90 to-blue-400/50"></div>
           </div>
-          <p className="text-blue-700 text-sm">Car detailing, mobile mechanics, auto repair, and vehicle maintenance.</p>
+          <div className="relative p-6 text-white h-48 flex flex-col justify-end">
+            <div className="flex items-center gap-3 mb-3">
+              <Car className="h-7 w-7" />
+              <h3 className="text-xl font-bold">Automotive</h3>
+            </div>
+            <p className="text-blue-100 text-sm leading-relaxed">Car detailing, mobile mechanics, auto repair, and vehicle maintenance.</p>
+          </div>
         </div>
         
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
-          <div className="flex items-center gap-3 mb-3">
-            <Camera className="h-6 w-6 text-green-600" />
-            <h3 className="text-lg font-semibold text-green-800">Technology</h3>
+        <div className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
+          <div className="absolute inset-0">
+            <img 
+              src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=500&h=300&fit=crop" 
+              alt="Technology" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-green-600/90 to-green-400/50"></div>
           </div>
-          <p className="text-green-700 text-sm">Device repair, tech support, setup services, and IT solutions.</p>
+          <div className="relative p-6 text-white h-48 flex flex-col justify-end">
+            <div className="flex items-center gap-3 mb-3">
+              <Monitor className="h-7 w-7" />
+              <h3 className="text-xl font-bold">Technology</h3>
+            </div>
+            <p className="text-green-100 text-sm leading-relaxed">Device repair, tech support, setup services, and IT solutions.</p>
+          </div>
         </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
@@ -474,7 +570,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
           </div>
           
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full md:w-48">
+            <SelectTrigger className="w-full md:w-64">
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
@@ -487,7 +583,7 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
           </Select>
           
           <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-            <SelectTrigger className="w-full md:w-48">
+            <SelectTrigger className="w-full md:w-64">
               <SelectValue placeholder="All Countries" />
             </SelectTrigger>
             <SelectContent>
@@ -502,12 +598,12 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       </div>
 
       {/* Results */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <p className="text-gray-600">
-            {filteredProviders.length} service providers found
+          <p className="text-gray-600 text-lg">
+            <span className="font-semibold text-orange-600">{filteredProviders.length}</span> service providers found
           </p>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="border-orange-300 text-orange-700 hover:bg-orange-50">
             <Filter className="h-4 w-4 mr-2" />
             More Filters
           </Button>
@@ -515,25 +611,32 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProviders.map(provider => (
-            <Card key={provider.id} className="hover:shadow-lg transition-all duration-200 border-2 hover:border-orange-200">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    {getServiceIcon(provider.service)}
-                    <div>
-                      <CardTitle className="text-lg text-gray-800">{provider.name}</CardTitle>
-                      <p className="text-sm text-orange-600 font-medium">{provider.service}</p>
-                    </div>
-                  </div>
+            <Card key={provider.id} className="hover:shadow-xl transition-all duration-300 border-2 hover:border-orange-200 overflow-hidden group">
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src={provider.image} 
+                  alt={provider.service}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <div className="absolute top-4 right-4">
                   {provider.verified && (
-                    <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
+                    <Badge className="bg-green-500 text-white">
+                      <Shield className="h-3 w-3 mr-1" />
                       Verified
                     </Badge>
                   )}
                 </div>
-              </CardHeader>
+                <div className="absolute bottom-4 left-4 text-white">
+                  <div className="flex items-center gap-2 mb-1">
+                    {getServiceIcon(provider.service)}
+                    <h3 className="font-bold text-lg">{provider.name}</h3>
+                  </div>
+                  <p className="text-orange-200 font-medium">{provider.service}</p>
+                </div>
+              </div>
               
-              <CardContent className="space-y-4">
+              <CardContent className="p-6 space-y-4">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <MapPin className="h-4 w-4" />
                   {provider.location}
@@ -575,12 +678,12 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
                 <div className="flex gap-2 pt-2">
                   <Button 
                     size="sm" 
-                    className="flex-1 bg-orange-600 hover:bg-orange-700"
+                    className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700"
                     onClick={() => setSelectedProvider(provider.id)}
                   >
                     View Profile
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1">
+                  <Button size="sm" variant="outline" className="flex-1 border-orange-300 text-orange-700 hover:bg-orange-50">
                     <Phone className="h-4 w-4 mr-1" />
                     Contact
                   </Button>
@@ -592,19 +695,19 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
       </div>
 
       {/* Call to Action */}
-      <div className="text-center space-y-4 py-8 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border border-orange-200">
-        <h3 className="text-2xl font-semibold text-gray-800">Are you a Local Service Provider?</h3>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+      <div className="text-center space-y-6 py-12 bg-gradient-to-r from-orange-50 via-red-50 to-pink-50 rounded-xl border border-orange-200">
+        <h3 className="text-3xl font-bold text-gray-800">Are you a Local Service Provider?</h3>
+        <p className="text-gray-600 max-w-3xl mx-auto text-lg">
           Join ConnectPulse and connect with customers worldwide. Create your profile and start growing your local business today.
         </p>
         <Button 
           onClick={onCreateProfile}
           size="lg"
-          className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
+          className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 shadow-xl hover:shadow-2xl transition-all duration-300 text-white font-medium px-8 py-4 text-lg"
         >
-          <Users className="h-5 w-5 mr-2" />
+          <Users className="h-6 w-6 mr-3" />
           Create Service Provider Profile
-          <ArrowRight className="h-5 w-5 ml-2" />
+          <ArrowRight className="h-6 w-6 ml-3" />
         </Button>
       </div>
     </div>
