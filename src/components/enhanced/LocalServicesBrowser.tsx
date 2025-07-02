@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -61,6 +60,114 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
+
+  // Enhanced service categories with individual services
+  const serviceCategories = [
+    {
+      title: "Home Services",
+      description: "Professional home maintenance and repair services",
+      services: [
+        {
+          name: "Plumbing",
+          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&fit=crop",
+          icon: <Wrench className="h-5 w-5" />
+        },
+        {
+          name: "Electrical",
+          image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=300&h=200&fit=crop",
+          icon: <Zap className="h-5 w-5" />
+        },
+        {
+          name: "Cleaning",
+          image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=300&h=200&fit=crop",
+          icon: <Home className="h-5 w-5" />
+        },
+        {
+          name: "Repairs",
+          image: "https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?w=300&h=200&fit=crop",
+          icon: <Hammer className="h-5 w-5" />
+        }
+      ]
+    },
+    {
+      title: "Beauty & Wellness",
+      description: "Personal care and wellness services",
+      services: [
+        {
+          name: "Hair Styling",
+          image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=200&fit=crop",
+          icon: <Scissors className="h-5 w-5" />
+        },
+        {
+          name: "Massage Therapy",
+          image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300&h=200&fit=crop",
+          icon: <Heart className="h-5 w-5" />
+        },
+        {
+          name: "Personal Training",
+          image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop",
+          icon: <Dumbbell className="h-5 w-5" />
+        },
+        {
+          name: "Spa Services",
+          image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=300&h=200&fit=crop",
+          icon: <HeartHandshake className="h-5 w-5" />
+        }
+      ]
+    },
+    {
+      title: "Automotive",
+      description: "Vehicle maintenance and repair services",
+      services: [
+        {
+          name: "Car Detailing",
+          image: "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=300&h=200&fit=crop",
+          icon: <Car className="h-5 w-5" />
+        },
+        {
+          name: "Mobile Mechanics",
+          image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=300&h=200&fit=crop",
+          icon: <Wrench className="h-5 w-5" />
+        },
+        {
+          name: "Auto Repair",
+          image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=300&h=200&fit=crop",
+          icon: <Hammer className="h-5 w-5" />
+        },
+        {
+          name: "Tire Services",
+          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&fit=crop",
+          icon: <Shield className="h-5 w-5" />
+        }
+      ]
+    },
+    {
+      title: "Technology",
+      description: "IT support and technology services",
+      services: [
+        {
+          name: "Computer Repair",
+          image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&h=200&fit=crop",
+          icon: <Monitor className="h-5 w-5" />
+        },
+        {
+          name: "Tech Support",
+          image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&h=200&fit=crop",
+          icon: <Wrench className="h-5 w-5" />
+        },
+        {
+          name: "Setup Services",
+          image: "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=300&h=200&fit=crop",
+          icon: <Building className="h-5 w-5" />
+        },
+        {
+          name: "Data Recovery",
+          image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop",
+          icon: <Shield className="h-5 w-5" />
+        }
+      ]
+    }
+  ];
 
   // Expanded service providers data with global locations
   const serviceProviders = [
@@ -479,79 +586,48 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
         </p>
       </div>
 
-      {/* Enhanced Service Categories with Images */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-        <div className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
-          <div className="absolute inset-0">
-            <img 
-              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=300&fit=crop" 
-              alt="Home Services" 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-orange-600/90 to-orange-400/50"></div>
-          </div>
-          <div className="relative p-6 text-white h-48 flex flex-col justify-end">
-            <div className="flex items-center gap-3 mb-3">
-              <Home className="h-7 w-7" />
-              <h3 className="text-xl font-bold">Home Services</h3>
+      {/* Enhanced Service Categories with Individual Service Items */}
+      <div className="space-y-12 max-w-7xl mx-auto">
+        {serviceCategories.map((category, categoryIndex) => (
+          <div key={categoryIndex} className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-3xl font-bold text-gray-800 mb-3">{category.title}</h3>
+              <p className="text-gray-600 text-lg">{category.description}</p>
             </div>
-            <p className="text-orange-100 text-sm leading-relaxed">Plumbing, electrical, cleaning, repairs, and more home maintenance services.</p>
-          </div>
-        </div>
-        
-        <div className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
-          <div className="absolute inset-0">
-            <img 
-              src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=300&fit=crop" 
-              alt="Beauty & Wellness" 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-pink-600/90 to-pink-400/50"></div>
-          </div>
-          <div className="relative p-6 text-white h-48 flex flex-col justify-end">
-            <div className="flex items-center gap-3 mb-3">
-              <Scissors className="h-7 w-7" />
-              <h3 className="text-xl font-bold">Beauty & Wellness</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {category.services.map((service, serviceIndex) => (
+                <div key={serviceIndex} className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer bg-white">
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={service.image} 
+                      alt={service.name} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-4 left-4 text-white">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+                          {service.icon}
+                        </div>
+                        <h4 className="font-bold text-lg">{service.name}</h4>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600 font-medium">Professional Service</span>
+                      <Button size="sm" variant="outline" className="text-xs">
+                        View Providers
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <p className="text-pink-100 text-sm leading-relaxed">Hair styling, massage therapy, personal training, and wellness services.</p>
           </div>
-        </div>
-        
-        <div className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
-          <div className="absolute inset-0">
-            <img 
-              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&h=300&fit=crop" 
-              alt="Automotive" 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-blue-600/90 to-blue-400/50"></div>
-          </div>
-          <div className="relative p-6 text-white h-48 flex flex-col justify-end">
-            <div className="flex items-center gap-3 mb-3">
-              <Car className="h-7 w-7" />
-              <h3 className="text-xl font-bold">Automotive</h3>
-            </div>
-            <p className="text-blue-100 text-sm leading-relaxed">Car detailing, mobile mechanics, auto repair, and vehicle maintenance.</p>
-          </div>
-        </div>
-        
-        <div className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
-          <div className="absolute inset-0">
-            <img 
-              src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=500&h=300&fit=crop" 
-              alt="Technology" 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-green-600/90 to-green-400/50"></div>
-          </div>
-          <div className="relative p-6 text-white h-48 flex flex-col justify-end">
-            <div className="flex items-center gap-3 mb-3">
-              <Monitor className="h-7 w-7" />
-              <h3 className="text-xl font-bold">Technology</h3>
-            </div>
-            <p className="text-green-100 text-sm leading-relaxed">Device repair, tech support, setup services, and IT solutions.</p>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Search and Filters */}
