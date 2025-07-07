@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { 
   Wrench, 
   MapPin, 
@@ -47,9 +50,12 @@ import {
   Award,
   CheckCircle,
   Calendar,
-  MessageCircle
+  MessageCircle,
+  Send,
+  X
 } from 'lucide-react';
 import { WORLD_COUNTRIES } from '@/data/worldCountries';
+import { useToast } from '@/hooks/use-toast';
 
 interface LocalServicesBrowserProps {
   onCreateProfile: () => void;
@@ -60,6 +66,11 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageSubject, setMessageSubject] = useState('');
+  const [messageContent, setMessageContent] = useState('');
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
+  const { toast } = useToast();
 
   // Enhanced service categories with individual services
   const serviceCategories = [
@@ -416,162 +427,328 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
     return symbols[currency] || currency;
   };
 
+  const handleSendMessage = async () => {
+    if (!messageSubject.trim() || !messageContent.trim()) {
+      toast({
+        title: "Please fill in all fields",
+        description: "Both subject and message content are required.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSendingMessage(true);
+    
+    // Simulate sending message
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      toast({
+        title: "Message Sent Successfully!",
+        description: "Your message has been sent to the service provider. They will get back to you soon.",
+      });
+      
+      setShowMessageModal(false);
+      setMessageSubject('');
+      setMessageContent('');
+    } catch (error) {
+      toast({
+        title: "Failed to send message",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSendingMessage(false);
+    }
+  };
+
+  const openMessageModal = (provider: any) => {
+    setMessageSubject(`Inquiry about ${provider.service} services`);
+    setShowMessageModal(true);
+  };
+
   // If viewing a specific provider profile
   if (selectedProvider) {
     const provider = serviceProviders.find(p => p.id === selectedProvider);
     if (!provider) return null;
 
     return (
-      <div className="space-y-8">
+      <div className="space-y-8 min-h-screen bg-gradient-to-br from-gray-50 via-white to-orange-50/30">
         <Button 
           onClick={() => setSelectedProvider(null)}
           variant="outline"
-          className="mb-4"
+          className="mb-6 hover:bg-orange-50 border-orange-200"
         >
           ← Back to Browse Providers
         </Button>
 
-        <div className="max-w-5xl mx-auto">
-          <Card className="shadow-2xl border-0 overflow-hidden">
-            {/* Hero Header with Image */}
-            <div className="relative h-64 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500">
-              <div className="absolute inset-0 bg-black/20"></div>
+        <div className="max-w-6xl mx-auto">
+          <Card className="shadow-2xl border-0 overflow-hidden bg-white">
+            {/* Enhanced Hero Header */}
+            <div className="relative h-80 bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 overflow-hidden">
+              <div className="absolute inset-0 bg-black/30"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
               <img 
                 src={provider.image} 
                 alt={provider.service}
-                className="w-full h-full object-cover mix-blend-overlay"
+                className="w-full h-full object-cover mix-blend-overlay opacity-80"
               />
+              
+              {/* Floating verification badge */}
+              {provider.verified && (
+                <div className="absolute top-6 right-6">
+                  <Badge className="bg-green-500/90 text-white text-sm px-4 py-2 backdrop-blur-sm border border-green-400/50 shadow-lg">
+                    <Shield className="h-4 w-4 mr-2" />
+                    Verified Professional
+                  </Badge>
+                </div>
+              )}
+
+              {/* Enhanced profile content */}
               <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
                 <div className="flex items-end justify-between">
-                  <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl">
-                      {getServiceIcon(provider.service)}
+                  <div className="flex items-center gap-8">
+                    <div className="relative">
+                      <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl border-2 border-white/30">
+                        {getServiceIcon(provider.service)}
+                      </div>
+                      <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
+                        <CheckCircle className="h-4 w-4 text-white" />
+                      </div>
                     </div>
-                    <div>
-                      <h1 className="text-3xl font-bold mb-2">{provider.name}</h1>
-                      <p className="text-xl text-orange-100 mb-2">{provider.service}</p>
-                      <div className="flex items-center gap-2">
+                    <div className="space-y-2">
+                      <h1 className="text-4xl font-bold mb-1 drop-shadow-lg">{provider.name}</h1>
+                      <p className="text-xl text-orange-100 font-medium drop-shadow">{provider.service}</p>
+                      <div className="flex items-center gap-3 text-orange-100">
                         <MapPin className="h-5 w-5" />
-                        <span className="text-lg">{provider.location}</span>
+                        <span className="text-lg drop-shadow">{provider.location}</span>
+                      </div>
+                      <div className="flex items-center gap-4 mt-3">
+                        <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                          <Star className="h-4 w-4 fill-yellow-300 text-yellow-300" />
+                          <span className="font-bold">{provider.rating}</span>
+                          <span className="text-sm opacity-90">({provider.reviews})</span>
+                        </div>
+                        <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                          <span className="font-bold">{getCurrencySymbol(provider.currency)}{provider.hourlyRate}/hr</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  {provider.verified && (
-                    <Badge className="bg-green-500 text-white text-lg px-4 py-2">
-                      <Shield className="h-5 w-5 mr-2" />
-                      Verified Professional
-                    </Badge>
-                  )}
                 </div>
               </div>
             </div>
 
             <CardContent className="p-8 space-y-8">
-              {/* Quick Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="text-center p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl border border-yellow-200">
-                  <div className="flex items-center justify-center gap-2 mb-3">
-                    <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+              {/* Enhanced Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 -mt-4">
+                <div className="text-center p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl border-2 border-yellow-200 shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <div className="p-2 bg-yellow-500 rounded-lg">
+                      <Star className="h-6 w-6 text-white" />
+                    </div>
                     <span className="text-3xl font-bold text-yellow-800">{provider.rating}</span>
                   </div>
-                  <p className="text-yellow-700 font-medium">{provider.reviews} reviews</p>
+                  <p className="text-yellow-700 font-semibold">{provider.reviews} reviews</p>
+                  <p className="text-yellow-600 text-sm mt-1">Excellent rating</p>
                 </div>
                 
-                <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
-                  <div className="flex items-center justify-center gap-2 mb-3">
-                    <DollarSign className="h-6 w-6 text-green-600" />
+                <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border-2 border-green-200 shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <div className="p-2 bg-green-500 rounded-lg">
+                      <DollarSign className="h-6 w-6 text-white" />
+                    </div>
                     <span className="text-3xl font-bold text-green-800">
                       {getCurrencySymbol(provider.currency)}{provider.hourlyRate}
                     </span>
                   </div>
-                  <p className="text-green-700 font-medium">per hour</p>
+                  <p className="text-green-700 font-semibold">per hour</p>
+                  <p className="text-green-600 text-sm mt-1">Competitive rate</p>
                 </div>
                 
-                <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-                  <div className="flex items-center justify-center gap-2 mb-3">
-                    <Clock className="h-6 w-6 text-blue-600" />
+                <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border-2 border-blue-200 shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <div className="p-2 bg-blue-500 rounded-lg">
+                      <Clock className="h-6 w-6 text-white" />
+                    </div>
                     <span className="text-2xl font-bold text-blue-800">{provider.experience}</span>
                   </div>
-                  <p className="text-blue-700 font-medium">experience</p>
+                  <p className="text-blue-700 font-semibold">experience</p>
+                  <p className="text-blue-600 text-sm mt-1">Professional</p>
                 </div>
 
-                <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
-                  <div className="flex items-center justify-center gap-2 mb-3">
-                    <CheckCircle className="h-6 w-6 text-purple-600" />
-                    <span className="text-lg font-bold text-purple-800">Professional</span>
+                <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl border-2 border-purple-200 shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <div className="p-2 bg-purple-500 rounded-lg">
+                      <CheckCircle className="h-6 w-6 text-white" />
+                    </div>
+                    <span className="text-lg font-bold text-purple-800">{provider.availability}</span>
                   </div>
-                  <p className="text-purple-700 font-medium">service provider</p>
+                  <p className="text-purple-700 font-semibold">Availability</p>
+                  <p className="text-purple-600 text-sm mt-1">Ready to help</p>
                 </div>
               </div>
 
-              {/* About Section */}
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-3">
-                  <Users className="h-6 w-6" />
+              {/* Enhanced About Section */}
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border-2 border-gray-200 shadow-inner">
+                <h3 className="text-3xl font-bold mb-6 text-gray-800 flex items-center gap-3">
+                  <div className="p-2 bg-orange-500 rounded-lg">
+                    <Users className="h-6 w-6 text-white" />
+                  </div>
                   About {provider.name}
                 </h3>
                 <p className="text-gray-700 leading-relaxed text-lg">{provider.description}</p>
               </div>
 
-              {/* Specialties */}
-              <div>
-                <h3 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-3">
-                  <Award className="h-6 w-6" />
+              {/* Enhanced Specialties */}
+              <div className="space-y-6">
+                <h3 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                  <div className="p-2 bg-orange-500 rounded-lg">
+                    <Award className="h-6 w-6 text-white" />
+                  </div>
                   Specialties & Services
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {provider.specialties.map((specialty, index) => (
-                    <div key={index} className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
-                      <span className="text-orange-800 font-medium">{specialty}</span>
+                    <div key={index} className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 rounded-xl p-6 text-center hover:shadow-lg transition-all group hover:scale-105">
+                      <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-orange-600 transition-colors">
+                        <CheckCircle className="h-6 w-6 text-white" />
+                      </div>
+                      <span className="text-orange-800 font-bold text-lg">{specialty}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Languages & Communication */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-xl font-bold mb-3 text-gray-800 flex items-center gap-2">
-                    <Globe className="h-5 w-5" />
+              {/* Enhanced Languages & Communication */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200">
+                  <h3 className="text-2xl font-bold mb-4 text-blue-800 flex items-center gap-3">
+                    <div className="p-2 bg-blue-500 rounded-lg">
+                      <Globe className="h-5 w-5 text-white" />
+                    </div>
                     Languages
                   </h3>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {provider.languages.map((language, index) => (
-                      <Badge key={index} variant="secondary" className="px-4 py-2 text-sm">
+                      <Badge key={index} className="bg-blue-500 text-white px-4 py-2 text-sm hover:bg-blue-600 transition-colors">
                         {language}
                       </Badge>
                     ))}
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="text-xl font-bold mb-3 text-gray-800 flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border-2 border-green-200">
+                  <h3 className="text-2xl font-bold mb-4 text-green-800 flex items-center gap-3">
+                    <div className="p-2 bg-green-500 rounded-lg">
+                      <Calendar className="h-5 w-5 text-white" />
+                    </div>
                     Availability
                   </h3>
-                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                    <p className="text-green-700 font-medium">{provider.availability}</p>
+                  <div className="bg-green-200 p-4 rounded-xl border border-green-300">
+                    <p className="text-green-800 font-bold text-lg">{provider.availability}</p>
+                    <p className="text-green-700 text-sm mt-1">Ready to assist you</p>
                   </div>
                 </div>
               </div>
 
-              {/* Contact Actions */}
-              <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200">
-                <h3 className="text-xl font-bold mb-4 text-gray-800">Ready to get started?</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button size="lg" className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium shadow-lg hover:shadow-xl transition-all">
-                    <Phone className="h-5 w-5 mr-2" />
-                    Call {provider.phone}
-                  </Button>
-                  <Button size="lg" variant="outline" className="border-2 border-orange-300 text-orange-700 hover:bg-orange-50 font-medium">
-                    <MessageCircle className="h-5 w-5 mr-2" />
+              {/* Enhanced Contact Actions - Call button removed */}
+              <div className="bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 rounded-2xl p-8 border-2 border-orange-200 shadow-lg">
+                <h3 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
+                  <div className="p-2 bg-orange-500 rounded-lg">
+                    <MessageCircle className="h-6 w-6 text-white" />
+                  </div>
+                  Ready to get started?
+                </h3>
+                <div className="text-center">
+                  <Button 
+                    size="lg" 
+                    onClick={() => openMessageModal(provider)}
+                    className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold shadow-xl hover:shadow-2xl transition-all duration-300 px-12 py-4 text-lg rounded-xl"
+                  >
+                    <MessageCircle className="h-6 w-6 mr-3" />
                     Send Message
+                    <Send className="h-6 w-6 ml-3" />
                   </Button>
+                  <p className="text-gray-600 mt-4 text-lg">Get in touch and discuss your project needs</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
+
+        {/* Enhanced Message Modal */}
+        <Dialog open={showMessageModal} onOpenChange={setShowMessageModal}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3 text-2xl">
+                <div className="p-2 bg-orange-500 rounded-lg">
+                  <MessageCircle className="h-6 w-6 text-white" />
+                </div>
+                Send Message to {provider?.name}
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6 py-4">
+              <div className="bg-orange-50 p-4 rounded-xl border border-orange-200">
+                <p className="text-orange-800 font-medium">
+                  <strong>Service:</strong> {provider?.service} • <strong>Location:</strong> {provider?.location}
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="subject" className="text-lg font-semibold">Subject</Label>
+                <Input
+                  id="subject"
+                  value={messageSubject}
+                  onChange={(e) => setMessageSubject(e.target.value)}
+                  placeholder="Brief description of your inquiry"
+                  className="h-12 text-lg"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="message" className="text-lg font-semibold">Message</Label>
+                <Textarea
+                  id="message"
+                  value={messageContent}
+                  onChange={(e) => setMessageContent(e.target.value)}
+                  placeholder="Describe your project, timeline, and any specific requirements..."
+                  rows={6}
+                  className="text-lg resize-none"
+                />
+              </div>
+              
+              <div className="flex gap-4 pt-4">
+                <Button 
+                  onClick={handleSendMessage}
+                  disabled={isSendingMessage || !messageSubject.trim() || !messageContent.trim()}
+                  className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 h-12 text-lg font-semibold"
+                >
+                  {isSendingMessage ? (
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Sending...
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <Send className="h-5 w-5" />
+                      Send Message
+                    </div>
+                  )}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowMessageModal(false)}
+                  className="px-8 h-12 text-lg border-2"
+                >
+                  <X className="h-5 w-5 mr-2" />
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
@@ -759,9 +936,14 @@ const LocalServicesBrowser: React.FC<LocalServicesBrowserProps> = ({ onCreatePro
                   >
                     View Profile
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1 border-orange-300 text-orange-700 hover:bg-orange-50">
-                    <Phone className="h-4 w-4 mr-1" />
-                    Contact
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="flex-1 border-orange-300 text-orange-700 hover:bg-orange-50"
+                    onClick={() => openMessageModal(provider)}
+                  >
+                    <MessageCircle className="h-4 w-4 mr-1" />
+                    Message
                   </Button>
                 </div>
               </CardContent>
