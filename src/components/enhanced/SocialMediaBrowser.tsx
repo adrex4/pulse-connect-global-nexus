@@ -1,10 +1,13 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Camera, Users, Star, TrendingUp, Instagram, Youtube, Heart, MessageSquare, Share, Eye, Filter, Search, MapPin, Sparkles, Play, Award, ExternalLink } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { ArrowLeft, Camera, Users, Star, TrendingUp, Instagram, Youtube, Heart, MessageSquare, Share, Eye, Filter, Search, MapPin, Sparkles, Play, Award, ExternalLink, Send, Mail, Clock, CheckCircle } from 'lucide-react';
 
 interface SocialMediaInfluencer {
   id: string;
@@ -76,6 +79,17 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
   const [sortBy, setSortBy] = useState('followers');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedCreator, setSelectedCreator] = useState<SocialMediaInfluencer | null>(null);
+  const [messageModal, setMessageModal] = useState<{
+    isOpen: boolean;
+    creator: SocialMediaInfluencer | null;
+  }>({ isOpen: false, creator: null });
+  const [messageData, setMessageData] = useState({
+    subject: '',
+    message: '',
+    priority: 'normal'
+  });
+  const [isMessageSending, setIsMessageSending] = useState(false);
+  const [messageSent, setMessageSent] = useState(false);
 
   const searchValue = searchTerm || localSearchTerm;
   const handleSearchChange = onSearchChange || setLocalSearchTerm;
@@ -125,14 +139,52 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
     }
   };
 
+  const getNicheImage = (niche: string) => {
+    const nicheImages: { [key: string]: string } = {
+      'Fashion & Beauty': 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=300&fit=crop',
+      'Fitness & Health': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
+      'Food & Cooking': 'https://images.unsplash.com/photo-1556909114-5b83b6c5620e?w=400&h=300&fit=crop',
+      'Travel & Adventure': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop',
+      'Technology & Gadgets': 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=300&fit=crop',
+      'Gaming & Esports': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop',
+      'Lifestyle & Wellness': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+      'Business & Finance': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+      'Education & Learning': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop',
+      'Entertainment & Comedy': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+      'Art & Design': 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop',
+      'Music & Audio': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop'
+    };
+    return nicheImages[niche] || 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop';
+  };
+
   const handleViewProfile = (creator: SocialMediaInfluencer) => {
     setSelectedCreator(creator);
-    // Simulate navigation to profile
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleMessage = (creator: SocialMediaInfluencer) => {
-    alert(`Starting conversation with ${creator.name}...`);
+    setMessageModal({ isOpen: true, creator });
+    setMessageData({ subject: '', message: '', priority: 'normal' });
+    setMessageSent(false);
+  };
+
+  const handleSendMessage = async () => {
+    if (!messageData.subject.trim() || !messageData.message.trim()) {
+      return;
+    }
+
+    setIsMessageSending(true);
+    
+    // Simulate sending message
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setIsMessageSending(false);
+    setMessageSent(true);
+    
+    setTimeout(() => {
+      setMessageModal({ isOpen: false, creator: null });
+      setMessageSent(false);
+    }, 1500);
   };
 
   const handleConnect = (creator: SocialMediaInfluencer) => {
@@ -173,157 +225,168 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
   // Show creator profile if selected
   if (selectedCreator) {
     return (
-      <div className="space-y-8">
-        <Button variant="ghost" onClick={() => setSelectedCreator(null)} className="mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Creators
-        </Button>
-        
-        {/* Enhanced Creator Profile View */}
-        <div className="max-w-4xl mx-auto">
-          {/* Profile Header with Better Colors */}
-          <Card className="overflow-hidden shadow-2xl border-0">
-            <div className="relative h-72 bg-gradient-to-br from-indigo-600 via-purple-700 via-pink-600 to-orange-500">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-              
-              {/* Animated Background Elements */}
-              <div className="absolute top-6 left-6 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
-              <div className="absolute top-12 right-8 w-16 h-16 bg-pink-400/20 rounded-full animate-bounce"></div>
-              <div className="absolute bottom-20 right-20 w-12 h-12 bg-yellow-400/30 rounded-full animate-ping"></div>
-              
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="flex items-end gap-6">
-                  <div className="relative">
-                    <div className="w-36 h-36 rounded-full bg-white p-3 shadow-2xl ring-4 ring-white/20">
-                      <div className="w-full h-full rounded-full bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-600 flex items-center justify-center relative overflow-hidden">
-                        <span className="text-white font-bold text-5xl z-10">
-                          {selectedCreator.name.charAt(0)}
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20"></div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4 py-8">
+          <Button variant="ghost" onClick={() => setSelectedCreator(null)} className="mb-6 hover:bg-white/50 backdrop-blur-sm">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Creators
+          </Button>
+          
+          {/* Enhanced Creator Profile View */}
+          <div className="max-w-6xl mx-auto">
+            {/* Profile Header */}
+            <Card className="overflow-hidden shadow-2xl border-0 mb-8">
+              <div className="relative h-80 bg-gradient-to-br from-violet-600 via-purple-700 via-pink-600 to-orange-500">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                
+                {/* Animated Background Elements */}
+                <div className="absolute top-8 left-8 w-24 h-24 bg-white/10 rounded-full animate-pulse"></div>
+                <div className="absolute top-16 right-12 w-20 h-20 bg-pink-400/20 rounded-full animate-bounce"></div>
+                <div className="absolute bottom-24 right-24 w-16 h-16 bg-yellow-400/30 rounded-full animate-ping"></div>
+                
+                <div className="absolute bottom-8 left-8 right-8">
+                  <div className="flex items-end gap-8">
+                    <div className="relative">
+                      <div className="w-40 h-40 rounded-full bg-white p-4 shadow-2xl ring-4 ring-white/20">
+                        <div className="w-full h-full rounded-full bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-600 flex items-center justify-center relative overflow-hidden">
+                          <span className="text-white font-bold text-6xl z-10">
+                            {selectedCreator.name.charAt(0)}
+                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20"></div>
+                        </div>
                       </div>
+                      {selectedCreator.verified && (
+                        <div className="absolute -bottom-2 -right-2 w-14 h-14 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                          <Star className="h-7 w-7 text-white fill-current" />
+                        </div>
+                      )}
                     </div>
-                    {selectedCreator.verified && (
-                      <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-                        <Star className="h-6 w-6 text-white fill-current" />
+                    <div className="flex-1 text-white pb-6">
+                      <h1 className="text-6xl font-bold mb-4 drop-shadow-lg">{selectedCreator.name}</h1>
+                      <p className="text-2xl text-white/90 mb-4 font-medium">{selectedCreator.username}</p>
+                      <div className="flex items-center gap-6 mb-8">
+                        <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 px-6 py-3 text-lg font-semibold">
+                          {selectedCreator.niche}
+                        </Badge>
+                        <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm px-4 py-3 rounded-full">
+                          <Star className="h-6 w-6 text-yellow-300 fill-current" />
+                          <span className="font-bold text-xl">{selectedCreator.rating}</span>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                  <div className="flex-1 text-white pb-4">
-                    <h1 className="text-5xl font-bold mb-3 drop-shadow-lg">{selectedCreator.name}</h1>
-                    <p className="text-2xl text-white/90 mb-3 font-medium">{selectedCreator.username}</p>
-                    <div className="flex items-center gap-4 mb-6">
-                      <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 px-4 py-2 text-sm font-semibold">
-                        {selectedCreator.niche}
-                      </Badge>
-                      <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-2 rounded-full">
-                        <Star className="h-5 w-5 text-yellow-300 fill-current" />
-                        <span className="font-bold text-lg">{selectedCreator.rating}</span>
+                      <div className="flex gap-4 flex-wrap">
+                        <Button 
+                          onClick={() => handleMessage(selectedCreator)} 
+                          className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30 font-semibold px-6 py-3"
+                        >
+                          <MessageSquare className="h-5 w-5 mr-2" />
+                          Message
+                        </Button>
+                        <Button 
+                          onClick={() => handleConnect(selectedCreator)} 
+                          className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg px-6 py-3"
+                        >
+                          <Heart className="h-5 w-5 mr-2" />
+                          Connect
+                        </Button>
+                        <Button 
+                          onClick={() => handleCollaborate(selectedCreator)} 
+                          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold shadow-lg px-6 py-3"
+                        >
+                          <Star className="h-5 w-5 mr-2" />
+                          Collaborate
+                        </Button>
                       </div>
-                    </div>
-                    <div className="flex gap-3 flex-wrap">
-                      <Button onClick={() => handleMessage(selectedCreator)} className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30 font-semibold">
-                        <MessageSquare className="h-5 w-5 mr-2" />
-                        Message
-                      </Button>
-                      <Button onClick={() => handleConnect(selectedCreator)} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg">
-                        <Heart className="h-5 w-5 mr-2" />
-                        Connect
-                      </Button>
-                      <Button onClick={() => handleCollaborate(selectedCreator)} className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold shadow-lg">
-                        <Star className="h-5 w-5 mr-2" />
-                        Collaborate
-                      </Button>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
 
-          {/* Profile Content */}
-          <div className="grid md:grid-cols-3 gap-8 mt-8">
-            <div className="md:col-span-2 space-y-6">
-              {/* About */}
-              <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-gray-50">
-                <CardHeader>
-                  <CardTitle className="text-2xl text-gray-800">About</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700 leading-relaxed text-lg">{selectedCreator.bio}</p>
-                  <div className="flex items-center gap-2 mt-4 text-gray-600">
-                    <MapPin className="h-5 w-5" />
-                    <span className="font-medium">{selectedCreator.location}</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Enhanced Platforms with Click Integration */}
-              <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-purple-50">
-                <CardHeader>
-                  <CardTitle className="text-2xl text-gray-800 flex items-center gap-2">
-                    <Share className="h-6 w-6 text-purple-600" />
-                    Social Platforms
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    {selectedCreator.platforms.map((platform) => (
-                      <button
-                        key={platform}
-                        onClick={() => handleViewPlatform(selectedCreator, platform)}
-                        className={`flex items-center justify-between gap-3 px-6 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg group ${getPlatformColor(platform)}`}
-                      >
-                        <div className="flex items-center gap-3">
-                          {getPlatformIcon(platform)}
-                          <span className="text-lg">{platform}</span>
-                        </div>
-                        <ExternalLink className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-sm text-gray-600 mt-4 text-center font-medium">
-                    Click on any platform to visit {selectedCreator.name}'s profile
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="space-y-6">
-              {/* Enhanced Stats */}
-              <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-blue-50">
-                <CardHeader>
-                  <CardTitle className="text-xl text-gray-800">Performance Stats</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-center p-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl border border-purple-200">
-                    <div className="text-3xl font-bold text-purple-700 mb-1">{selectedCreator.followers}</div>
-                    <div className="text-sm font-medium text-purple-600">Total Followers</div>
-                  </div>
-                  <div className="text-center p-6 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl border border-green-200">
-                    <div className="text-3xl font-bold text-green-700 mb-1">{selectedCreator.engagement}</div>
-                    <div className="text-sm font-medium text-green-600">Engagement Rate</div>
-                  </div>
-                  <div className="text-center p-6 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl border border-blue-200">
-                    <div className="text-3xl font-bold text-blue-700 mb-1">{selectedCreator.recentPosts}</div>
-                    <div className="text-sm font-medium text-blue-600">Recent Posts</div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Content Type */}
-              <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-orange-50">
-                <CardHeader>
-                  <CardTitle className="text-xl text-gray-800">Content Focus</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="p-4 bg-gradient-to-r from-orange-100 to-red-100 rounded-xl border border-orange-200">
-                    <div className="flex items-center justify-center gap-2">
-                      <Award className="h-5 w-5 text-orange-600" />
-                      <span className="font-semibold text-orange-700">{selectedCreator.contentType}</span>
+            {/* Profile Content */}
+            <div className="grid lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                {/* About */}
+                <Card className="shadow-xl border-0 bg-white/95 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-3xl text-gray-800">About</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-700 leading-relaxed text-lg mb-6">{selectedCreator.bio}</p>
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <MapPin className="h-5 w-5" />
+                      <span className="font-medium text-lg">{selectedCreator.location}</span>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+
+                {/* Enhanced Platforms */}
+                <Card className="shadow-xl border-0 bg-white/95 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-3xl text-gray-800 flex items-center gap-3">
+                      <Share className="h-7 w-7 text-purple-600" />
+                      Social Platforms
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid sm:grid-cols-2 gap-6">
+                      {selectedCreator.platforms.map((platform) => (
+                        <button
+                          key={platform}
+                          onClick={() => handleViewPlatform(selectedCreator, platform)}
+                          className={`flex items-center justify-between gap-4 px-8 py-6 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl group text-lg ${getPlatformColor(platform)}`}
+                        >
+                          <div className="flex items-center gap-4">
+                            {getPlatformIcon(platform)}
+                            <span>{platform}</span>
+                          </div>
+                          <ExternalLink className="h-6 w-6 opacity-70 group-hover:opacity-100 transition-opacity" />
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-sm text-gray-600 mt-6 text-center font-medium">
+                      Click on any platform to visit {selectedCreator.name}'s profile
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="space-y-8">
+                {/* Enhanced Stats */}
+                <Card className="shadow-xl border-0 bg-white/95 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-xl text-gray-800">Performance Stats</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="text-center p-8 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl border border-purple-200">
+                      <div className="text-4xl font-bold text-purple-700 mb-2">{selectedCreator.followers}</div>
+                      <div className="text-sm font-medium text-purple-600">Total Followers</div>
+                    </div>
+                    <div className="text-center p-8 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl border border-green-200">
+                      <div className="text-4xl font-bold text-green-700 mb-2">{selectedCreator.engagement}</div>
+                      <div className="text-sm font-medium text-green-600">Engagement Rate</div>
+                    </div>
+                    <div className="text-center p-8 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl border border-blue-200">
+                      <div className="text-4xl font-bold text-blue-700 mb-2">{selectedCreator.recentPosts}</div>
+                      <div className="text-sm font-medium text-blue-600">Recent Posts</div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Content Type */}
+                <Card className="shadow-xl border-0 bg-white/95 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-xl text-gray-800">Content Focus</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="p-6 bg-gradient-to-r from-orange-100 to-red-100 rounded-2xl border border-orange-200">
+                      <div className="flex items-center justify-center gap-3">
+                        <Award className="h-6 w-6 text-orange-600" />
+                        <span className="font-semibold text-orange-700 text-lg">{selectedCreator.contentType}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
@@ -332,120 +395,83 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
   }
 
   return (
-    <div className="space-y-8">
-      {onBack && (
-        <Button variant="ghost" onClick={onBack} className="mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Browse
-        </Button>
-      )}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-8 space-y-12">
+        {onBack && (
+          <Button variant="ghost" onClick={onBack} className="mb-4 hover:bg-white/50 backdrop-blur-sm">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Browse
+          </Button>
+        )}
 
-      {/* AWESOME Enhanced Header */}
-      <div className="relative overflow-hidden">
-        {/* Background with animated gradients */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900 opacity-90"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(139,69,255,0.3),transparent_50%)]"></div>
-        
-        {/* Floating elements */}
-        <div className="absolute top-10 left-10 w-4 h-4 bg-white/20 rounded-full animate-pulse"></div>
-        <div className="absolute top-20 right-20 w-6 h-6 bg-pink-400/30 rounded-full animate-bounce"></div>
-        <div className="absolute bottom-20 left-20 w-3 h-3 bg-blue-400/40 rounded-full animate-ping"></div>
-        
-        <div className="relative text-center py-20 px-6">
-          <div className="max-w-4xl mx-auto">
-            {/* Main title with enhanced styling */}
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                <Camera className="h-12 w-12 text-white" />
-              </div>
-              <div className="text-center">
-                <h1 className="text-6xl font-bold bg-gradient-to-r from-white via-pink-200 to-purple-200 bg-clip-text text-transparent leading-tight">
-                  Social Media
-                </h1>
-                <div className="flex items-center gap-3 justify-center mt-2">
-                  <Sparkles className="h-8 w-8 text-yellow-400 animate-pulse" />
-                  <h2 className="text-4xl font-bold text-white">Creators</h2>
-                  <Sparkles className="h-8 w-8 text-yellow-400 animate-pulse" />
-                </div>
-              </div>
-              <div className="p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                <TrendingUp className="h-12 w-12 text-white" />
-              </div>
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-lg">
+              <Camera className="h-10 w-10 text-white" />
             </div>
-            
-            {/* Subtitle with typing effect simulation */}
-            <p className="text-xl text-white/90 mb-8 leading-relaxed max-w-3xl mx-auto font-light">
-              Connect with talented content creators and influencers who are 
-              <span className="font-semibold text-pink-300"> shaping digital culture </span>
-              across platforms. Discover 
-              <span className="font-semibold text-purple-300"> authentic voices</span>, 
-              <span className="font-semibold text-blue-300"> creative talents</span>, and 
-              <span className="font-semibold text-yellow-300"> brand partnership opportunities</span>.
-            </p>
-            
-            {/* Animated CTA buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              {onCreateProfile && (
-                <Button 
-                  onClick={onCreateProfile}
-                  size="lg"
-                  className="bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600 hover:from-pink-600 hover:via-purple-700 hover:to-blue-700 text-white font-semibold px-8 py-4 rounded-full shadow-2xl hover:shadow-pink-500/25 transition-all duration-300 transform hover:scale-105"
-                >
-                  <Star className="h-5 w-5 mr-3" />
-                  Join the Creator Community
-                  <Sparkles className="h-5 w-5 ml-3" />
-                </Button>
-              )}
-              <Button 
-                variant="outline"
-                size="lg"
-                className="border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm px-8 py-4 rounded-full font-semibold transition-all duration-300 transform hover:scale-105"
-              >
-                <Eye className="h-5 w-5 mr-3" />
-                Explore Creators
-              </Button>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
+              Social Media Creators
+            </h1>
+            <div className="p-4 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl shadow-lg">
+              <TrendingUp className="h-10 w-10 text-white" />
             </div>
           </div>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Connect with talented content creators and influencers who are shaping digital culture across platforms.
+          </p>
         </div>
-        
-        {/* Bottom wave effect */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-12 fill-white">
-            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"></path>
-          </svg>
-        </div>
-      </div>
 
-      {/* Enhanced Stats with animation */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto -mt-8 relative z-10">
-        <div className="text-center p-6 bg-white rounded-2xl shadow-2xl border-t-4 border-pink-500 transform hover:scale-105 transition-all duration-300">
-          <div className="text-3xl font-bold text-pink-600 mb-2 animate-pulse">{sortedInfluencers.length}</div>
-          <div className="text-pink-700 text-sm font-medium">Active Creators</div>
-          <div className="text-pink-500 text-xs mt-1">Ready to Connect</div>
+        {/* Niche Categories */}
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Browse by Niche</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {niches.map((niche) => (
+              <Card 
+                key={niche} 
+                className="group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-0 overflow-hidden"
+                onClick={() => setSelectedNiche(niche)}
+              >
+                <div className="relative h-40">
+                  <img 
+                    src={getNicheImage(niche)} 
+                    alt={niche}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-white font-bold text-lg leading-tight">{niche}</h3>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
         </div>
-        <div className="text-center p-6 bg-white rounded-2xl shadow-2xl border-t-4 border-purple-500 transform hover:scale-105 transition-all duration-300">
-          <div className="text-3xl font-bold text-purple-600 mb-2 animate-pulse">{niches.length}+</div>
-          <div className="text-purple-700 text-sm font-medium">Content Niches</div>
-          <div className="text-purple-500 text-xs mt-1">Diverse Expertise</div>
-        </div>
-        <div className="text-center p-6 bg-white rounded-2xl shadow-2xl border-t-4 border-blue-500 transform hover:scale-105 transition-all duration-300">
-          <div className="text-3xl font-bold text-blue-600 mb-2 animate-pulse">15M+</div>
-          <div className="text-blue-700 text-sm font-medium">Total Reach</div>
-          <div className="text-blue-500 text-xs mt-1">Combined Followers</div>
-        </div>
-        <div className="text-center p-6 bg-white rounded-2xl shadow-2xl border-t-4 border-green-500 transform hover:scale-105 transition-all duration-300">
-          <div className="text-3xl font-bold text-green-600 mb-2 animate-pulse">4.8★</div>
-          <div className="text-green-700 text-sm font-medium">Avg Rating</div>
-          <div className="text-green-500 text-xs mt-1">Quality Content</div>
-        </div>
-      </div>
 
-      {/* Enhanced Search and Filters */}
-      {showFilters && (
-        <Card className="shadow-lg border-0 bg-gradient-to-r from-white via-pink-50/30 to-purple-50/30 backdrop-blur-sm">
-          <CardContent className="p-6">
-            <div className="space-y-4">
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+          <Card className="text-center p-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-shadow">
+            <div className="text-3xl font-bold text-purple-600 mb-2">{sortedInfluencers.length}</div>
+            <div className="text-purple-700 font-medium">Active Creators</div>
+          </Card>
+          <Card className="text-center p-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-shadow">
+            <div className="text-3xl font-bold text-pink-600 mb-2">{niches.length}+</div>
+            <div className="text-pink-700 font-medium">Content Niches</div>
+          </Card>
+          <Card className="text-center p-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-shadow">
+            <div className="text-3xl font-bold text-blue-600 mb-2">15M+</div>
+            <div className="text-blue-700 font-medium">Total Reach</div>
+          </Card>
+          <Card className="text-center p-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-shadow">
+            <div className="text-3xl font-bold text-green-600 mb-2">4.8★</div>
+            <div className="text-green-700 font-medium">Avg Rating</div>
+          </Card>
+        </div>
+
+        {/* Search and Filters */}
+        {showFilters && (
+          <Card className="shadow-lg border-0 bg-white/90 backdrop-blur-sm p-6">
+            <div className="space-y-6">
               {/* Search Bar */}
               <div className="relative max-w-2xl mx-auto">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -453,14 +479,14 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
                   placeholder="Search creators by name, niche, or username..."
                   value={searchValue}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-12 h-14 text-lg border-2 focus:border-pink-500 rounded-xl bg-white/80 backdrop-blur-sm"
+                  className="pl-12 h-14 text-lg border-2 focus:border-purple-500 rounded-xl bg-white"
                 />
               </div>
               
               {/* Filter Options */}
               <div className="grid md:grid-cols-4 gap-4">
                 <Select value={selectedNiche} onValueChange={setSelectedNiche}>
-                  <SelectTrigger className="h-12 bg-white/80 backdrop-blur-sm border-2 hover:border-pink-300">
+                  <SelectTrigger className="h-12 bg-white border-2 hover:border-purple-300">
                     <SelectValue placeholder="All Niches" />
                   </SelectTrigger>
                   <SelectContent>
@@ -472,7 +498,7 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
                 </Select>
 
                 <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
-                  <SelectTrigger className="h-12 bg-white/80 backdrop-blur-sm border-2 hover:border-pink-300">
+                  <SelectTrigger className="h-12 bg-white border-2 hover:border-purple-300">
                     <SelectValue placeholder="All Platforms" />
                   </SelectTrigger>
                   <SelectContent>
@@ -484,7 +510,7 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
                 </Select>
 
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="h-12 bg-white/80 backdrop-blur-sm border-2 hover:border-pink-300">
+                  <SelectTrigger className="h-12 bg-white border-2 hover:border-purple-300">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
@@ -512,166 +538,242 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      )}
+          </Card>
+        )}
 
-      {/* Enhanced Creators Grid */}
-      <div className={viewMode === 'grid' ? "grid md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-6"}>
-        {sortedInfluencers.map((influencer) => (
-          <Card key={influencer.id} className="group hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.03] border-0 bg-gradient-to-br from-white via-pink-50/20 to-purple-50/20 backdrop-blur-sm overflow-hidden">
-            {/* Profile Header with Cover */}
-            <div className="relative h-24 bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500">
-              <div className="absolute inset-0 bg-black/10"></div>
-              <div className="absolute -bottom-6 left-6">
-                <div className="relative">
-                  <button 
-                    onClick={() => handleViewProfile(influencer)}
-                    className="w-16 h-16 rounded-full bg-white p-1 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
-                  >
-                    <div className="w-full h-full rounded-full bg-gradient-to-r from-pink-400 to-purple-600 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">
-                        {influencer.name.charAt(0)}
-                      </span>
+        {/* Creators Grid */}
+        <div className={viewMode === 'grid' ? "grid md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-6"}>
+          {sortedInfluencers.map((influencer) => (
+            <Card key={influencer.id} className="group hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] border-0 bg-white/95 backdrop-blur-sm overflow-hidden">
+              {/* Profile Header */}
+              <div className="relative h-28 bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">
+                <div className="absolute inset-0 bg-black/10"></div>
+                <div className="absolute -bottom-8 left-6">
+                  <div className="relative">
+                    <button 
+                      onClick={() => handleViewProfile(influencer)}
+                      className="w-20 h-20 rounded-full bg-white p-1 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110"
+                    >
+                      <div className="w-full h-full rounded-full bg-gradient-to-r from-pink-400 to-purple-600 flex items-center justify-center">
+                        <span className="text-white font-bold text-xl">
+                          {influencer.name.charAt(0)}
+                        </span>
+                      </div>
+                    </button>
+                    {influencer.verified && (
+                      <div className="absolute -top-1 -right-1 w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
+                        <Star className="h-4 w-4 text-white fill-current" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <CardHeader className="pt-12 pb-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="text-xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors mb-1">
+                      {influencer.name}
+                    </CardTitle>
+                    <p className="text-purple-600 font-medium text-sm mb-3">{influencer.username}</p>
+                    <div className="flex items-center gap-3 mb-3">
+                      <Badge className="bg-gradient-to-r from-pink-100 to-purple-100 text-pink-800 border-pink-200 px-3 py-1">
+                        {influencer.niche}
+                      </Badge>
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        <span className="text-sm font-medium text-gray-600">{influencer.rating}</span>
+                      </div>
                     </div>
-                  </button>
-                  {influencer.verified && (
-                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
-                      <Star className="h-3 w-3 text-white fill-current" />
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">{influencer.bio}</p>
+                
+                {/* Platforms */}
+                <div className="flex flex-wrap gap-2">
+                  {influencer.platforms.slice(0, 3).map((platform) => (
+                    <div key={platform} className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getPlatformColor(platform)}`}>
+                      {getPlatformIcon(platform)}
+                      <span>{platform}</span>
+                    </div>
+                  ))}
+                  {influencer.platforms.length > 3 && (
+                    <div className="bg-gray-100 px-3 py-1 rounded-full text-xs font-medium text-gray-600">
+                      +{influencer.platforms.length - 3} more
                     </div>
                   )}
                 </div>
-              </div>
-            </div>
 
-            <CardHeader className="pt-8 pb-4">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
-                    {influencer.name}
-                  </CardTitle>
-                  <p className="text-purple-600 font-medium text-sm">{influencer.username}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge className="bg-gradient-to-r from-pink-100 to-purple-100 text-pink-800 border-pink-200">
-                      {influencer.niche}
-                    </Badge>
-                    <div className="flex items-center gap-1">
-                      <Star className="h-3 w-3 text-yellow-500 fill-current" />
-                      <span className="text-sm font-medium text-gray-600">{influencer.rating}</span>
-                    </div>
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-3 p-4 bg-gradient-to-r from-gray-50 to-purple-50/50 rounded-xl">
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-purple-600">{influencer.followers}</div>
+                    <div className="text-xs text-gray-500">Followers</div>
+                  </div>
+                  <div className="text-center border-x border-gray-200">
+                    <div className="text-lg font-bold text-green-600">{influencer.engagement}</div>
+                    <div className="text-xs text-gray-500">Engagement</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-blue-600">{influencer.recentPosts}</div>
+                    <div className="text-xs text-gray-500">Posts</div>
                   </div>
                 </div>
-              </div>
-            </CardHeader>
 
-            <CardContent className="space-y-4">
-              <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">{influencer.bio}</p>
-              
-              {/* Platforms */}
-              <div className="flex flex-wrap gap-2">
-                {influencer.platforms.slice(0, 3).map((platform) => (
-                  <div key={platform} className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getPlatformColor(platform)}`}>
-                    {getPlatformIcon(platform)}
-                    <span>{platform}</span>
+                {/* Location & Content Type */}
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1 text-gray-600">
+                    <Award className="h-3 w-3" />
+                    <span>{influencer.contentType}</span>
                   </div>
-                ))}
-                {influencer.platforms.length > 3 && (
-                  <div className="bg-gray-100 px-2 py-1 rounded-full text-xs font-medium text-gray-600">
-                    +{influencer.platforms.length - 3} more
+                  <div className="flex items-center gap-1 text-gray-500">
+                    <MapPin className="h-3 w-3" />
+                    <span className="truncate">{influencer.location}</span>
                   </div>
-                )}
-              </div>
+                </div>
 
-              {/* Enhanced Stats */}
-              <div className="grid grid-cols-3 gap-3 p-3 bg-gradient-to-r from-gray-50 to-purple-50/50 rounded-xl">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-purple-600">{influencer.followers}</div>
-                  <div className="text-xs text-gray-500">Followers</div>
+                {/* Actions */}
+                <div className="flex gap-2 pt-2">
+                  <Button 
+                    onClick={() => handleViewProfile(influencer)}
+                    variant="default" 
+                    size="sm" 
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Profile
+                  </Button>
+                  <Button 
+                    onClick={() => handleMessage(influencer)}
+                    variant="outline" 
+                    size="sm" 
+                    className="hover:bg-pink-50 border-pink-200"
+                  >
+                    <MessageSquare className="h-4 w-4 text-pink-500" />
+                  </Button>
+                  <Button 
+                    onClick={() => handleConnect(influencer)}
+                    variant="outline" 
+                    size="sm" 
+                    className="hover:bg-purple-50 border-purple-200"
+                  >
+                    <Heart className="h-4 w-4 text-purple-500" />
+                  </Button>
                 </div>
-                <div className="text-center border-x border-gray-200">
-                  <div className="text-lg font-bold text-green-600">{influencer.engagement}</div>
-                  <div className="text-xs text-gray-500">Engagement</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-bold text-blue-600">{influencer.recentPosts}</div>
-                  <div className="text-xs text-gray-500">Posts</div>
-                </div>
-              </div>
-
-              {/* Content Type & Location */}
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-1 text-gray-600">
-                  <Award className="h-3 w-3" />
-                  <span>{influencer.contentType}</span>
-                </div>
-                <div className="flex items-center gap-1 text-gray-500">
-                  <MapPin className="h-3 w-3" />
-                  <span className="truncate">{influencer.location}</span>
-                </div>
-              </div>
-
-              {/* Enhanced Actions */}
-              <div className="flex gap-2 pt-2">
-                <Button 
-                  onClick={() => handleViewProfile(influencer)}
-                  variant="default" 
-                  size="sm" 
-                  className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium"
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  View Profile
-                </Button>
-                <Button 
-                  onClick={() => handleMessage(influencer)}
-                  variant="outline" 
-                  size="sm" 
-                  className="hover:bg-pink-50 border-pink-200"
-                >
-                  <MessageSquare className="h-4 w-4 text-pink-500" />
-                </Button>
-                <Button 
-                  onClick={() => handleConnect(influencer)}
-                  variant="outline" 
-                  size="sm" 
-                  className="hover:bg-purple-50 border-purple-200"
-                >
-                  <Heart className="h-4 w-4 text-purple-500" />
-                </Button>
-                <Button 
-                  onClick={() => handleCollaborate(influencer)}
-                  variant="outline" 
-                  size="sm" 
-                  className="hover:bg-blue-50 border-blue-200"
-                >
-                  <Share className="h-4 w-4 text-blue-500" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {sortedInfluencers.length === 0 && (
-        <div className="text-center py-20">
-          <div className="max-w-md mx-auto">
-            <div className="w-20 h-20 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Camera className="h-10 w-10 text-pink-500" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-700 mb-3">No creators found</h3>
-            <p className="text-gray-500 mb-6">Try adjusting your search terms or filters to discover more amazing creators.</p>
-            <Button 
-              onClick={() => {
-                setSelectedNiche('all');
-                setSelectedPlatform('all');
-                handleSearchChange('');
-              }}
-              className="bg-gradient-to-r from-pink-500 to-purple-600"
-            >
-              Clear All Filters
-            </Button>
-          </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      )}
+
+        {/* Message Modal */}
+        <Dialog open={messageModal.isOpen} onOpenChange={(open) => !open && setMessageModal({ isOpen: false, creator: null })}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-blue-500" />
+                Send Message to {messageModal.creator?.name}
+              </DialogTitle>
+            </DialogHeader>
+            
+            {!messageSent ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">Subject</label>
+                  <Input
+                    placeholder="Enter message subject..."
+                    value={messageData.subject}
+                    onChange={(e) => setMessageData(prev => ({ ...prev, subject: e.target.value }))}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">Message</label>
+                  <Textarea
+                    placeholder="Write your message here..."
+                    value={messageData.message}
+                    onChange={(e) => setMessageData(prev => ({ ...prev, message: e.target.value }))}
+                    className="w-full h-32 resize-none"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">Priority</label>
+                  <Select value={messageData.priority} onValueChange={(value) => setMessageData(prev => ({ ...prev, priority: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Low Priority</SelectItem>
+                      <SelectItem value="normal">Normal Priority</SelectItem>
+                      <SelectItem value="high">High Priority</SelectItem>
+                      <SelectItem value="urgent">Urgent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setMessageModal({ isOpen: false, creator: null })}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleSendMessage}
+                    disabled={!messageData.subject.trim() || !messageData.message.trim() || isMessageSending}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                  >
+                    {isMessageSending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4 mr-2" />
+                        Send Message
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Message Sent Successfully!</h3>
+                <p className="text-gray-600">Your message has been delivered to {messageModal.creator?.name}.</p>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {sortedInfluencers.length === 0 && (
+          <div className="text-center py-20">
+            <div className="max-w-md mx-auto">
+              <div className="w-20 h-20 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Camera className="h-10 w-10 text-pink-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-700 mb-3">No creators found</h3>
+              <p className="text-gray-500 mb-6">Try adjusting your search terms or filters to discover more amazing creators.</p>
+              <Button 
+                onClick={() => {
+                  setSelectedNiche('all');
+                  setSelectedPlatform('all');
+                  handleSearchChange('');
+                }}
+                className="bg-gradient-to-r from-pink-500 to-purple-600"
+              >
+                Clear All Filters
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
