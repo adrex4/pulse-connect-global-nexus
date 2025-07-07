@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Camera, Users, Star, TrendingUp, Instagram, Youtube, Heart, MessageSquare, Share, Eye, Filter, Search, MapPin, Sparkles, Play, Award, ExternalLink, Send, Mail, Clock, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Camera, Users, Star, TrendingUp, Instagram, Youtube, Heart, MessageSquare, Share, Eye, Filter, Search, MapPin, Sparkles, Play, Award, ExternalLink, Send, Mail, Clock, CheckCircle, Video } from 'lucide-react';
 
 interface SocialMediaInfluencer {
   id: string;
@@ -123,7 +122,7 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
     switch (platform) {
       case 'Instagram': return <Instagram className="h-4 w-4" />;
       case 'YouTube': return <Youtube className="h-4 w-4" />;
-      case 'TikTok': return <Play className="h-4 w-4" />;
+      case 'TikTok': return <Video className="h-4 w-4" />;
       default: return <Camera className="h-4 w-4" />;
     }
   };
@@ -147,10 +146,10 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
       'Travel & Adventure': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop',
       'Technology & Gadgets': 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=300&fit=crop',
       'Gaming & Esports': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop',
-      'Lifestyle & Wellness': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-      'Business & Finance': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+      'Lifestyle & Wellness': 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=300&fit=crop',
+      'Business & Finance': 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop',
       'Education & Learning': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop',
-      'Entertainment & Comedy': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+      'Entertainment & Comedy': 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=400&h=300&fit=crop',
       'Art & Design': 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop',
       'Music & Audio': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop'
     };

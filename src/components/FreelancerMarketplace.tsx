@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -77,6 +78,22 @@ const mockFreelancers = [
   }
 ];
 
+const getSkillCategoryImage = (category: string) => {
+  const categoryImages: { [key: string]: string } = {
+    'Web Development': 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop',
+    'Mobile Development': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop',
+    'Graphic Design': 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop',
+    'Digital Marketing': 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=400&h=300&fit=crop',
+    'Content Writing': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=300&fit=crop',
+    'Video Production': 'https://images.unsplash.com/photo-1492619176842-45906531f8ec?w=400&h=300&fit=crop',
+    'Data Science': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
+    'Personal Trainer': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
+    'Photography': 'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop',
+    'Music Production': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop'
+  };
+  return categoryImages[category] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop';
+};
+
 const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all_categories');
@@ -149,8 +166,65 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
     );
   }
 
+  const allSkills = Object.values(FREELANCER_SKILL_CATEGORIES).flat();
+  const uniqueSkills = Array.from(new Set(allSkills));
+
   return (
     <div className="max-w-7xl mx-auto animate-fade-in">
+      {/* Header Image Section */}
+      <div className="relative h-80 mb-8 rounded-2xl overflow-hidden shadow-2xl">
+        <img 
+          src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&h=400&fit=crop"
+          alt="Freelancer Marketplace"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-purple-900/70 to-pink-900/80"></div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl">
+                <Users className="h-12 w-12" />
+              </div>
+              <h1 className="text-6xl font-bold drop-shadow-lg">Freelancer Marketplace</h1>
+              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl">
+                <Briefcase className="h-12 w-12" />
+              </div>
+            </div>
+            <p className="text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+              Connect with talented freelancers and skilled professionals ready to bring your projects to life
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Skills Categories Grid */}
+      <div className="mb-12">
+        <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Browse by Skill Category</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          {uniqueSkills.slice(0, 10).map((skill) => (
+            <Card 
+              key={skill} 
+              className="group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-0 overflow-hidden"
+              onClick={() => setSelectedCategory(Object.keys(FREELANCER_SKILL_CATEGORIES).find(cat => 
+                FREELANCER_SKILL_CATEGORIES[cat as keyof typeof FREELANCER_SKILL_CATEGORIES].includes(skill)
+              ) || 'all_categories')}
+            >
+              <div className="relative h-32">
+                <img 
+                  src={getSkillCategoryImage(skill)} 
+                  alt={skill}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div className="absolute bottom-3 left-3 right-3">
+                  <h3 className="text-white font-bold text-sm leading-tight">{skill}</h3>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+
       {/* Header */}
       <Card className="mb-6 shadow-lg border-0 bg-white">
         <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg">
@@ -163,7 +237,7 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
               )}
               <div className="flex items-center gap-3">
                 <Users className="h-6 w-6" />
-                <CardTitle className="text-2xl">Freelancer Marketplace</CardTitle>
+                <CardTitle className="text-2xl">Find Freelancers</CardTitle>
               </div>
             </div>
             <Badge variant="secondary" className="bg-white/20 text-white">
