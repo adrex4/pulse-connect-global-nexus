@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,20 +8,24 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Textarea } from '@/components/ui/textarea';
 import { 
   Search, Users, Star, Eye, MessageCircle, ArrowLeft, 
-  Instagram, Youtube, TikTok, Send 
+  Instagram, Youtube, Video, Send 
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface SocialMediaBrowserProps {
   onBack?: () => void;
+  onCreateProfile?: () => void;
+  showFilters?: boolean;
+  searchTerm?: string;
+  onSearchChange?: (value: string) => void;
 }
 
 // Updated niche images for social media creators
 const CREATOR_NICHE_IMAGES = {
-  'Entertainment & Comedy': 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=1200&h=400&fit=crop',
-  'Business & Finance': 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1200&h=400&fit=crop',
-  'Food & Cooking': 'https://images.unsplash.com/photo-1556805572-c8bb2d7364e0?w=1200&h=400&fit=crop',
-  'Lifestyle & Wellness': 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=1200&h=400&fit=crop',
+  'Entertainment & Comedy': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=400&fit=crop',
+  'Business & Finance': 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&h=400&fit=crop',
+  'Food & Cooking': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=400&fit=crop',
+  'Lifestyle & Wellness': 'https://images.unsplash.com/photo-1506126613408-eca07ce68e71?w=1200&h=400&fit=crop',
   'Technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=400&fit=crop',
   'Travel & Adventure': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200&h=400&fit=crop',
   'Fashion & Beauty': 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1200&h=400&fit=crop',
@@ -143,8 +146,17 @@ const niches = [
   'Education & Learning'
 ];
 
-const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({ onBack }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({ 
+  onBack, 
+  onCreateProfile,
+  showFilters = true,
+  searchTerm: externalSearchTerm = '',
+  onSearchChange
+}) => {
+  const [internalSearchTerm, setInternalSearchTerm] = useState('');
+  const searchTerm = externalSearchTerm || internalSearchTerm;
+  const handleSearchChange = onSearchChange || setInternalSearchTerm;
+  
   const [selectedNiche, setSelectedNiche] = useState('all_niches');
   const [selectedPlatform, setSelectedPlatform] = useState('all_platforms');
   const [followerRange, setFollowerRange] = useState('any_range');
@@ -213,7 +225,7 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({ onBack }) => {
     switch (platform) {
       case 'Instagram': return <Instagram className="h-4 w-4" />;
       case 'Youtube': return <Youtube className="h-4 w-4" />;
-      case 'TikTok': return <TikTok className="h-4 w-4" />;
+      case 'TikTok': return <Video className="h-4 w-4" />;
       default: return <MessageCircle className="h-4 w-4" />;
     }
   };
@@ -379,89 +391,90 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({ onBack }) => {
 
   return (
     <div className="max-w-7xl mx-auto animate-fade-in">
-      {/* Header with Dynamic Background */}
-      <Card className="mb-6 shadow-lg border-0 bg-white overflow-hidden">
-        <div 
-          className="h-32 bg-cover bg-center relative"
-          style={{ backgroundImage: `url(${getHeaderImage()})` }}
-        >
-          <div className="absolute inset-0 bg-black/50"></div>
-          <div className="absolute inset-0 flex items-center justify-between p-6">
-            <div className="flex items-center gap-4">
-              {onBack && (
-                <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-              )}
-              <div className="flex items-center gap-3">
-                <Users className="h-6 w-6 text-white" />
-                <CardTitle className="text-2xl text-white">Social Media Creators</CardTitle>
+      {/* Search and Filters */}
+      {showFilters && (
+        <Card className="mb-6 shadow-lg border-0 bg-white overflow-hidden">
+          <div 
+            className="h-32 bg-cover bg-center relative"
+            style={{ backgroundImage: `url(${getHeaderImage()})` }}
+          >
+            <div className="absolute inset-0 bg-black/50"></div>
+            <div className="absolute inset-0 flex items-center justify-between p-6">
+              <div className="flex items-center gap-4">
+                {onBack && (
+                  <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
+                    <ArrowLeft className="h-4 w-4" />
+                  </Button>
+                )}
+                <div className="flex items-center gap-3">
+                  <Users className="h-6 w-6 text-white" />
+                  <CardTitle className="text-2xl text-white">Social Media Creators</CardTitle>
+                </div>
               </div>
+              <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                {filteredCreators.length} Creators Available
+              </Badge>
             </div>
-            <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-              {filteredCreators.length} Creators Available
-            </Badge>
           </div>
-        </div>
-        
-        <CardContent className="p-6">
-          {/* Search and Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="md:col-span-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search creators..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-10"
-                />
+          
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="md:col-span-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Search creators..."
+                    value={searchTerm}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    className="pl-10 h-10"
+                  />
+                </div>
               </div>
+
+              <Select value={selectedNiche} onValueChange={setSelectedNiche}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="Niche" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all_niches">All Niches</SelectItem>
+                  {niches.map((niche) => (
+                    <SelectItem key={niche} value={niche}>
+                      {niche}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="Platform" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all_platforms">All Platforms</SelectItem>
+                  <SelectItem value="Instagram">Instagram</SelectItem>
+                  <SelectItem value="Youtube">YouTube</SelectItem>
+                  <SelectItem value="TikTok">TikTok</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={followerRange} onValueChange={setFollowerRange}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="Followers" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any_range">Any Range</SelectItem>
+                  <SelectItem value="1000-10000">1K - 10K</SelectItem>
+                  <SelectItem value="10000-50000">10K - 50K</SelectItem>
+                  <SelectItem value="50000-100000">50K - 100K</SelectItem>
+                  <SelectItem value="100000-500000">100K - 500K</SelectItem>
+                  <SelectItem value="500000-1000000">500K - 1M</SelectItem>
+                  <SelectItem value="1000000-999999999">1M+</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-
-            <Select value={selectedNiche} onValueChange={setSelectedNiche}>
-              <SelectTrigger className="h-10">
-                <SelectValue placeholder="Niche" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all_niches">All Niches</SelectItem>
-                {niches.map((niche) => (
-                  <SelectItem key={niche} value={niche}>
-                    {niche}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
-              <SelectTrigger className="h-10">
-                <SelectValue placeholder="Platform" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all_platforms">All Platforms</SelectItem>
-                <SelectItem value="Instagram">Instagram</SelectItem>
-                <SelectItem value="Youtube">YouTube</SelectItem>
-                <SelectItem value="TikTok">TikTok</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={followerRange} onValueChange={setFollowerRange}>
-              <SelectTrigger className="h-10">
-                <SelectValue placeholder="Followers" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any_range">Any Range</SelectItem>
-                <SelectItem value="1000-10000">1K - 10K</SelectItem>
-                <SelectItem value="10000-50000">10K - 50K</SelectItem>
-                <SelectItem value="50000-100000">50K - 100K</SelectItem>
-                <SelectItem value="100000-500000">100K - 500K</SelectItem>
-                <SelectItem value="500000-1000000">500K - 1M</SelectItem>
-                <SelectItem value="1000000-999999999">1M+</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Results */}
       <div className="space-y-4">
