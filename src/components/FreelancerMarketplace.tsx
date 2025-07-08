@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -260,7 +259,6 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
                   </SelectItem>
                 ))}
               </SelectContent>
-            </SelectContent>
             </Select>
 
             <Select value={priceRange} onValueChange={setPriceRange}>
