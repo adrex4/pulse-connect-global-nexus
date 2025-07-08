@@ -78,60 +78,22 @@ const mockFreelancers = [
   }
 ];
 
-const getSkillCategoryImage = (category: string) => {
+// Category images mapping
+const getCategoryImage = (category: string) => {
   const categoryImages: { [key: string]: string } = {
-    'Web Development': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
-    'Mobile App Development': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop',
-    'Software Development': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop',
-    'WordPress Development': 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop',
-    'E-commerce Development': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop',
-    'Graphic Design': 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop',
-    'Logo Design': 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&h=300&fit=crop',
-    'Web Design': 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop',
-    'UI/UX Design': 'https://images.unsplash.com/photo-1559028006-448665bd7c7f?w=400&h=300&fit=crop',
-    'Digital Marketing': 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=400&h=300&fit=crop',
-    'Social Media Marketing': 'https://images.unsplash.com/photo-1611926653458-09294b3142bf?w=400&h=300&fit=crop',
-    'Content Writing': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=300&fit=crop',
-    'Copywriting': 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=300&fit=crop',
-    'Video Editing': 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400&h=300&fit=crop',
-    'Video Production': 'https://images.unsplash.com/photo-1492619176842-45906531f8ec?w=400&h=300&fit=crop',
-    'Photography': 'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop',
-    'Animation': 'https://images.unsplash.com/photo-1626126525134-fbbc07afb32c?w=400&h=300&fit=crop',
-    'Data Science': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
-    'Machine Learning': 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=300&fit=crop',
-    'Personal Trainer': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
-    'Fitness Coaching': 'https://images.unsplash.com/photo-1549476464-37392f717541?w=400&h=300&fit=crop',
-    'Music Production': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-    'Voice Acting': 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=300&fit=crop',
-    'Translation': 'https://images.unsplash.com/photo-1455894127589-22f75500213a?w=400&h=300&fit=crop',
-    'Virtual Assistant': 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&h=300&fit=crop',
-    'Business Consulting': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
-    'Project Management': 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
-    'Accounting': 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
-    'SEO': 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400&h=300&fit=crop',
-    'Email Marketing': 'https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=400&h=300&fit=crop',
-    'Illustration': 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop',
-    'Fashion Design': 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop',
-    'Interior Design': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
-    'Architecture': 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=400&h=300&fit=crop',
-    'Legal Services': 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop',
-    'Tutoring': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
-    'Language Teaching': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=300&fit=crop',
-    'Life Coaching': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop',
-    'Yoga Instructor': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop',
-    'Massage Therapy': 'https://images.unsplash.com/photo-1559627994-b1f9235e5157?w=400&h=300&fit=crop',
-    'Chef/Cook': 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400&h=300&fit=crop',
-    'Event Planning': 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop',
-    'Wedding Planning': 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop',
-    'Pet Sitting/Dog Walking': 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=300&fit=crop',
-    'Handyman Services': 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=400&h=300&fit=crop',
-    'House Cleaning': 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop',
-    'Gardening/Landscaping': 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop',
-    'DJ Services': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-    'Real Estate Services': 'https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=400&h=300&fit=crop',
-    'Travel Planning': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop'
+    'Technology & Programming': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop',
+    'Creative & Design': 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600&h=400&fit=crop',
+    'Writing & Translation': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop',
+    'Digital Marketing': 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&h=400&fit=crop',
+    'Business Services': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop',
+    'Local Services': 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=600&h=400&fit=crop',
+    'Education & Training': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop',
+    'Health & Wellness': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop',
+    'Entertainment & Media': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop',
+    'Consulting & Professional': 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop',
+    'Specialized Services': 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop'
   };
-  return categoryImages[category] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop';
+  return categoryImages[category] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&h=400&fit=crop';
 };
 
 const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack }) => {
@@ -206,58 +168,30 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
     );
   }
 
-  const allSkills = Object.values(FREELANCER_SKILL_CATEGORIES).flat();
-  const uniqueSkills = Array.from(new Set(allSkills));
-
   return (
     <div className="max-w-7xl mx-auto animate-fade-in">
-      {/* Header Image Section */}
-      <div className="relative h-80 mb-8 rounded-2xl overflow-hidden shadow-2xl">
-        <img 
-          src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&h=400&fit=crop"
-          alt="Freelancer Marketplace"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-purple-900/70 to-pink-900/80"></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl">
-                <Users className="h-12 w-12" />
-              </div>
-              <h1 className="text-6xl font-bold drop-shadow-lg">Freelancer Marketplace</h1>
-              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl">
-                <Briefcase className="h-12 w-12" />
-              </div>
-            </div>
-            <p className="text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-              Connect with talented freelancers and skilled professionals ready to bring your projects to life
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Skills Categories Grid */}
+      {/* Categories Grid */}
       <div className="mb-12">
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Browse by Skill Category</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {uniqueSkills.slice(0, 10).map((skill) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Object.keys(FREELANCER_SKILL_CATEGORIES).map((category) => (
             <Card 
-              key={skill} 
+              key={category} 
               className="group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-0 overflow-hidden"
-              onClick={() => setSelectedCategory(Object.keys(FREELANCER_SKILL_CATEGORIES).find(cat => 
-                FREELANCER_SKILL_CATEGORIES[cat as keyof typeof FREELANCER_SKILL_CATEGORIES].includes(skill)
-              ) || 'all_categories')}
+              onClick={() => setSelectedCategory(category)}
             >
-              <div className="relative h-32">
+              <div className="relative h-48">
                 <img 
-                  src={getSkillCategoryImage(skill)} 
-                  alt={skill}
+                  src={getCategoryImage(category)} 
+                  alt={category}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                <div className="absolute bottom-3 left-3 right-3">
-                  <h3 className="text-white font-bold text-sm leading-tight">{skill}</h3>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white font-bold text-lg leading-tight mb-2">{category}</h3>
+                  <p className="text-white/80 text-sm">
+                    {FREELANCER_SKILL_CATEGORIES[category as keyof typeof FREELANCER_SKILL_CATEGORIES].length} skills available
+                  </p>
                 </div>
               </div>
             </Card>
@@ -326,6 +260,7 @@ const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack })
                   </SelectItem>
                 ))}
               </SelectContent>
+            </SelectContent>
             </Select>
 
             <Select value={priceRange} onValueChange={setPriceRange}>
