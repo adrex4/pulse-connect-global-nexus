@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -144,11 +145,11 @@ const SOCIAL_MEDIA_PLATFORMS = [
 
 const getNicheImage = (niche: string) => {
   const nicheImages: { [key: string]: string } = {
-    'Lifestyle & Wellness': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop',
-    'Entertainment & Comedy': 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&h=300&fit=crop',
+    'Lifestyle & Wellness': 'https://images.unsplash.com/photo-1506629905607-c54e23477b8a?w=400&h=300&fit=crop',
+    'Entertainment & Comedy': 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop',
     'Business & Finance': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
     'Food & Cooking': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
-    'Technology & Gadgets': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop',
+    'Technology & Gadgets': 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=300&fit=crop',
     'Fashion & Beauty': 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop',
     'Travel & Adventure': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop',
     'Gaming & Esports': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop',
@@ -167,8 +168,8 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
   onSearchChange,
   onBack 
 }) => {
-  const [selectedNiche, setSelectedNiche] = useState<string | null>(null);
-  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const [selectedNiche, setSelectedNiche] = useState<string>('');
+  const [selectedPlatform, setSelectedPlatform] = useState<string>('');
   const [filteredCreators, setFilteredCreators] = useState(mockCreators);
 
   const handleSearch = () => {
@@ -288,12 +289,12 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
               </div>
             </div>
 
-            <Select value={selectedNiche || ''} onValueChange={setSelectedNiche}>
+            <Select value={selectedNiche} onValueChange={setSelectedNiche}>
               <SelectTrigger className="h-10">
                 <SelectValue placeholder="Niche" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Niches</SelectItem>
+                <SelectItem value="all_niches">All Niches</SelectItem>
                 {SOCIAL_MEDIA_NICHES.map((niche) => (
                   <SelectItem key={niche} value={niche}>
                     {niche}
@@ -302,12 +303,12 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
               </SelectContent>
             </Select>
 
-            <Select value={selectedPlatform || ''} onValueChange={setSelectedPlatform}>
+            <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
               <SelectTrigger className="h-10">
                 <SelectValue placeholder="Platform" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Platforms</SelectItem>
+                <SelectItem value="all_platforms">All Platforms</SelectItem>
                 {SOCIAL_MEDIA_PLATFORMS.map((platform) => (
                   <SelectItem key={platform} value={platform}>
                     {platform}
