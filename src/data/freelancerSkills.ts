@@ -38,7 +38,9 @@ export const FREELANCER_SKILL_CATEGORIES = {
     'Character Design',
     'Product Design',
     'Fashion Design',
-    'Interior Design'
+    'Interior Design',
+    'Architecture',
+    'Packaging Design'
   ],
   'Writing & Translation': [
     'Content Writing',
@@ -56,7 +58,9 @@ export const FREELANCER_SKILL_CATEGORIES = {
     'Script Writing',
     'Ghost Writing',
     'Article Writing',
-    'Press Release Writing'
+    'Press Release Writing',
+    'Email Marketing Copy',
+    'Website Copy'
   ],
   'Digital Marketing': [
     'Social Media Marketing',
@@ -72,9 +76,12 @@ export const FREELANCER_SKILL_CATEGORIES = {
     'Analytics & Reporting',
     'Conversion Optimization',
     'Marketing Automation',
-    'Brand Management'
+    'Brand Management',
+    'Growth Hacking',
+    'Lead Generation'
   ],
-  'Business Services': [
+  'Business & Consulting': [
+    'Business Consulting',
     'Virtual Assistant',
     'Data Entry',
     'Lead Generation',
@@ -90,35 +97,41 @@ export const FREELANCER_SKILL_CATEGORIES = {
     'Administrative Support',
     'CRM Management',
     'HR Services',
-    'Recruitment'
+    'Recruitment',
+    'Strategy Consulting',
+    'Operations Consulting'
   ],
-  'Local Services': [
-    'Personal Trainer',
-    'Barber/Hairstylist',
-    'Makeup Artist',
-    'Massage Therapist',
-    'Chef/Cook',
-    'Catering',
-    'House Cleaning',
-    'Gardening/Landscaping',
-    'Pet Sitting/Dog Walking',
-    'Handyman Services',
-    'Plumbing',
-    'Electrical Work',
-    'Painting',
-    'Moving Services',
-    'Delivery Services',
-    'Driver/Chauffeur',
-    'Event Planning',
-    'Wedding Planning',
-    'Home Organizing',
-    'Tutoring',
-    'Babysitting/Childcare',
-    'Elder Care',
-    'Security Services',
-    'Auto Repair',
-    'Computer Repair',
-    'Phone Repair'
+  'Video & Audio': [
+    'Video Editing',
+    'Video Production',
+    'Animation',
+    'Motion Graphics',
+    'Voice Over',
+    'Audio Editing',
+    'Podcast Production',
+    'Music Production',
+    'Sound Design',
+    'Documentary Production',
+    'Commercial Video',
+    'Educational Video',
+    'Social Media Video',
+    'Live Streaming',
+    'Video Marketing'
+  ],
+  'Data & Analytics': [
+    'Data Analysis',
+    'Data Science',
+    'Machine Learning',
+    'Business Intelligence',
+    'Data Visualization',
+    'Excel Expert',
+    'Database Design',
+    'Statistical Analysis',
+    'Market Research',
+    'Survey Design',
+    'Reporting & Dashboards',
+    'Financial Modeling',
+    'Predictive Analytics'
   ],
   'Education & Training': [
     'Online Tutoring',
@@ -134,22 +147,62 @@ export const FREELANCER_SKILL_CATEGORIES = {
     'Skill Training',
     'Workshop Facilitation',
     'Course Creation',
-    'Educational Content'
+    'Educational Content',
+    'Curriculum Development',
+    'Training Materials'
   ],
   'Health & Wellness': [
+    'Personal Trainer',
     'Nutritionist',
     'Yoga Instructor',
     'Mental Health Counseling',
     'Physical Therapy',
-    'Chiropractor',
-    'Acupuncture',
     'Massage Therapy',
-    'Personal Care',
-    'Fitness Training',
     'Wellness Coaching',
     'Meditation Instructor',
     'Dance Instructor',
-    'Sports Coaching'
+    'Sports Coaching',
+    'Health Content Writing',
+    'Fitness Program Design'
+  ],
+  'Local Services': [
+    'Barber/Hairstylist',
+    'Makeup Artist',
+    'Chef/Cook',
+    'Catering',
+    'House Cleaning',
+    'Gardening/Landscaping',
+    'Pet Sitting/Dog Walking',
+    'Handyman Services',
+    'Plumbing',
+    'Electrical Work',
+    'Painting',
+    'Moving Services',
+    'Delivery Services',
+    'Driver/Chauffeur',
+    'Event Planning',
+    'Wedding Planning',
+    'Home Organizing',
+    'Babysitting/Childcare',
+    'Elder Care',
+    'Security Services',
+    'Auto Repair',
+    'Computer Repair',
+    'Phone Repair'
+  ],
+  'Legal & Professional': [
+    'Legal Services',
+    'Paralegal Services',
+    'Contract Review',
+    'Legal Research',
+    'Patent Services',
+    'Trademark Services',
+    'Compliance Consulting',
+    'Immigration Services',
+    'Real Estate Services',
+    'Insurance Services',
+    'Notary Services',
+    'Document Preparation'
   ],
   'Entertainment & Media': [
     'DJ Services',
@@ -160,38 +213,11 @@ export const FREELANCER_SKILL_CATEGORIES = {
     'Magic/Entertainment',
     'MC/Host Services',
     'Podcast Production',
-    'Voice Over',
     'Public Speaking',
     'Event Entertainment',
-    'Video Production',
-    'Audio Production',
-    'Live Streaming'
-  ],
-  'Consulting & Professional': [
-    'Business Consulting',
-    'IT Consulting',
-    'HR Consulting',
-    'Legal Consulting',
-    'Financial Consulting',
-    'Marketing Consulting',
-    'Strategy Consulting',
-    'Management Consulting',
-    'Operations Consulting',
-    'Technology Consulting'
-  ],
-  'Specialized Services': [
-    'Legal Services',
-    'Notary Services',
-    'Real Estate Services',
-    'Insurance Services',
-    'Travel Planning',
-    'Event Photography',
-    'Videography',
-    'Architecture',
-    'Engineering',
-    'Research Services',
-    'Quality Assurance',
-    'Product Testing'
+    'Content Creation',
+    'Influencer Services',
+    'Brand Ambassador'
   ]
 };
 
