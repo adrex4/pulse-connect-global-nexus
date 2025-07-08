@@ -27,7 +27,7 @@ const sortingOptions = [
   { value: 'industry', label: 'Industry Leader' }
 ];
 
-// Business categories with high-quality images
+// Expanded business categories with high-quality images
 const businessCategories = [
   {
     name: 'Technology & Software',
@@ -36,7 +36,7 @@ const businessCategories = [
   },
   {
     name: 'Healthcare & Medical',
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d04cb21cd6c?w=400&h=300&fit=crop',
     description: 'Medical services, healthcare technology'
   },
   {
@@ -113,6 +113,46 @@ const businessCategories = [
     name: 'Non-Profit & Social',
     image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=300&fit=crop',
     description: 'Non-profit organizations, social causes'
+  },
+  {
+    name: 'Fashion & Beauty',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
+    description: 'Fashion brands, beauty products, styling'
+  },
+  {
+    name: 'Sports & Fitness',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
+    description: 'Gyms, sports equipment, fitness services'
+  },
+  {
+    name: 'Travel & Tourism',
+    image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop',
+    description: 'Hotels, travel agencies, tourism services'
+  },
+  {
+    name: 'Environmental Services',
+    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=300&fit=crop',
+    description: 'Recycling, waste management, green solutions'
+  },
+  {
+    name: 'Telecommunications',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
+    description: 'Internet providers, mobile services, communication'
+  },
+  {
+    name: 'Insurance',
+    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=300&fit=crop',
+    description: 'Life insurance, property insurance, risk management'
+  },
+  {
+    name: 'Security Services',
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop',
+    description: 'Cybersecurity, physical security, surveillance'
+  },
+  {
+    name: 'Chemical & Pharmaceutical',
+    image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=300&fit=crop',
+    description: 'Chemical production, pharmaceuticals, research'
   }
 ];
 
@@ -594,7 +634,7 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
         </div>
       </div>
 
-      {/* Business Categories Grid */}
+      {/* Business Categories Grid - Updated with more categories */}
       <div className="mb-12">
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Browse by Industry</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

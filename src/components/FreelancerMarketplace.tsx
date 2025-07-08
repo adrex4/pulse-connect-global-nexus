@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,25 @@ interface FreelancerMarketplaceProps {
   onBack?: () => void;
 }
 
-// Mock freelancer data
+// Category images mapping with updated categories
+const getCategoryImage = (category: string) => {
+  const categoryImages: { [key: string]: string } = {
+    'Technology & Programming': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop',
+    'Creative & Design': 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600&h=400&fit=crop',
+    'Writing & Translation': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop',
+    'Digital Marketing': 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&h=400&fit=crop',
+    'Business Services': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop',
+    'Health & Wellness': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop',
+    'Education & Training': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop',
+    'Entertainment & Media': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop',
+    'Consulting & Professional': 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop',
+    'Specialized Services': 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop',
+    'Local Services': 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=600&h=400&fit=crop'
+  };
+  return categoryImages[category] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&h=400&fit=crop';
+};
+
+// Enhanced mock freelancer data
 const mockFreelancers = [
   {
     id: '1',
@@ -74,26 +93,46 @@ const mockFreelancers = [
     completedProjects: 234,
     responseTime: '1 hour',
     languages: ['Spanish', 'English']
+  },
+  {
+    id: '4',
+    name: 'David Kim',
+    primarySkill: 'Data Science',
+    skills: ['Python', 'Machine Learning', 'SQL', 'Tableau'],
+    hourlyRate: 85,
+    currency: 'USD',
+    availability: 'Full-time',
+    experience: 'expert',
+    bio: 'Data scientist with expertise in machine learning and statistical analysis. Helping businesses make data-driven decisions.',
+    country: 'South Korea',
+    workArrangement: 'Remote Only',
+    serviceDelivery: 'Digital/Online',
+    rating: 4.9,
+    reviewCount: 94,
+    completedProjects: 67,
+    responseTime: '3 hours',
+    languages: ['Korean', 'English']
+  },
+  {
+    id: '5',
+    name: 'Emma Thompson',
+    primarySkill: 'Content Writing',
+    skills: ['SEO Writing', 'Blog Writing', 'Copywriting'],
+    hourlyRate: 35,
+    currency: 'USD',
+    availability: 'Part-time',
+    experience: 'intermediate',
+    bio: 'Professional content writer with 4 years of experience creating engaging content for various industries.',
+    country: 'United Kingdom',
+    workArrangement: 'Remote Only',
+    serviceDelivery: 'Digital/Online',
+    rating: 4.6,
+    reviewCount: 112,
+    completedProjects: 203,
+    responseTime: '6 hours',
+    languages: ['English']
   }
 ];
-
-// Category images mapping
-const getCategoryImage = (category: string) => {
-  const categoryImages: { [key: string]: string } = {
-    'Technology & Programming': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop',
-    'Creative & Design': 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600&h=400&fit=crop',
-    'Writing & Translation': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop',
-    'Digital Marketing': 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&h=400&fit=crop',
-    'Business Services': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop',
-    'Local Services': 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=600&h=400&fit=crop',
-    'Education & Training': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop',
-    'Health & Wellness': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop',
-    'Entertainment & Media': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop',
-    'Consulting & Professional': 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop',
-    'Specialized Services': 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop'
-  };
-  return categoryImages[category] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&h=400&fit=crop';
-};
 
 const FreelancerMarketplace: React.FC<FreelancerMarketplaceProps> = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState('');
