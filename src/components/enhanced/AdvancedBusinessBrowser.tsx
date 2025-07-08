@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,6 +25,95 @@ const sortingOptions = [
   { value: 'relevance', label: 'Most Relevant' },
   { value: 'trending', label: 'Trending Now' },
   { value: 'industry', label: 'Industry Leader' }
+];
+
+// Business categories with high-quality images
+const businessCategories = [
+  {
+    name: 'Technology & Software',
+    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop',
+    description: 'Software development, AI, and tech solutions'
+  },
+  {
+    name: 'Healthcare & Medical',
+    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop',
+    description: 'Medical services, healthcare technology'
+  },
+  {
+    name: 'Finance & Banking',
+    image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&h=300&fit=crop',
+    description: 'Financial services, banking, investments'
+  },
+  {
+    name: 'Education & Training',
+    image: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&h=300&fit=crop',
+    description: 'Educational institutions, online learning'
+  },
+  {
+    name: 'Real Estate',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop',
+    description: 'Property management, real estate services'
+  },
+  {
+    name: 'Retail & E-commerce',
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop',
+    description: 'Online stores, retail businesses'
+  },
+  {
+    name: 'Food & Beverage',
+    image: 'https://images.unsplash.com/photo-1414235077428-9049fed747ef?w=400&h=300&fit=crop',
+    description: 'Restaurants, food delivery, catering'
+  },
+  {
+    name: 'Manufacturing',
+    image: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=400&h=300&fit=crop',
+    description: 'Production, industrial manufacturing'
+  },
+  {
+    name: 'Transportation & Logistics',
+    image: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=300&fit=crop',
+    description: 'Shipping, logistics, transportation'
+  },
+  {
+    name: 'Energy & Utilities',
+    image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop',
+    description: 'Renewable energy, utilities, power'
+  },
+  {
+    name: 'Construction',
+    image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop',
+    description: 'Building, construction, architecture'
+  },
+  {
+    name: 'Marketing & Advertising',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
+    description: 'Digital marketing, advertising agencies'
+  },
+  {
+    name: 'Legal & Professional',
+    image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop',
+    description: 'Law firms, legal services, consulting'
+  },
+  {
+    name: 'Entertainment & Media',
+    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
+    description: 'Media production, entertainment industry'
+  },
+  {
+    name: 'Agriculture & Farming',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop',
+    description: 'Farming, agriculture, food production'
+  },
+  {
+    name: 'Automotive',
+    image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=300&fit=crop',
+    description: 'Auto manufacturing, car services'
+  },
+  {
+    name: 'Non-Profit & Social',
+    image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=300&fit=crop',
+    description: 'Non-profit organizations, social causes'
+  }
 ];
 
 // Enhanced mock business data with media and social links
@@ -108,7 +196,7 @@ const mockBusinesses = [
   {
     id: '3',
     name: 'Digital Marketing Pro',
-    category: 'Digital Marketing & Advertising',
+    category: 'Marketing & Advertising',
     country: 'United Kingdom',
     description: 'Full-service digital marketing agency helping businesses grow their online presence through innovative strategies and data-driven campaigns.',
     rating: 4.6,
@@ -205,6 +293,11 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 100);
     }
+  };
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+    window.scrollTo({ top: 400, behavior: 'smooth' });
   };
 
   // Direct Message View
@@ -501,6 +594,33 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
         </div>
       </div>
 
+      {/* Business Categories Grid */}
+      <div className="mb-12">
+        <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Browse by Industry</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {businessCategories.map((category, index) => (
+            <Card 
+              key={index}
+              className="group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-0 overflow-hidden"
+              onClick={() => handleCategoryClick(category.name)}
+            >
+              <div className="relative h-48">
+                <img 
+                  src={category.image} 
+                  alt={category.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white font-bold text-lg leading-tight mb-2">{category.name}</h3>
+                  <p className="text-white/80 text-sm">{category.description}</p>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+
       {/* Always Visible Filters */}
       <Card className="border-2 border-blue-100 bg-gradient-to-r from-blue-50 to-purple-50">
         <CardContent className="p-6">
@@ -541,8 +661,8 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="All Categories">All Categories</SelectItem>
-                    {BUSINESS_TYPES.map(category => (
-                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    {businessCategories.map(category => (
+                      <SelectItem key={category.name} value={category.name}>{category.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
