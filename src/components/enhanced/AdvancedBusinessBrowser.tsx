@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,131 +28,131 @@ const sortingOptions = [
   { value: 'industry', label: 'Industry Leader' }
 ];
 
-// Expanded business categories with high-quality images
+// Expanded business categories with working high-quality images
 const businessCategories = [
   {
     name: 'Technology & Software',
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&auto=format',
     description: 'Software development, AI, and tech solutions'
   },
   {
     name: 'Healthcare & Medical',
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d04cb21cd6c?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d04cb2?w=400&h=300&fit=crop&auto=format',
     description: 'Medical services, healthcare technology'
   },
   {
     name: 'Finance & Banking',
-    image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&h=300&fit=crop&auto=format',
     description: 'Financial services, banking, investments'
   },
   {
     name: 'Education & Training',
-    image: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&h=300&fit=crop&auto=format',
     description: 'Educational institutions, online learning'
   },
   {
     name: 'Real Estate',
-    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop&auto=format',
     description: 'Property management, real estate services'
   },
   {
     name: 'Retail & E-commerce',
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format',
     description: 'Online stores, retail businesses'
   },
   {
     name: 'Food & Beverage',
-    image: 'https://images.unsplash.com/photo-1414235077428-9049fed747ef?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1414235077428-9049fed747ef?w=400&h=300&fit=crop&auto=format',
     description: 'Restaurants, food delivery, catering'
   },
   {
     name: 'Manufacturing',
-    image: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=400&h=300&fit=crop&auto=format',
     description: 'Production, industrial manufacturing'
   },
   {
     name: 'Transportation & Logistics',
-    image: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=300&fit=crop&auto=format',
     description: 'Shipping, logistics, transportation'
   },
   {
     name: 'Energy & Utilities',
-    image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop&auto=format',
     description: 'Renewable energy, utilities, power'
   },
   {
     name: 'Construction',
-    image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop&auto=format',  
     description: 'Building, construction, architecture'
   },
   {
     name: 'Marketing & Advertising',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&auto=format',
     description: 'Digital marketing, advertising agencies'
   },
   {
     name: 'Legal & Professional',
-    image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop&auto=format',
     description: 'Law firms, legal services, consulting'
   },
   {
     name: 'Entertainment & Media',
-    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop&auto=format',
     description: 'Media production, entertainment industry'
   },
   {
     name: 'Agriculture & Farming',
-    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop&auto=format',
     description: 'Farming, agriculture, food production'
   },
   {
     name: 'Automotive',
-    image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=300&fit=crop&auto=format',
     description: 'Auto manufacturing, car services'
   },
   {
     name: 'Non-Profit & Social',
-    image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=300&fit=crop&auto=format',
     description: 'Non-profit organizations, social causes'
   },
   {
     name: 'Fashion & Beauty',
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop&auto=format',
     description: 'Fashion brands, beauty products, styling'
   },
   {
     name: 'Sports & Fitness',
-    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&auto=format',
     description: 'Gyms, sports equipment, fitness services'
   },
   {
     name: 'Travel & Tourism',
-    image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop&auto=format',
     description: 'Hotels, travel agencies, tourism services'
   },
   {
     name: 'Environmental Services',
-    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=300&fit=crop&auto=format',
     description: 'Recycling, waste management, green solutions'
   },
   {
     name: 'Telecommunications',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&auto=format',
     description: 'Internet providers, mobile services, communication'
   },
   {
     name: 'Insurance',
-    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=300&fit=crop&auto=format',
     description: 'Life insurance, property insurance, risk management'
   },
   {
     name: 'Security Services',
-    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop&auto=format',
     description: 'Cybersecurity, physical security, surveillance'
   },
   {
     name: 'Chemical & Pharmaceutical',
-    image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=300&fit=crop&auto=format',
     description: 'Chemical production, pharmaceuticals, research'
   }
 ];
@@ -634,7 +635,7 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
         </div>
       </div>
 
-      {/* Business Categories Grid - Updated with more categories */}
+      {/* Business Categories Grid - Updated with working images */}
       <div className="mb-12">
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Browse by Industry</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -649,6 +650,11 @@ const AdvancedBusinessBrowser: React.FC<AdvancedBusinessBrowserProps> = ({ onCre
                   src={category.image} 
                   alt={category.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  onError={(e) => {
+                    console.log(`Failed to load image for ${category.name}:`, category.image);
+                    // Fallback to a solid color background if image fails
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-4">
