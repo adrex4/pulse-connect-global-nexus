@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,6 +16,29 @@ interface SocialMediaBrowserProps {
   showFilters?: boolean;
   searchTerm?: string;
   onSearchChange?: (term: string) => void;
+}
+
+interface PostData {
+  type: string;
+  likes: string;
+  comments: string;
+  caption: string;
+}
+
+interface CreatorData {
+  id: string;
+  name: string;
+  niche: string;
+  platform: string;
+  followers: string;
+  engagement: string;
+  bio: string;
+  profileImage: string;
+  verified: boolean;
+  recentPosts: PostData[];
+  collaborationRates: {
+    [key: string]: string;
+  };
 }
 
 // Expanded creator niches with more comprehensive categories
@@ -144,7 +166,7 @@ const creatorNiches = [
 ];
 
 // Mock social media creators with enhanced data
-const mockCreators = [
+const mockCreators: CreatorData[] = [
   {
     id: '1',
     name: 'Emma Style',
@@ -217,7 +239,7 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
   const [selectedNiche, setSelectedNiche] = useState('all_niches');
   const [selectedPlatform, setSelectedPlatform] = useState('all_platforms');
   const [followerRange, setFollowerRange] = useState('any_range');
-  const [selectedCreator, setSelectedCreator] = useState<any>(null);
+  const [selectedCreator, setSelectedCreator] = useState<CreatorData | null>(null);
 
   const handleSearchChange = (value: string) => {
     setLocalSearchTerm(value);
@@ -290,7 +312,7 @@ const SocialMediaBrowser: React.FC<SocialMediaBrowserProps> = ({
                     <div>
                       <h4 className="font-semibold mb-3">Recent Performance</h4>
                       <div className="space-y-2">
-                        {selectedCreator.recentPosts.map((post: any, index: number) => (
+                        {selectedCreator.recentPosts.map((post: PostData, index: number) => (
                           <div key={index} className="flex justify-between text-sm">
                             <span className="capitalize">{post.type}</span>
                             <span>{post.likes} likes • {post.comments} comments</span>

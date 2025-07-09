@@ -1,8 +1,7 @@
-
 export const FREELANCER_SKILL_CATEGORIES = {
   'Technology & Programming': [
     'Web Development',
-    'Mobile App Development',
+    'Mobile App Development', 
     'Software Development',
     'Database Administration',
     'DevOps Engineering',
@@ -243,3 +242,39 @@ export const FREELANCER_SKILL_CATEGORIES = {
     'Construction Services'
   ]
 };
+
+export const WORK_ARRANGEMENTS = [
+  'Remote',
+  'On-site',
+  'Hybrid',
+  'Flexible'
+];
+
+export const SERVICE_DELIVERY_TYPES = [
+  'Digital/Online',
+  'In-Person',
+  'Both'
+];
+
+export const EXPERIENCE_LEVELS = [
+  {
+    value: 'beginner',
+    label: 'Beginner',
+    description: '0-2 years'
+  },
+  {
+    value: 'intermediate',
+    label: 'Intermediate',
+    description: '2-5 years'
+  },
+  {
+    value: 'advanced',
+    label: 'Advanced',
+    description: '5-10 years'
+  },
+  {
+    value: 'expert',
+    label: 'Expert',
+    description: '10+ years'
+  }
+];
