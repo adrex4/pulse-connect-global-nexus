@@ -160,49 +160,6 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
     }
   }
 
-  // FIXED: Handle social media influencer groups explicitly
-  if (userType === 'social_media_influencer' && currentStep === 'groups') {
-    const user = currentUser || {
-      id: 'temp-social-user',
-      name: 'Content Creator',
-      niche: profileData?.niche || 'Social Media',
-      country: locationData?.country || 'United States',
-      preferredScope: 'global' as const
-    };
-
-    console.log('Rendering SocialMediaGroupList for join action');
-    return (
-      <SocialMediaGroupList
-        user={user}
-        userType={userType}
-        userAction={userAction as 'join' | 'create'}
-        onJoinGroup={onGroupJoin}
-        onBack={() => onStepChange('user-type')}
-      />
-    );
-  }
-
-  // Handle local service provider groups
-  if (userType === 'occupation_provider' && currentStep === 'groups') {
-    const user = currentUser || {
-      id: 'temp-service-user',
-      name: 'Service Provider',
-      niche: profileData?.primarySkill || 'Local Services',
-      country: locationData?.country || 'United States',
-      preferredScope: 'local' as const
-    };
-
-    return (
-      <LocalServiceGroupList
-        user={user}
-        userType={userType}
-        userAction={userAction as 'join' | 'create'}
-        onJoinGroup={onGroupJoin}
-        onBack={() => onStepChange('user-type')}
-      />
-    );
-  }
-
   // Handle all shared steps (service selection, portfolio, location, groups, chat, etc.)
   return (
     <SharedStepManager
