@@ -72,7 +72,12 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
         onNext={(serviceData) => {
           setProfileData(serviceData);
           if (userType === 'freelancer' || userType === 'occupation_provider') {
-            onStepChange('portfolio');
+            if (userAction === 'create') {
+              onStepChange('portfolio');
+            } else {
+              // For join action, go directly to groups after service selection
+              onStepChange('groups');
+            }
           } else {
             onStepChange('location');
           }
@@ -120,9 +125,17 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
           } else if (userType === 'freelancer') {
             onStepChange('freelancer-gig');
           } else if (userType === 'social_media_influencer') {
-            onStepChange('portfolio');
+            if (userAction === 'create') {
+              onStepChange('portfolio');
+            } else {
+              onStepChange('user-type');
+            }
           } else if (userType === 'occupation_provider') {
-            onStepChange('portfolio');
+            if (userAction === 'create') {
+              onStepChange('portfolio');
+            } else {
+              onStepChange('service-selection');
+            }
           } else {
             onStepChange('service-selection');
           }
@@ -149,7 +162,13 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
           userType={userType}
           userAction={userAction as 'join' | 'create'}
           onJoinGroup={onGroupJoin}
-          onBack={() => onStepChange('location')}
+          onBack={() => {
+            if (userAction === 'join') {
+              onStepChange('user-type');
+            } else {
+              onStepChange('location');
+            }
+          }}
         />
       );
     }
@@ -170,7 +189,13 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
           userType={userType}
           userAction={userAction as 'join' | 'create'}
           onJoinGroup={onGroupJoin}
-          onBack={() => onStepChange('location')}
+          onBack={() => {
+            if (userAction === 'join') {
+              onStepChange('service-selection');
+            } else {
+              onStepChange('location');
+            }
+          }}
         />
       );
     }
