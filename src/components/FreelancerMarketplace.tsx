@@ -17,20 +17,34 @@ interface FreelancerMarketplaceProps {
   onBack?: () => void;
 }
 
-// Category images mapping with updated categories
+// Updated category images mapping with unique, relevant images for each category
 const getCategoryImage = (category: string) => {
   const categoryImages: { [key: string]: string } = {
-    'Technology & Programming': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop',
-    'Creative & Design': 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600&h=400&fit=crop',
-    'Writing & Translation': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop',
-    'Digital Marketing': 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&h=400&fit=crop',
-    'Business Services': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop',
-    'Health & Wellness': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop',
-    'Education & Training': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop',
-    'Entertainment & Media': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop',
-    'Consulting & Professional': 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop',
-    'Specialized Services': 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop',
-    'Local Services': 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=600&h=400&fit=crop'
+    'Web Development': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop',
+    'Mobile App Development': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop',
+    'Game Development': 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600&h=400&fit=crop',
+    'DevOps & Cloud': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop',
+    'UI/UX Design': 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600&h=400&fit=crop',
+    'Graphic & Visual Design': 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&h=400&fit=crop',
+    '3D Modeling & Animation': 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&h=400&fit=crop',
+    'CAD & Engineering': 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=400&fit=crop',
+    'Writing & Content': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop',
+    'Copywriting & Marketing': 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&h=400&fit=crop',
+    'Technical Writing': 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=600&h=400&fit=crop',
+    'Video & Media Production': 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=400&fit=crop',
+    'Audio & Music': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop',
+    'Photography & Image Editing': 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&h=400&fit=crop',
+    'Translation & Localization': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop',
+    'Data & Administrative': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
+    'Social Media & Digital Marketing': 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop',
+    'Sales & Marketing Automation': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop',
+    'Legal & Financial Services': 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop',
+    'Emerging Technologies': 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=400&fit=crop',
+    'Security & Quality Assurance': 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&h=400&fit=crop',
+    'Business & CRM': 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop',
+    'HR & Recruitment': 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&h=400&fit=crop',
+    'Customer Service & Support': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop',
+    'E-commerce & Online Business': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop'
   };
   return categoryImages[category] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&h=400&fit=crop';
 };

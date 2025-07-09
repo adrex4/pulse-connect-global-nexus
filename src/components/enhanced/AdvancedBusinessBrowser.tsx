@@ -28,16 +28,16 @@ const sortingOptions = [
   { value: 'industry', label: 'Industry Leader' }
 ];
 
-// Expanded business categories with working high-quality images
+// Fixed business categories with working high-quality images
 const businessCategories = [
   {
     name: 'Technology & Software',
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&auto=format',
+    image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=300&fit=crop&auto=format',
     description: 'Software development, AI, and tech solutions'
   },
   {
     name: 'Healthcare & Medical',
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d04cb2?w=400&h=300&fit=crop&auto=format',
+    image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop&auto=format',
     description: 'Medical services, healthcare technology'
   },
   {
@@ -62,7 +62,7 @@ const businessCategories = [
   },
   {
     name: 'Food & Beverage',
-    image: 'https://images.unsplash.com/photo-1414235077428-9049fed747ef?w=400&h=300&fit=crop&auto=format',
+    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&auto=format',
     description: 'Restaurants, food delivery, catering'
   },
   {
