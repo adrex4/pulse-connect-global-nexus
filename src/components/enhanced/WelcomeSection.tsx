@@ -6,8 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   ArrowRight, Users, MessageSquare, Globe, 
-  Briefcase, Zap, Star, TrendingUp, User, Building2, 
-  Camera, MapPin, Activity
+  Briefcase, Zap, Star, TrendingUp, User
 } from 'lucide-react';
 import { User as UserType } from '@/types/connectPulse';
 
@@ -27,7 +26,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
   const features = [
     {
       icon: Users,
-      title: "Join Groups",
+      title: "Join Communities",
       description: "Connect with like-minded professionals and expand your network"
     },
     {
@@ -49,36 +48,9 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
 
   const stats = [
     { number: "50K+", label: "Active Members" },
-    { number: "1.2K+", label: "Groups" },
+    { number: "1.2K+", label: "Communities" },
     { number: "25K+", label: "Connections Made" },
     { number: "98%", label: "Success Rate" }
-  ];
-
-  const communityHighlights = [
-    {
-      icon: Building2,
-      title: "Business Networks",
-      description: "Connect with entrepreneurs and business leaders worldwide",
-      color: "from-blue-500 to-blue-600"
-    },
-    {
-      icon: User,
-      title: "Freelancer Hub",
-      description: "Showcase skills and find exciting project opportunities",
-      color: "from-green-500 to-green-600"
-    },
-    {
-      icon: Camera,
-      title: "Creator Community",
-      description: "Collaborate with content creators and influencers",
-      color: "from-pink-500 to-pink-600"
-    },
-    {
-      icon: MapPin,
-      title: "Local Services",
-      description: "Connect with service providers in your area",
-      color: "from-purple-500 to-purple-600"
-    }
   ];
 
   // Handle My Profile button click with better error handling
@@ -156,7 +128,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
           
           <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
             The ultimate platform for professionals to connect, collaborate, and grow together. 
-            Join groups, showcase your expertise, and build meaningful relationships.
+            Join communities, showcase your expertise, and build meaningful relationships.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -177,7 +149,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
               className="text-lg px-8 py-6"
               type="button"
             >
-              Browse Groups
+              Browse Communities
               <Users className="ml-2 h-5 w-5" />
             </Button>
 
@@ -194,32 +166,6 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
                 My Profile
               </Button>
             )}
-          </div>
-        </div>
-
-        {/* Community Highlights */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8 text-gray-800">Explore Our Vibrant Communities</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {communityHighlights.map((community, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-0 cursor-pointer hover:scale-105">
-                <CardHeader className="text-center">
-                  <div className={`mx-auto w-16 h-16 bg-gradient-to-r ${community.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <community.icon className="h-8 w-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl">{community.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-center">
-                    {community.description}
-                  </CardDescription>
-                  <div className="mt-4 flex items-center justify-center">
-                    <Activity className="h-4 w-4 text-green-500 mr-2" />
-                    <span className="text-sm text-gray-600">Active Now</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
 
@@ -279,7 +225,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
                 className="text-lg px-8 bg-transparent border-white text-white hover:bg-white hover:text-indigo-600"
                 type="button"
               >
-                Explore Groups
+                Explore First
                 <Star className="ml-2 h-5 w-5" />
               </Button>
             </div>
