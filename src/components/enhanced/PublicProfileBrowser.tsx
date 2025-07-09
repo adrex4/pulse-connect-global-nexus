@@ -1,264 +1,241 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-import { PublicProfileBrowserProps } from '@/types/publicBrowser';
-import { usePublicBrowserData } from '@/hooks/usePublicBrowserData';
-import BrowserTabs from './browser/BrowserTabs';
-import SearchFilters from './browser/SearchFilters';
-import ResultsSection from './browser/ResultsSection';
-import AdvancedBusinessBrowser from './AdvancedBusinessBrowser';
-import FreelancerMarketplace from '../FreelancerMarketplace';
-import SocialMediaBrowser from './SocialMediaBrowser';
-import LocalServicesBrowser from './LocalServicesBrowser';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Building2, User, Camera, MapPin, Users, MessageSquare, 
+  ArrowRight, Globe, Star, TrendingUp, Activity, Eye
+} from 'lucide-react';
 
-const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarted, initialFilter = null }) => {
-  const [activeTab, setActiveTab] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services'>(
-    initialFilter === 'social_media' ? 'social_media' : 
-    initialFilter === 'businesses' ? 'businesses' :
-    initialFilter === 'freelancers' ? 'freelancers' :
-    initialFilter === 'groups' ? 'groups' :
-    initialFilter === 'local_services' ? 'local_services' : 'businesses'
+interface PublicProfileBrowserProps {
+  onGetStarted: () => void;
+  initialFilter?: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null;
+}
+
+const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ 
+  onGetStarted,
+  initialFilter = 'groups'
+}) => {
+  const [activeTab, setActiveTab] = useState(initialFilter || 'groups');
+
+  // Demo groups data
+  const demoGroups = [
+    {
+      id: '1',
+      name: 'Business Networking Hub',
+      description: 'Connect with entrepreneurs and business leaders worldwide',
+      members: 1250,
+      category: 'Business',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+      badge: 'Popular'
+    },
+    {
+      id: '2',
+      name: 'Freelancer Community',
+      description: 'Showcase your skills and find exciting projects',
+      members: 850,
+      category: 'Freelancer',
+      image: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&h=300&fit=crop',
+      badge: 'Active'
+    },
+    {
+      id: '3',
+      name: 'Content Creators United',
+      description: 'Collaborate with influencers and content creators',
+      members: 620,
+      category: 'Creator',
+      image: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop',
+      badge: 'Trending'
+    },
+    {
+      id: '4',
+      name: 'Local Service Providers',
+      description: 'Connect with service providers in your area',
+      members: 450,
+      category: 'Local Service',
+      image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop',
+      badge: 'New'
+    },
+    {
+      id: '5',
+      name: 'Tech Innovators',
+      description: 'Latest trends in technology and innovation',
+      members: 980,
+      category: 'Business',
+      image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop',
+      badge: 'Hot'
+    },
+    {
+      id: '6',
+      name: 'Digital Marketing Masters',
+      description: 'Share marketing strategies and grow your reach',
+      members: 720,
+      category: 'Freelancer',
+      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
+      badge: 'Growing'
+    }
+  ];
+
+  const categoryStats = {
+    businesses: { count: '2.5K+', active: '450+' },
+    freelancers: { count: '3.2K+', active: '680+' },
+    creators: { count: '1.8K+', active: '320+' },
+    services: { count: '890+', active: '180+' }
+  };
+
+  const renderGroupCard = (group: any) => (
+    <Card key={group.id} className="group hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-0 cursor-pointer hover:scale-105">
+      <div className="relative">
+        <img 
+          src={group.image} 
+          alt={group.name}
+          className="w-full h-48 object-cover rounded-t-lg"
+        />
+        <Badge className="absolute top-3 right-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+          {group.badge}
+        </Badge>
+      </div>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg">{group.name}</CardTitle>
+          <div className="flex items-center gap-1 text-sm text-gray-600">
+            <Users className="h-4 w-4" />
+            {group.members}
+          </div>
+        </div>
+        <Badge variant="outline" className="w-fit">
+          {group.category}
+        </Badge>
+      </CardHeader>
+      <CardContent>
+        <CardDescription className="mb-4">
+          {group.description}
+        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity className="h-4 w-4 text-green-500" />
+            <span className="text-sm text-gray-600">Active Now</span>
+          </div>
+          <Button 
+            size="sm" 
+            onClick={onGetStarted}
+            className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+          >
+            <Eye className="h-4 w-4 mr-1" />
+            Join to View
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('all_locations');
-  const [selectedCategory, setSelectedCategory] = useState('all_categories');
 
-  const {
-    profiles,
-    groups,
-    loading,
-    availableCategories,
-    availableLocations,
-    fetchLocations,
-    fetchCategories,
-    fetchProfiles,
-    fetchGroups
-  } = usePublicBrowserData();
-
-  useEffect(() => {
-    fetchLocations();
-    if (activeTab !== 'freelancers' && activeTab !== 'social_media' && activeTab !== 'local_services') {
-      fetchCategories(activeTab as 'businesses' | 'groups');
-    }
-  }, []);
-
-  useEffect(() => {
-    if (activeTab === 'groups') {
-      fetchGroups(searchTerm, selectedLocation, selectedCategory);
-    } else if (activeTab === 'businesses') {
-      fetchProfiles('businesses', searchTerm, selectedLocation, selectedCategory);
-    }
-  }, [activeTab, searchTerm, selectedLocation, selectedCategory]);
-
-  const handleTabChange = (tab: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services') => {
-    setActiveTab(tab);
-    setSelectedCategory('all_categories');
-    if (tab !== 'freelancers' && tab !== 'social_media' && tab !== 'local_services') {
-      fetchCategories(tab as 'businesses' | 'groups');
-    }
-  };
-
-  const handleResetFilters = () => {
-    setSearchTerm('');
-    setSelectedLocation('all_locations');
-    setSelectedCategory('all_categories');
-  };
-
-  // If local services tab is active, show the LocalServicesBrowser component
-  if (activeTab === 'local_services') {
-    return (
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Find trusted local service providers in your area for all your needs.
-          </p>
-        </div>
-
-        {/* Tabs */}
-        <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
-
-        {/* Local Services Browser */}
-        <LocalServicesBrowser onCreateProfile={onGetStarted} />
-
-        {/* Call to Action */}
-        <div className="text-center space-y-4 py-8">
-          <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
-          <p className="text-gray-600">Create your profile and start connecting with customers in your area.</p>
-          <Button 
-            onClick={onGetStarted}
-            size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
-          >
-            Get Started Now
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // If social media tab is active, show the SocialMediaBrowser component
-  if (activeTab === 'social_media') {
-    return (
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover amazing creators, businesses, and groups before joining our platform.
-          </p>
-        </div>
-
-        {/* Tabs */}
-        <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
-
-        {/* Social Media Browser */}
-        <SocialMediaBrowser
-          onCreateProfile={onGetStarted}
-          showFilters={true}
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-        />
-
-        {/* Call to Action */}
-        <div className="text-center space-y-4 py-8">
-          <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
-          <p className="text-gray-600">Create your profile and start connecting with amazing people in your industry.</p>
-          <Button 
-            onClick={onGetStarted}
-            size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
-          >
-            Get Started Now
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // If freelancers tab is active, show the FreelancerMarketplace component
-  if (activeTab === 'freelancers') {
-    return (
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover talented freelancers, innovative businesses, and thriving groups.
-          </p>
-        </div>
-
-        {/* Tabs */}
-        <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
-
-        {/* Freelancer Marketplace */}
-        <FreelancerMarketplace />
-
-        {/* Call to Action */}
-        <div className="text-center space-y-4 py-8">
-          <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
-          <p className="text-gray-600">Create your profile and start connecting with amazing people in your industry.</p>
-          <Button 
-            onClick={onGetStarted}
-            size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
-          >
-            Get Started Now
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // If businesses tab is active, show the AdvancedBusinessBrowser component
-  if (activeTab === 'businesses') {
-    return (
-      <div className="space-y-8">
-        {/* Tabs */}
-        <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
-
-        {/* Advanced Business Browser */}
-        <AdvancedBusinessBrowser onCreateBusiness={onGetStarted} />
-      </div>
-    );
-  }
-
-  // Groups tab - enhanced with group content
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Groups</h2>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Join vibrant groups where professionals, creators, and businesses connect and collaborate.
-        </p>
-      </div>
-
-      {/* Tabs */}
-      <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
-
-      {/* Group Highlights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
-          <h3 className="text-xl font-semibold text-blue-800 mb-3">Professional Groups</h3>
-          <p className="text-blue-700 mb-4">Connect with industry leaders, share insights, and grow your professional network.</p>
-          <div className="text-sm text-blue-600">• Business Groups • Industry Forums • Networking Groups</div>
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-cyan-50 to-emerald-50">
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Explore ConnectPulse Groups
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Discover vibrant communities across different categories. Join groups that match your interests and connect with like-minded professionals.
+          </p>
+          
+          <Button 
+            size="lg"
+            onClick={onGetStarted}
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-lg px-8 py-6"
+          >
+            Join ConnectPulse
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
         </div>
-        
-        <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-lg border border-pink-200">
-          <h3 className="text-xl font-semibold text-pink-800 mb-3">Creator Groups</h3>
-          <p className="text-pink-700 mb-4">Collaborate with fellow creators, share content strategies, and find brand partnerships.</p>
-          <div className="text-sm text-pink-600">• Influencer Networks • Content Creator Groups • Brand Partnerships</div>
+
+        {/* Stats Section */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="pt-6 text-center">
+              <Building2 className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-blue-600 mb-1">{categoryStats.businesses.count}</div>
+              <div className="text-gray-600 text-sm">Businesses</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="pt-6 text-center">
+              <User className="h-8 w-8 text-green-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-green-600 mb-1">{categoryStats.freelancers.count}</div>
+              <div className="text-gray-600 text-sm">Freelancers</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="pt-6 text-center">
+              <Camera className="h-8 w-8 text-pink-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-pink-600 mb-1">{categoryStats.creators.count}</div>
+              <div className="text-gray-600 text-sm">Creators</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="pt-6 text-center">
+              <MapPin className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-purple-600 mb-1">{categoryStats.services.count}</div>
+              <div className="text-gray-600 text-sm">Local Services</div>
+            </CardContent>
+          </Card>
         </div>
-        
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
-          <h3 className="text-xl font-semibold text-green-800 mb-3">Skill-Based Groups</h3>
-          <p className="text-green-700 mb-4">Learn from experts, share knowledge, and collaborate on projects in your field.</p>
-          <div className="text-sm text-green-600">• Tech Groups • Design Groups • Freelancer Networks</div>
-        </div>
-      </div>
 
-      {/* Search and Filters */}
-      <SearchFilters
-        activeTab={activeTab}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        selectedLocation={selectedLocation}
-        onLocationChange={setSelectedLocation}
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        availableLocations={availableLocations}
-        availableCategories={availableCategories}
-      />
+        {/* Groups Grid */}
+        <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Featured Groups</CardTitle>
+            <CardDescription className="text-center">
+              Browse popular groups across all categories
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {demoGroups.map(renderGroupCard)}
+            </div>
+            
+            <div className="text-center mt-8">
+              <p className="text-gray-600 mb-4">
+                Want to see more groups and join conversations?
+              </p>
+              <Button 
+                size="lg"
+                onClick={onGetStarted}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              >
+                Get Started Now
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Results */}
-      <div className="max-w-6xl mx-auto">
-        <ResultsSection
-          activeTab={activeTab}
-          loading={loading}
-          profiles={profiles}
-          groups={groups}
-          onResetFilters={handleResetFilters}
-        />
-      </div>
-
-      {/* Call to Action */}
-      <div className="text-center space-y-4 py-8">
-        <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
-        <p className="text-gray-600">Create your profile and start connecting with amazing groups in your industry.</p>
-        <Button 
-          onClick={onGetStarted}
-          size="lg"
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
-        >
-          Get Started Now
-          <ArrowRight className="h-5 w-5 ml-2" />
-        </Button>
+        {/* Call to Action */}
+        <Card className="mt-12 bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-0">
+          <CardContent className="pt-8 pb-8 text-center">
+            <h2 className="text-3xl font-bold mb-4">Ready to Join the Conversation?</h2>
+            <p className="text-lg mb-6 opacity-90">
+              Choose your path and start connecting with professionals in your field.
+            </p>
+            <Button 
+              size="lg" 
+              variant="secondary" 
+              onClick={onGetStarted}
+              className="text-lg px-8"
+            >
+              Choose Your Path
+              <TrendingUp className="ml-2 h-5 w-5" />
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -148,7 +148,10 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
           user={user}
           userType={userType}
           userAction={userAction as 'join' | 'create'}
-          onJoinGroup={onGroupJoin}
+          onJoinGroup={(group) => {
+            onGroupJoin(group);
+            onStepChange('chat');
+          }}
           onBack={() => onStepChange('location')}
         />
       );
@@ -169,7 +172,10 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
           user={user}
           userType={userType}
           userAction={userAction as 'join' | 'create'}
-          onJoinGroup={onGroupJoin}
+          onJoinGroup={(group) => {
+            onGroupJoin(group);
+            onStepChange('chat');
+          }}
           onBack={() => onStepChange('location')}
         />
       );
@@ -187,7 +193,10 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
     return (
       <GroupList
         user={user}
-        onJoinGroup={onGroupJoin}
+        onJoinGroup={(group) => {
+          onGroupJoin(group);
+          onStepChange('chat');
+        }}
         onBack={() => onStepChange('location')}
       />
     );
