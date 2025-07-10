@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Eye } from 'lucide-react';
 import { PublicProfileBrowserProps } from '@/types/publicBrowser';
 import { usePublicBrowserData } from '@/hooks/usePublicBrowserData';
 import BrowserTabs from './browser/BrowserTabs';
