@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -189,47 +188,49 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
   });
 
   return (
-    <div className={`flex flex-col h-screen ${isDarkMode ? 'dark bg-gray-900' : 'bg-white'} ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
-      {/* Enhanced Header with all features */}
-      <EnhancedChatHeader
-        group={group}
-        onlineUsers={onlineUsers}
-        showOnlineUsers={showOnlineUsers}
-        onBack={onBack}
-        onVideoCall={() => setShowVideoCall(true)}
-        onAudioCall={() => toast({ title: "Audio Call", description: "Starting audio call..." })}
-        onToggleUsers={() => setShowOnlineUsers(!showOnlineUsers)}
-        onSettings={() => setShowSettings(true)}
-        onSearch={() => setShowSearch(!showSearch)}
-        onInvite={() => toast({ title: "Invite", description: "Invite link copied to clipboard" })}
-        isMuted={isMuted}
-        onToggleMute={() => setIsMuted(!isMuted)}
-        isNotified={isNotified}
-        onToggleNotifications={() => setIsNotified(!isNotified)}
-      />
+    <div className={`flex flex-col h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 ${isDarkMode ? 'dark bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900' : ''} ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
+      {/* Enhanced Header with gradient background */}
+      <div className="bg-white/80 backdrop-blur-md border-b border-white/20 shadow-lg">
+        <EnhancedChatHeader
+          group={group}
+          onlineUsers={onlineUsers}
+          showOnlineUsers={showOnlineUsers}
+          onBack={onBack}
+          onVideoCall={() => setShowVideoCall(true)}
+          onAudioCall={() => toast({ title: "Audio Call", description: "Starting audio call..." })}
+          onToggleUsers={() => setShowOnlineUsers(!showOnlineUsers)}
+          onSettings={() => setShowSettings(true)}
+          onSearch={() => setShowSearch(!showSearch)}
+          onInvite={() => toast({ title: "Invite", description: "Invite link copied to clipboard" })}
+          isMuted={isMuted}
+          onToggleMute={() => setIsMuted(!isMuted)}
+          isNotified={isNotified}
+          onToggleNotifications={() => setIsNotified(!isNotified)}
+        />
+      </div>
 
-      {/* Search Bar */}
+      {/* Search Bar with glassmorphism effect */}
       {showSearch && (
-        <div className="p-4 bg-gray-50 border-b">
+        <div className="p-4 bg-white/70 backdrop-blur-md border-b border-white/20">
           <div className="flex gap-2">
             <Input
               placeholder="Search messages..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1"
+              className="flex-1 bg-white/80 backdrop-blur-sm border-white/30"
             />
-            <Button variant="outline" onClick={() => setShowSearch(false)}>
+            <Button variant="outline" onClick={() => setShowSearch(false)} className="bg-white/80 backdrop-blur-sm border-white/30">
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-2 mt-2 flex-wrap">
             {['all', 'pinned', 'bookmarked', 'media'].map(filter => (
               <Button
                 key={filter}
                 variant={messageFilter === filter ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setMessageFilter(filter)}
-                className="capitalize"
+                className={`capitalize ${messageFilter === filter ? '' : 'bg-white/60 backdrop-blur-sm border-white/30'}`}
               >
                 {filter}
               </Button>
@@ -239,24 +240,31 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
       )}
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col min-w-0">
+        {/* Main Chat Area with enhanced background */}
+        <div className="flex-1 flex flex-col min-w-0 relative">
+          {/* Floating background pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-20 left-10 w-32 h-32 bg-blue-400 rounded-full blur-3xl"></div>
+            <div className="absolute top-40 right-20 w-24 h-24 bg-purple-400 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-40 left-1/3 w-40 h-40 bg-green-400 rounded-full blur-3xl"></div>
+          </div>
+
           {/* Pinned Messages Bar */}
           {pinnedMessages.length > 0 && (
-            <div className="bg-yellow-50 border-b p-2">
-              <div className="flex items-center gap-2 text-sm text-yellow-800">
+            <div className="bg-amber-50/80 backdrop-blur-sm border-b border-amber-200/50 p-3 relative z-10">
+              <div className="flex items-center gap-2 text-sm text-amber-800">
                 <Pin className="h-4 w-4" />
-                <span>{pinnedMessages.length} pinned message(s)</span>
-                <Button variant="ghost" size="sm" onClick={() => setPinnedMessages([])}>
+                <span className="font-medium">{pinnedMessages.length} pinned message(s)</span>
+                <Button variant="ghost" size="sm" onClick={() => setPinnedMessages([])} className="ml-auto h-6 w-6 p-0">
                   <X className="h-3 w-3" />
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Messages Area */}
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-4 max-w-4xl mx-auto">
+          {/* Messages Area with enhanced styling */}
+          <ScrollArea className="flex-1 relative z-10">
+            <div className="space-y-4 p-4 max-w-4xl mx-auto">
               {filteredMessages.map((message) => (
                 <MessageBubble
                   key={message.id}
@@ -269,22 +277,53 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
                   showReadReceipts={showReadReceipts}
                   theme={theme}
                   fontSize={fontSize}
-                  onReaction={handleReaction}
-                  onPin={handlePinMessage}
-                  onBookmark={handleBookmarkMessage}
-                  onTranslate={handleTranslateMessage}
+                  onReaction={(messageId, emoji) => {
+                    setReactions(prev => ({
+                      ...prev,
+                      [messageId]: prev[messageId]?.includes(emoji) 
+                        ? prev[messageId].filter(e => e !== emoji)
+                        : [...(prev[messageId] || []), emoji]
+                    }));
+                  }}
+                  onPin={(messageId) => {
+                    setPinnedMessages(prev => 
+                      prev.includes(messageId) 
+                        ? prev.filter(id => id !== messageId)
+                        : [...prev, messageId]
+                    );
+                  }}
+                  onBookmark={(messageId) => {
+                    setBookmarkedMessages(prev => 
+                      prev.includes(messageId) 
+                        ? prev.filter(id => id !== messageId)
+                        : [...prev, messageId]
+                    );
+                  }}
+                  onTranslate={(messageId) => {
+                    const translations = [
+                      "Hello, how are you?",
+                      "This is a great idea!",
+                      "Let's meet tomorrow",
+                      "Thank you for sharing"
+                    ];
+                    const randomTranslation = translations[Math.floor(Math.random() * translations.length)];
+                    setMessageTranslation(prev => ({
+                      ...prev,
+                      [messageId]: randomTranslation
+                    }));
+                  }}
                   onReply={(messageId) => setReplyingTo(messageId)}
                   getThemeColors={getThemeColors}
                 />
               ))}
               
-              {/* Typing Indicator */}
+              {/* Typing Indicator with enhanced styling */}
               {isTyping && (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 animate-fade-in">
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarFallback className="bg-gradient-to-r from-gray-400 to-gray-500 text-white">U</AvatarFallback>
                   </Avatar>
-                  <div className="bg-gray-100 p-3 rounded-lg">
+                  <div className="bg-white/70 backdrop-blur-sm p-3 rounded-2xl shadow-lg border border-white/20">
                     <div className="flex gap-1">
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -297,10 +336,10 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
             <div ref={messagesEndRef} />
           </ScrollArea>
 
-          {/* Smart Replies */}
+          {/* Smart Replies with glassmorphism */}
           {smartReplies.length > 0 && (
-            <div className="p-2 border-t bg-gray-50">
-              <div className="flex gap-2 overflow-x-auto">
+            <div className="p-3 bg-white/60 backdrop-blur-md border-t border-white/20 relative z-10">
+              <div className="flex gap-2 overflow-x-auto pb-1">
                 {smartReplies.map((reply, index) => (
                   <Button
                     key={index}
@@ -310,7 +349,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
                       setNewMessage(reply);
                       setSmartReplies([]);
                     }}
-                    className="whitespace-nowrap"
+                    className="whitespace-nowrap bg-white/70 backdrop-blur-sm border-white/30 hover:bg-white/90 transition-all duration-200"
                   >
                     ⚡ {reply}
                   </Button>
@@ -319,57 +358,102 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
             </div>
           )}
 
-          {/* Compact Message Input Area */}
-          <div className="p-3 border-t bg-white">
-            <div className="flex items-center gap-2 max-w-4xl mx-auto">
-              {/* File Upload */}
-              <Button variant="ghost" size="sm" className="flex-shrink-0">
-                <PaperclipIcon className="h-4 w-4" />
-              </Button>
-
-              {/* Message Input */}
-              <div className="flex-1 relative">
-                <Textarea
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder={`Message ${group.name}...`}
-                  className="min-h-[40px] max-h-24 resize-none pr-16 text-sm"
-                  rows={1}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendMessage();
-                    }
-                  }}
-                />
-                
-                {/* Input Actions */}
-                <div className="absolute right-2 bottom-2 flex gap-1">
-                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                    <Smile className="h-3 w-3" />
-                  </Button>
-                  
-                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                    <Mic className="h-3 w-3" />
+          {/* Enhanced Message Input Area */}
+          <div className="p-4 bg-white/80 backdrop-blur-md border-t border-white/20 relative z-10">
+            <div className="max-w-4xl mx-auto">
+              {/* Reply indicator */}
+              {replyingTo && (
+                <div className="mb-3 p-2 bg-blue-50/80 backdrop-blur-sm rounded-lg border border-blue-200/50 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <Reply className="h-3 w-3" />
+                    <span>Replying to message</span>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => setReplyingTo(null)} className="h-6 w-6 p-0">
+                    <X className="h-3 w-3" />
                   </Button>
                 </div>
-              </div>
+              )}
 
-              {/* Send Button */}
-              <Button 
-                onClick={handleSendMessage} 
-                disabled={!newMessage.trim()}
-                size="sm"
-                className={`bg-gradient-to-r ${getThemeColors(theme)} flex-shrink-0`}
-              >
-                <Send className="h-4 w-4" />
-              </Button>
+              <div className="flex items-end gap-3">
+                {/* File Upload Button */}
+                <div className="flex flex-col gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-10 w-10 rounded-full bg-white/70 backdrop-blur-sm border border-white/30 hover:bg-white/90 transition-all duration-200"
+                  >
+                    <PaperclipIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Message Input Container */}
+                <div className="flex-1 relative">
+                  <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-white/30 shadow-lg overflow-hidden">
+                    <Textarea
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder={`Message ${group.name}...`}
+                      className="border-0 resize-none bg-transparent focus:ring-0 focus:border-0 min-h-[44px] max-h-32 px-4 py-3 text-sm md:text-base"
+                      rows={1}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendMessage();
+                        }
+                      }}
+                    />
+                    
+                    {/* Input Actions Bar */}
+                    <div className="flex items-center justify-between px-4 py-2 bg-gray-50/50 border-t border-gray-200/30">
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-200/50">
+                          <Smile className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-200/50">
+                          <Image className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-200/50">
+                          <Mic className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      
+                      <div className="text-xs text-gray-500 hidden sm:block">
+                        Press Enter to send, Shift+Enter for new line
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Send Button */}
+                <Button 
+                  onClick={handleSendMessage} 
+                  disabled={!newMessage.trim()}
+                  size="sm"
+                  className={`h-10 w-10 rounded-full bg-gradient-to-r ${getThemeColors(theme)} shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none`}
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Online Users Sidebar */}
-        {showOnlineUsers && <OnlineUsersList onlineUsers={onlineUsers} />}
+        {/* Online Users Sidebar with enhanced styling */}
+        {showOnlineUsers && (
+          <div className="w-64 bg-white/80 backdrop-blur-md border-l border-white/20 hidden lg:block">
+            <OnlineUsersList onlineUsers={onlineUsers} />
+          </div>
+        )}
+
+        {/* Mobile Users Sheet */}
+        <Sheet open={showOnlineUsers && window.innerWidth < 1024} onOpenChange={setShowOnlineUsers}>
+          <SheetContent side="right" className="w-80 bg-white/90 backdrop-blur-md">
+            <SheetHeader>
+              <SheetTitle>Online Members</SheetTitle>
+            </SheetHeader>
+            <OnlineUsersList onlineUsers={onlineUsers} />
+          </SheetContent>
+        </Sheet>
       </div>
 
       {/* Video Call Modal */}
@@ -467,15 +551,15 @@ const GroupChat: React.FC<GroupChatProps> = ({ user, group, messages, onSendMess
           </Tabs>
         </DialogContent>
       </Dialog>
-
-      {/* Fullscreen Toggle */}
+      
+      {/* Floating Action Button for mobile */}
       <Button
         variant="ghost"
         size="sm"
         onClick={() => setIsFullscreen(!isFullscreen)}
-        className="fixed bottom-4 right-4 z-40 bg-white shadow-lg"
+        className="fixed bottom-20 right-4 z-40 lg:hidden bg-white/80 backdrop-blur-md shadow-lg border border-white/30 h-12 w-12 rounded-full"
       >
-        {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+        {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
       </Button>
     </div>
   );

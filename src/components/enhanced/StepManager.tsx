@@ -119,7 +119,7 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
     );
   }
 
-  // Handle business-specific steps
+  // Handle business-specific steps including business-groups
   if (userType === 'business') {
     const businessSteps = ['business-niche', 'business-profile', 'business-profile-preview', 'business-groups'];
     if (businessSteps.includes(currentStep)) {
@@ -175,7 +175,13 @@ const StepManager: React.FC<StepManagerProps> = (props) => {
       onGroupJoin={onGroupJoin}
       onSendMessage={onSendMessage}
       onPortfolioSave={onPortfolioSave}
-      onLocationSave={onLocationSave}
+      onLocationSave={(data) => {
+        onLocationSave(data);
+        // For business join flow, redirect to business-groups after location
+        if (userType === 'business' && userAction === 'join') {
+          onStepChange('business-groups');
+        }
+      }}
       setProfileData={setProfileData}
     />
   );

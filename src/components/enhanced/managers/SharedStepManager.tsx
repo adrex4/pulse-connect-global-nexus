@@ -213,7 +213,14 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
       <GroupList
         user={user}
         onJoinGroup={onGroupJoin}
-        onBack={() => onStepChange('location')}
+        onBack={() => {
+          // For business join flow, go back to location after groups
+          if (userType === 'business' && userAction === 'join') {
+            onStepChange('location');
+          } else {
+            onStepChange('location');
+          }
+        }}
       />
     );
   }
