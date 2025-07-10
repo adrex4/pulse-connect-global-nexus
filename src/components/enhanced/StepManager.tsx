@@ -1,15 +1,24 @@
-
 import React from 'react';
-import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
-import BusinessStepManager from './managers/BusinessStepManager';
-import FreelancerStepManager from './managers/FreelancerStepManager';
-import GeneralStepManager from './managers/GeneralStepManager';
-import SharedStepManager from './managers/SharedStepManager';
-import SocialMediaGroupList from './SocialMediaGroupList';
-import SocialMediaProfilePreview from './SocialMediaProfilePreview';
-import LocalServiceGroupList from './LocalServiceGroupList';
-import FreelancerProfilePreview from './FreelancerProfilePreview';
-import LocalServiceProfilePreview from './LocalServiceProfilePreview';
+import UserTypeSelection from '../UserTypeSelection';
+import BusinessProfileForm from '../BusinessProfileForm';
+import BusinessNicheSelection from '../BusinessNicheSelection';
+import PublicProfileBrowser from './PublicProfileBrowser';
+import FreelancerGigForm from '../FreelancerGigForm';
+import FreelancerGroups from '../FreelancerGroups';
+import FreelancerLocation from '../FreelancerLocation';
+import BusinessGroups from '../BusinessGroups';
+import GroupsPage from '../GroupsPage';
+import PortfolioForm from '../PortfolioForm';
+import LocationForm from '../LocationForm';
+import Chat from '../Chat';
+import ServiceSelection from '../service/ServiceSelection';
+import BusinessProfilePreview from '../BusinessProfilePreview';
+import FreelancerProfilePreview from '../FreelancerProfilePreview';
+import SocialMediaProfileForm from '../SocialMediaProfileForm';
+import SocialMediaProfilePreview from '../SocialMediaProfilePreview';
+import LocalServiceProviderProfilePreview from '../LocalServiceProviderProfilePreview';
+import { Step, UserType, UserAction, User, Group } from '@/types/connectPulse';
+import OpportunityViewer from '../OpportunityViewer';
 
 interface StepManagerProps {
   currentStep: Step;
@@ -17,7 +26,7 @@ interface StepManagerProps {
   userAction: UserAction | null;
   currentUser: User | null;
   selectedGroup: Group | null;
-  messages: Message[];
+  messages: any[];
   profileData: any;
   businessData: any;
   locationData: any;
@@ -32,158 +41,208 @@ interface StepManagerProps {
   onBusinessProfileSave: (data: any) => void;
   onLocationSave: (data: any) => void;
   onBusinessProfileEdit: () => void;
+  onViewOpportunities?: () => void;
   setProfileData: (data: any) => void;
   setCurrentUser: (user: User | null) => void;
   setBrowsingFilter: (filter: 'businesses' | 'freelancers' | 'groups' | 'social_media' | null) => void;
 }
 
-const StepManager: React.FC<StepManagerProps> = (props) => {
-  const {
-    currentStep,
-    userType,
-    userAction,
-    currentUser,
-    selectedGroup,
-    messages,
-    profileData,
-    businessData,
-    locationData,
-    portfolioItems,
-    browsingFilter,
-    onStepChange,
-    onUserTypeSelect,
-    onUserRegistration,
-    onGroupJoin,
-    onSendMessage,
-    onPortfolioSave,
-    onBusinessProfileSave,
-    onLocationSave,
-    onBusinessProfileEdit,
-    setProfileData,
-    setCurrentUser,
-    setBrowsingFilter
-  } = props;
-
-  // Handle general steps (browse, user-type)
-  if (currentStep === 'browse' || currentStep === 'user-type') {
+const StepManager: React.FC<StepManagerProps> = ({
+  currentStep,
+  userType,
+  userAction,
+  currentUser,
+  selectedGroup,
+  messages,
+  profileData,
+  businessData,
+  locationData,
+  portfolioItems,
+  browsingFilter,
+  onStepChange,
+  onUserTypeSelect,
+  onUserRegistration,
+  onGroupJoin,
+  onSendMessage,
+  onPortfolioSave,
+  onBusinessProfileSave,
+  onLocationSave,
+  onBusinessProfileEdit,
+  onViewOpportunities,
+  setProfileData,
+  setCurrentUser,
+  setBrowsingFilter
+}) => {
+  if (currentStep === 'user-type') {
     return (
-      <GeneralStepManager
-        currentStep={currentStep}
-        browsingFilter={browsingFilter}
-        onStepChange={onStepChange}
-        onUserTypeSelect={onUserTypeSelect}
-        setBrowsingFilter={setBrowsingFilter}
+      <UserTypeSelection onUserTypeSelect={onUserTypeSelect} />
+    );
+  }
+
+  if (currentStep === 'business-profile') {
+    return (
+      <BusinessProfileForm 
+        onSave={onBusinessProfileSave} 
+        onBack={() => onStepChange('user-type')}
+        initialData={businessData}
       />
     );
   }
 
-  // Handle freelancer profile preview
-  if (currentStep === 'freelancer-profile-preview' && userType === 'freelancer') {
+  if (currentStep === 'business-niche') {
     return (
-      <FreelancerProfilePreview
+      <BusinessNicheSelection onNicheSelect={(niche: string) => {
+        setProfileData({ ...profileData, niche });
+        onStepChange('location');
+      }} />
+    );
+  }
+
+  if (currentStep === 'freelancer-gig') {
+    return (
+      <FreelancerGigForm 
+        onSave={onPortfolioSave} 
+        onBack={() => onStepChange('user-type')}
+      />
+    );
+  }
+
+  if (currentStep === 'freelancer-groups') {
+    return (
+      <FreelancerGroups onSave={() => onStepChange('freelancer-location')} />
+    );
+  }
+
+  if (currentStep === 'freelancer-location') {
+    return (
+      <FreelancerLocation onSave={onLocationSave} />
+    );
+  }
+
+  if (currentStep === 'business-groups') {
+    return (
+      <BusinessGroups onSave={() => onStepChange('location')} />
+    );
+  }
+
+  if (currentStep === 'groups') {
+    return (
+      <GroupsPage onGroupSelect={onGroupJoin} />
+    );
+  }
+
+  if (currentStep === 'portfolio') {
+    return (
+      <PortfolioForm 
+        onSave={onPortfolioSave} 
+        onBack={() => onStepChange('freelancer-gig')}
+      />
+    );
+  }
+
+  if (currentStep === 'location') {
+    return (
+      <LocationForm 
+        onSave={onLocationSave} 
+        onBack={() => {
+          if (userType === 'business') {
+            onStepChange('business-profile');
+          } else if (userType === 'freelancer') {
+            onStepChange('portfolio');
+          } else {
+            onStepChange('user-type');
+          }
+        }}
+      />
+    );
+  }
+
+  if (currentStep === 'chat') {
+    return (
+      <Chat 
+        currentUser={currentUser}
+        selectedGroup={selectedGroup}
+        messages={messages}
+        onSendMessage={onSendMessage}
+      />
+    );
+  }
+
+  if (currentStep === 'service-selection') {
+    return (
+      <ServiceSelection 
+        onSave={onLocationSave} 
+        onBack={() => onStepChange('user-type')}
+      />
+    );
+  }
+
+  if (currentStep === 'business-profile-preview') {
+    return (
+      <BusinessProfilePreview 
+        businessData={businessData}
+        locationData={locationData}
+        onEdit={onBusinessProfileEdit}
+        onConfirm={() => onStepChange('browse')}
+      />
+    );
+  }
+
+  if (currentStep === 'freelancer-profile-preview') {
+    return (
+      <FreelancerProfilePreview 
         profileData={profileData}
         locationData={locationData}
         portfolioItems={portfolioItems}
-        onEdit={() => onStepChange('freelancer-gig')}
-        onPublish={() => onStepChange('welcome')}
-        onHome={() => onStepChange('welcome')}
+        onConfirm={() => onStepChange('browse')}
       />
     );
   }
 
-  // Handle social media profile preview
-  if (currentStep === 'social-media-profile-preview' && userType === 'social_media_influencer') {
+  if (currentStep === 'social-media-profile') {
     return (
-      <SocialMediaProfilePreview
+      <SocialMediaProfileForm 
+        onSave={onLocationSave} 
+        onBack={() => onStepChange('user-type')}
+      />
+    );
+  }
+
+  if (currentStep === 'social-media-profile-preview') {
+    return (
+      <SocialMediaProfilePreview 
         profileData={profileData}
         locationData={locationData}
-        portfolioItems={portfolioItems}
-        onEdit={() => onStepChange('social-media-profile')}
-        onPublish={() => onStepChange('welcome')}
-        onHome={() => onStepChange('welcome')}
+        onConfirm={() => onStepChange('browse')}
       />
     );
   }
 
-  // Handle local service profile preview
-  if (currentStep === 'local-service-profile-preview' && userType === 'occupation_provider') {
+  if (currentStep === 'local-service-profile-preview') {
     return (
-      <LocalServiceProfilePreview
+      <LocalServiceProviderProfilePreview 
         profileData={profileData}
         locationData={locationData}
-        portfolioItems={portfolioItems}
-        onEdit={() => onStepChange('service-selection')}
-        onPublish={() => onStepChange('welcome')}
-        onHome={() => onStepChange('welcome')}
+        onConfirm={() => onStepChange('browse')}
       />
     );
   }
 
-  // Handle business-specific steps including business-groups
-  if (userType === 'business') {
-    const businessSteps = ['business-niche', 'business-profile', 'business-profile-preview', 'business-groups'];
-    if (businessSteps.includes(currentStep)) {
-      return (
-        <BusinessStepManager
-          currentStep={currentStep}
-          userType={userType}
-          userAction={userAction!}
-          businessData={businessData}
-          locationData={locationData}
-          currentUser={currentUser}
-          onStepChange={onStepChange}
-          onBusinessProfileSave={onBusinessProfileSave}
-          onBusinessProfileEdit={onBusinessProfileEdit}
-          onGroupJoin={onGroupJoin}
-          setCurrentUser={setCurrentUser}
-        />
-      );
-    }
+  if (currentStep === 'browse') {
+    return (
+      <PublicProfileBrowser 
+        onGetStarted={() => onStepChange('user-type')} 
+        initialFilter={browsingFilter}
+        onViewOpportunities={onViewOpportunities}
+      />
+    );
   }
 
-  // Handle freelancer-specific steps for create and join actions
-  if (userType === 'freelancer') {
-    const freelancerSteps = ['freelancer-gig', 'freelancer-location', 'freelancer-groups'];
-    if (freelancerSteps.includes(currentStep)) {
-      return (
-        <FreelancerStepManager
-          currentStep={currentStep}
-          userType={userType}
-          userAction={userAction!}
-          profileData={profileData}
-          onStepChange={onStepChange}
-          onLocationSave={onLocationSave}
-          onGroupJoin={onGroupJoin}
-          setProfileData={setProfileData}
-        />
-      );
-    }
-  }
-
-  // Handle all shared steps (service selection, portfolio, location, groups, chat, etc.)
   return (
-    <SharedStepManager
-      currentStep={currentStep}
-      userType={userType}
-      userAction={userAction}
-      currentUser={currentUser}
-      selectedGroup={selectedGroup}
-      messages={messages}
-      portfolioItems={portfolioItems}
-      onStepChange={onStepChange}
-      onUserRegistration={onUserRegistration}
-      onGroupJoin={onGroupJoin}
-      onSendMessage={onSendMessage}
-      onPortfolioSave={onPortfolioSave}
-      onLocationSave={(data) => {
-        onLocationSave(data);
-        // For business join flow, redirect to business-groups after location
-        if (userType === 'business' && userAction === 'join') {
-          onStepChange('business-groups');
-        }
-      }}
-      setProfileData={setProfileData}
-    />
+    <div>
+      <h2>Step not found</h2>
+      <p>Current step: {currentStep}</p>
+    </div>
   );
 };
 

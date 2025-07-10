@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -12,7 +11,11 @@ import FreelancerMarketplace from '../FreelancerMarketplace';
 import SocialMediaBrowser from './SocialMediaBrowser';
 import LocalServicesBrowser from './LocalServicesBrowser';
 
-const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarted, initialFilter = null }) => {
+const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ 
+  onGetStarted, 
+  initialFilter = null,
+  onViewOpportunities 
+}) => {
   const [activeTab, setActiveTab] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services'>(
     initialFilter === 'social_media' ? 'social_media' : 
     initialFilter === 'businesses' ? 'businesses' :
@@ -193,9 +196,9 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Groups</h2>
+        <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Join vibrant groups where professionals, creators, and businesses connect and collaborate.
+          Discover talented freelancers, innovative businesses, and thriving groups.
         </p>
       </div>
 
@@ -251,14 +254,27 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ onGetStarte
       <div className="text-center space-y-4 py-8">
         <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
         <p className="text-gray-600">Create your profile and start connecting with amazing groups in your industry.</p>
-        <Button 
-          onClick={onGetStarted}
-          size="lg"
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
-        >
-          Get Started Now
-          <ArrowRight className="h-5 w-5 ml-2" />
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button 
+            onClick={onGetStarted}
+            size="lg"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
+          >
+            Get Started Now
+            <ArrowRight className="h-5 w-5 ml-2" />
+          </Button>
+          {onViewOpportunities && (
+            <Button 
+              onClick={onViewOpportunities}
+              size="lg"
+              variant="outline"
+              className="border-2 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <Eye className="h-5 w-5 mr-2" />
+              View Opportunities
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

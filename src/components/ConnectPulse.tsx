@@ -5,6 +5,8 @@ import StepManager from './enhanced/StepManager';
 import UserProfilePage from './UserProfilePage';
 import GlobalNavigation from './GlobalNavigation';
 import { supabase } from '@/integrations/supabase/client';
+import OpportunityPosting from './OpportunityPosting';
+import OpportunityViewer from './OpportunityViewer';
 
 const ConnectPulse: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<Step>('welcome');
@@ -19,6 +21,8 @@ const ConnectPulse: React.FC = () => {
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
   const [browsingFilter, setBrowsingFilter] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | null>(null);
   const [joinedGroups, setJoinedGroups] = useState<Group[]>([]);
+  const [showOpportunityPosting, setShowOpportunityPosting] = useState(false);
+  const [showOpportunityViewer, setShowOpportunityViewer] = useState(false);
 
   // Real-time message subscription
   useEffect(() => {
@@ -309,13 +313,62 @@ const ConnectPulse: React.FC = () => {
       handleNavigateToProfile();
     } else if (path === '/') {
       setCurrentStep('welcome');
+      setShowOpportunityPosting(false);
+      setShowOpportunityViewer(false);
     } else if (path === '/groups') {
       setCurrentStep('groups');
+      setShowOpportunityPosting(false);
+      setShowOpportunityViewer(false);
     } else if (path === '/profiles') {
       setCurrentStep('browse');
       setBrowsingFilter('freelancers');
+      setShowOpportunityPosting(false);
+      setShowOpportunityViewer(false);
     }
   };
+
+  // Handle opportunity posting
+  const handlePostOpportunity = () => {
+    setShowOpportunityPosting(true);
+    setShowOpportunityViewer(false);
+    setCurrentStep('welcome'); // Reset other steps
+  };
+
+  // Handle opportunity viewing
+  const handleViewOpportunities = () => {
+    setShowOpportunityViewer(true);
+    setShowOpportunityPosting(false);
+    setCurrentStep('welcome'); // Reset other steps
+  };
+
+  // Handle back from opportunities
+  const handleBackFromOpportunities = () => {
+    setShowOpportunityPosting(false);
+    setShowOpportunityViewer(false);
+    if (currentUser) {
+      setCurrentStep('profile');
+    } else {
+      setCurrentStep('welcome');
+    }
+  };
+
+  // Show opportunity posting
+  if (showOpportunityPosting) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-cyan-50 to-emerald-50">
+        <OpportunityPosting onBack={handleBackFromOpportunities} />
+      </div>
+    );
+  }
+
+  // Show opportunity viewer
+  if (showOpportunityViewer) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-cyan-50 to-emerald-50">
+        <OpportunityViewer onBack={handleBackFromOpportunities} />
+      </div>
+    );
+  }
 
   if (currentStep === 'profile' && currentUser) {
     return (
@@ -324,6 +377,7 @@ const ConnectPulse: React.FC = () => {
         joinedGroups={joinedGroups}
         messages={messages}
         onBack={() => setCurrentStep('welcome')}
+        onPostOpportunity={handlePostOpportunity}
         onEditProfile={() => {
           if (userType === 'business') {
             setCurrentStep('business-profile');
@@ -384,6 +438,7 @@ const ConnectPulse: React.FC = () => {
               onBusinessProfileSave={handleBusinessProfileSave}
               onLocationSave={handleLocationSave}
               onBusinessProfileEdit={handleBusinessProfileEdit}
+              onViewOpportunities={handleViewOpportunities}
               setProfileData={setProfileData}
               setCurrentUser={setCurrentUser}
               setBrowsingFilter={setBrowsingFilter}
