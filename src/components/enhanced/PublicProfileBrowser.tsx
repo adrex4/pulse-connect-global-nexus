@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Eye } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowRight, Eye, Briefcase, Users, Star, TrendingUp } from 'lucide-react';
 import { PublicProfileBrowserProps } from '@/types/publicBrowser';
 import { usePublicBrowserData } from '@/hooks/usePublicBrowserData';
 import BrowserTabs from './browser/BrowserTabs';
@@ -77,7 +78,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Find trusted local service providers in your area for all your needs.
+            Discover amazing creators, businesses, and groups before joining our platform.
           </p>
         </div>
 
@@ -91,14 +92,27 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
         <div className="text-center space-y-4 py-8">
           <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
           <p className="text-gray-600">Create your profile and start connecting with customers in your area.</p>
-          <Button 
-            onClick={onGetStarted}
-            size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
-          >
-            Get Started Now
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              onClick={onGetStarted}
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
+            >
+              Get Started Now
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+            {onViewOpportunities && (
+              <Button 
+                onClick={onViewOpportunities}
+                size="lg"
+                variant="outline"
+                className="border-2 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Eye className="h-5 w-5 mr-2" />
+                View Opportunities
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -131,14 +145,27 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
         <div className="text-center space-y-4 py-8">
           <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
           <p className="text-gray-600">Create your profile and start connecting with amazing people in your industry.</p>
-          <Button 
-            onClick={onGetStarted}
-            size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
-          >
-            Get Started Now
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              onClick={onGetStarted}
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
+            >
+              Get Started Now
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+            {onViewOpportunities && (
+              <Button 
+                onClick={onViewOpportunities}
+                size="lg"
+                variant="outline"
+                className="border-2 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Eye className="h-5 w-5 mr-2" />
+                View Opportunities
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -152,7 +179,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover talented freelancers, innovative businesses, and thriving groups.
+            Discover amazing creators, businesses, and groups before joining our platform.
           </p>
         </div>
 
@@ -166,14 +193,27 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
         <div className="text-center space-y-4 py-8">
           <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
           <p className="text-gray-600">Create your profile and start connecting with amazing people in your industry.</p>
-          <Button 
-            onClick={onGetStarted}
-            size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
-          >
-            Get Started Now
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              onClick={onGetStarted}
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
+            >
+              Get Started Now
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+            {onViewOpportunities && (
+              <Button 
+                onClick={onViewOpportunities}
+                size="lg"
+                variant="outline"
+                className="border-2 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Eye className="h-5 w-5 mr-2" />
+                View Opportunities
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -183,28 +223,158 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
   if (activeTab === 'businesses') {
     return (
       <div className="space-y-8">
+        {/* Header */}
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            Discover amazing creators, businesses, and groups before joining our platform.
+          </p>
+        </div>
+
         {/* Tabs */}
         <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
+        {/* Opportunity Highlights */}
+        <Card className="bg-gradient-to-r from-indigo-50 to-purple-50 border-0 shadow-lg">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl text-gray-800 mb-2">Discover Professional Opportunities</CardTitle>
+            <CardDescription className="text-lg text-gray-600">
+              Connect with businesses, freelancers, and service providers across different industries
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+                <Briefcase className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <h3 className="font-semibold text-lg mb-2">Business Partnerships</h3>
+                <p className="text-gray-600 text-sm">Find collaboration opportunities and business partnerships</p>
+              </div>
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+                <Users className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                <h3 className="font-semibold text-lg mb-2">Freelance Projects</h3>
+                <p className="text-gray-600 text-sm">Discover freelance work and contract opportunities</p>
+              </div>
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+                <Star className="h-12 w-12 text-purple-600 mx-auto mb-4" />
+                <h3 className="font-semibold text-lg mb-2">Service Providers</h3>
+                <p className="text-gray-600 text-sm">Connect with local and online service professionals</p>
+              </div>
+            </div>
+            {onViewOpportunities && (
+              <div className="text-center">
+                <Button 
+                  onClick={onViewOpportunities}
+                  size="lg"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  <Eye className="h-5 w-5 mr-2" />
+                  View All Opportunities
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Advanced Business Browser */}
         <AdvancedBusinessBrowser onCreateBusiness={onGetStarted} />
+
+        {/* Call to Action */}
+        <div className="text-center space-y-4 py-8">
+          <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
+          <p className="text-gray-600">Create your profile and start connecting with amazing people in your industry.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              onClick={onGetStarted}
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
+            >
+              Get Started Now
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+            {onViewOpportunities && (
+              <Button 
+                onClick={onViewOpportunities}
+                size="lg"
+                variant="outline"
+                className="border-2 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Eye className="h-5 w-5 mr-2" />
+                View Opportunities
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
 
-  // Groups tab - enhanced with group content
+  // Groups tab - enhanced with group content and opportunities section
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Discover talented freelancers, innovative businesses, and thriving groups.
+          Discover amazing creators, businesses, and groups before joining our platform.
         </p>
       </div>
 
       {/* Tabs */}
       <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
+
+      {/* Opportunities Section */}
+      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-0 shadow-lg">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl text-gray-800 mb-2">Community Opportunities</CardTitle>
+          <CardDescription className="text-lg text-gray-600">
+            Explore opportunities shared by our vibrant community of professionals
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="text-center p-4 bg-white rounded-lg shadow-sm border border-blue-100">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Briefcase className="h-6 w-6 text-blue-600" />
+              </div>
+              <h4 className="font-semibold text-sm mb-1">Job Postings</h4>
+              <p className="text-xs text-gray-600">Find your next career opportunity</p>
+            </div>
+            <div className="text-center p-4 bg-white rounded-lg shadow-sm border border-green-100">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Users className="h-6 w-6 text-green-600" />
+              </div>
+              <h4 className="font-semibold text-sm mb-1">Collaborations</h4>
+              <p className="text-xs text-gray-600">Partner up on exciting projects</p>
+            </div>
+            <div className="text-center p-4 bg-white rounded-lg shadow-sm border border-purple-100">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Star className="h-6 w-6 text-purple-600" />
+              </div>
+              <h4 className="font-semibold text-sm mb-1">Services</h4>
+              <p className="text-xs text-gray-600">Discover professional services</p>
+            </div>
+            <div className="text-center p-4 bg-white rounded-lg shadow-sm border border-orange-100">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <TrendingUp className="h-6 w-6 text-orange-600" />
+              </div>
+              <h4 className="font-semibold text-sm mb-1">Marketplace</h4>
+              <p className="text-xs text-gray-600">Buy and sell products & services</p>
+            </div>
+          </div>
+          {onViewOpportunities && (
+            <div className="text-center">
+              <Button 
+                onClick={onViewOpportunities}
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Eye className="h-5 w-5 mr-2" />
+                View All Opportunities
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Group Highlights */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">

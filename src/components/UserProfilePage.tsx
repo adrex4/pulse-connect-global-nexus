@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   ArrowLeft, Edit, MessageSquare, Users, MapPin, 
   Globe, Star, Calendar, Clock, Plus, Eye,
-  Briefcase, Award, TrendingUp, Activity
+  Briefcase, Award, TrendingUp, Activity, Search
 } from 'lucide-react';
 import { User, Group, Message } from '@/types/connectPulse';
 
@@ -18,6 +18,8 @@ interface UserProfilePageProps {
   onBack: () => void;
   onEditProfile: () => void;
   onPostOpportunity?: () => void;
+  onExploreGroups?: () => void;
+  onStartConversations?: () => void;
 }
 
 const UserProfilePage: React.FC<UserProfilePageProps> = ({ 
@@ -26,7 +28,9 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
   messages, 
   onBack, 
   onEditProfile,
-  onPostOpportunity
+  onPostOpportunity,
+  onExploreGroups,
+  onStartConversations
 }) => {
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -71,6 +75,24 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
       icon: Edit
     }
   ];
+
+  const handleExploreGroups = () => {
+    if (onExploreGroups) {
+      onExploreGroups();
+    } else {
+      // Default action - could navigate to groups section
+      setActiveTab('groups');
+    }
+  };
+
+  const handleStartConversations = () => {
+    if (onStartConversations) {
+      onStartConversations();
+    } else {
+      // Default action - could open messaging interface
+      alert('Opening messaging interface...');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-cyan-50 to-emerald-50">
@@ -196,7 +218,7 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
               <CardContent>
                 <div className="space-y-3">
                   {recentActivity.map((activity) => (
-                    <div key={activity.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+                    <div key={activity.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="p-2 bg-indigo-50 rounded-lg">
                         <activity.icon className="h-4 w-4 text-indigo-600" />
                       </div>
@@ -250,34 +272,37 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Button 
                         variant="outline" 
-                        className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-blue-50 hover:border-blue-200"
+                        className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-blue-50 hover:border-blue-200 transition-all duration-200"
+                        onClick={handleExploreGroups}
                       >
                         <div className="flex items-center gap-2 w-full">
-                          <Users className="h-5 w-5 text-blue-600" />
+                          <Search className="h-5 w-5 text-blue-600" />
                           <span className="font-medium">Explore Groups</span>
                         </div>
                         <span className="text-sm text-gray-600 text-left">
-                          Discover new communities in your field
+                          Discover new communities in your field and connect with like-minded professionals
                         </span>
                       </Button>
 
-                      <Button 
-                        variant="outline" 
-                        className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-green-50 hover:border-green-200"
-                        onClick={onPostOpportunity}
-                      >
-                        <div className="flex items-center gap-2 w-full">
-                          <Plus className="h-5 w-5 text-green-600" />
-                          <span className="font-medium">Post Opportunity</span>
-                        </div>
-                        <span className="text-sm text-gray-600 text-left">
-                          Share opportunities with the community
-                        </span>
-                      </Button>
+                      {onPostOpportunity && (
+                        <Button 
+                          variant="outline" 
+                          className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-green-50 hover:border-green-200 transition-all duration-200"
+                          onClick={onPostOpportunity}
+                        >
+                          <div className="flex items-center gap-2 w-full">
+                            <Plus className="h-5 w-5 text-green-600" />
+                            <span className="font-medium">Post Opportunity</span>
+                          </div>
+                          <span className="text-sm text-gray-600 text-left">
+                            Share job openings, collaborations, or services with the community
+                          </span>
+                        </Button>
+                      )}
 
                       <Button 
                         variant="outline" 
-                        className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-purple-50 hover:border-purple-200"
+                        className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200"
                         onClick={onEditProfile}
                       >
                         <div className="flex items-center gap-2 w-full">
@@ -285,22 +310,59 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
                           <span className="font-medium">Update Profile</span>
                         </div>
                         <span className="text-sm text-gray-600 text-left">
-                          Keep your information current
+                          Keep your information current and showcase your latest achievements
                         </span>
                       </Button>
 
                       <Button 
                         variant="outline" 
-                        className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-orange-50 hover:border-orange-200"
+                        className="h-auto p-4 flex flex-col items-start gap-2 hover:bg-orange-50 hover:border-orange-200 transition-all duration-200"
+                        onClick={handleStartConversations}
                       >
                         <div className="flex items-center gap-2 w-full">
                           <MessageSquare className="h-5 w-5 text-orange-600" />
                           <span className="font-medium">Start Conversations</span>
                         </div>
                         <span className="text-sm text-gray-600 text-left">
-                          Engage with your groups
+                          Engage with your groups and network with other professionals
                         </span>
                       </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Profile Completion Tips */}
+                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Star className="h-5 w-5 text-yellow-500" />
+                      Profile Enhancement Tips
+                    </CardTitle>
+                    <CardDescription>Make your profile stand out</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                        <div>
+                          <p className="font-medium text-green-800">Complete your bio</p>
+                          <p className="text-sm text-green-700">Share your story and expertise to attract connections</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                        <div>
+                          <p className="font-medium text-blue-800">Join relevant groups</p>
+                          <p className="text-sm text-blue-700">Connect with professionals in your industry</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                        <div>
+                          <p className="font-medium text-purple-800">Share opportunities</p>
+                          <p className="text-sm text-purple-700">Help others while building your reputation</p>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -353,7 +415,7 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
                         <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">No groups joined yet</h3>
                         <p className="text-gray-600 mb-4">Start by exploring and joining groups that match your interests.</p>
-                        <Button>
+                        <Button onClick={handleExploreGroups}>
                           <Users className="h-4 w-4 mr-2" />
                           Explore Groups
                         </Button>
@@ -415,7 +477,7 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({
                         <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">No messages yet</h3>
                         <p className="text-gray-600 mb-4">Start engaging with your groups by posting messages.</p>
-                        <Button>
+                        <Button onClick={handleStartConversations}>
                           <MessageSquare className="h-4 w-4 mr-2" />
                           Start Chatting
                         </Button>
