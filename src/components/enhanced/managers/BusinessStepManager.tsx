@@ -8,32 +8,28 @@ import BusinessGroupList from '../BusinessGroupList';
 
 interface BusinessStepManagerProps {
   currentStep: Step;
-  userType: UserType;
-  userAction: UserAction;
+  userAction: UserAction | null;
+  profileData: any;
   businessData: any;
   locationData: any;
-  currentUser: User | null;
   onStepChange: (step: Step) => void;
   onBusinessProfileSave: (data: any) => void;
   onBusinessProfileEdit: () => void;
-  onGroupJoin: (group: any) => void;
-  setCurrentUser: (user: User | null) => void;
+  setProfileData: (data: any) => void;
 }
 
 const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
   currentStep,
-  userType,
   userAction,
+  profileData,
   businessData,
   locationData,
-  currentUser,
   onStepChange,
   onBusinessProfileSave,
   onBusinessProfileEdit,
-  onGroupJoin,
-  setCurrentUser
+  setProfileData
 }) => {
-  if (currentStep === 'business-profile' && userType === 'business') {
+  if (currentStep === 'business-profile') {
     return (
       <BusinessProfileCreator
         onNext={onBusinessProfileSave}
@@ -55,7 +51,7 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
     );
   }
   
-  if (currentStep === 'business-niche' && userType === 'business') {
+  if (currentStep === 'business-niche') {
     return (
       <NicheSelector 
         onNext={(name, niche) => {
@@ -66,7 +62,7 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
             country: '',
             preferredScope: 'local'
           };
-          setCurrentUser(newUser);
+          setProfileData(newUser);
           onStepChange('location');
         }}
         onBack={() => onStepChange('user-type')}
@@ -74,8 +70,8 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
     );
   }
 
-  if (currentStep === 'business-groups' && userType === 'business') {
-    const user = currentUser || {
+  if (currentStep === 'business-groups') {
+    const user = profileData || {
       id: 'temp-business-user',
       name: 'Business Owner',
       niche: 'business',
@@ -86,10 +82,10 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
     return (
       <BusinessGroupList
         user={user}
-        userType={userType}
+        userType={'business' as UserType}
         userAction={userAction as 'join' | 'create'}
         onJoinGroup={(group) => {
-          onGroupJoin(group);
+          // Handle group join
           onStepChange('chat');
         }}
         onBack={() => onStepChange('location')}

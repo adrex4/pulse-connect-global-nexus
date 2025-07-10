@@ -97,7 +97,6 @@ const StepManager: React.FC<StepManagerProps> = ({
         locationData={locationData}
         onStepChange={onStepChange}
         onBusinessProfileSave={onBusinessProfileSave}
-        onLocationSave={onLocationSave}
         onBusinessProfileEdit={onBusinessProfileEdit}
         setProfileData={setProfileData}
       />
@@ -126,9 +125,15 @@ const StepManager: React.FC<StepManagerProps> = ({
       currentStep={currentStep}
       userType={userType}
       userAction={userAction}
-      profileData={profileData}
-      locationData={locationData}
+      currentUser={currentUser}
+      selectedGroup={selectedGroup}
+      messages={messages}
+      portfolioItems={portfolioItems}
       onStepChange={onStepChange}
+      onUserRegistration={onUserRegistration}
+      onGroupJoin={onGroupJoin}
+      onSendMessage={onSendMessage}
+      onPortfolioSave={onPortfolioSave}
       onLocationSave={onLocationSave}
       setProfileData={setProfileData}
     />

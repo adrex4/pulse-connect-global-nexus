@@ -9,23 +9,25 @@ import { Group } from '@/types/connectPulse';
 
 interface FreelancerStepManagerProps {
   currentStep: Step;
-  userType: UserType;
-  userAction: UserAction;
+  userAction: UserAction | null;
   profileData: any;
+  locationData: any;
+  portfolioItems: any[];
   onStepChange: (step: Step) => void;
+  onPortfolioSave: (items: any[]) => void;
   onLocationSave: (data: any) => void;
-  onGroupJoin: (group: Group) => void;
   setProfileData: (data: any) => void;
 }
 
 const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
   currentStep,
-  userType,
   userAction,
   profileData,
+  locationData,
+  portfolioItems,
   onStepChange,
+  onPortfolioSave,
   onLocationSave,
-  onGroupJoin,
   setProfileData
 }) => {
   // Handle freelancer-specific steps
@@ -46,7 +48,7 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
     // Use full creator for create action
     return (
       <FreelancerGigCreator 
-        userType={userType}
+        userType={'freelancer' as UserType}
         onNext={(gigData) => {
           setProfileData(gigData);
           onStepChange('freelancer-location');
@@ -59,7 +61,7 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
   if (currentStep === 'freelancer-location') {
     return (
       <FreelancerLocationSelector
-        userType={userType}
+        userType={'freelancer' as UserType}
         onNext={(locationData) => {
           onLocationSave(locationData);
           if (userAction === 'join') {
@@ -75,11 +77,11 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
   if (currentStep === 'freelancer-groups') {
     return (
       <FreelancerGroupList
-        userType={userType}
+        userType={'freelancer' as UserType}
         userAction={userAction as 'join' | 'create'}
         profileData={profileData}
         onJoinGroup={(group) => {
-          onGroupJoin(group);
+          // Handle group join
           onStepChange('chat');
         }}
         onBack={() => onStepChange('freelancer-location')}

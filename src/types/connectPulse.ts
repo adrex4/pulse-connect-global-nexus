@@ -20,7 +20,8 @@ export type Step =
   | 'social-media-profile-preview'
   | 'local-service-profile-preview'
   | 'profile'
-  | 'dashboard';
+  | 'dashboard'
+  | 'view-opportunities';
 
 export type UserType = 'business' | 'freelancer' | 'social_media_influencer' | 'occupation_provider';
 
