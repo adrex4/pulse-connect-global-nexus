@@ -236,12 +236,12 @@ const ConnectPulse: React.FC = () => {
   const handleLocationSave = (data: any) => {
     setLocationData(data);
     
-    // REAL-TIME FLOW: After location, go to profile preview
+    // REAL-TIME FLOW: After location, go to profile preview or groups
     if (userType === 'business') {
       if (userAction === 'create' && businessData) {
         setCurrentStep('business-profile-preview');
       } else if (userAction === 'join') {
-        setCurrentStep('browse'); // Go to explore community
+        setCurrentStep('business-groups'); // Go to business groups
       }
     } else if (userType === 'freelancer') {
       if (userAction === 'create') {

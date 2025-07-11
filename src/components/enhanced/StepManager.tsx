@@ -98,6 +98,7 @@ const StepManager: React.FC<StepManagerProps> = ({
         onStepChange={onStepChange}
         onBusinessProfileSave={onBusinessProfileSave}
         onBusinessProfileEdit={onBusinessProfileEdit}
+        onLocationSave={onLocationSave}
         setProfileData={setProfileData}
       />
     );

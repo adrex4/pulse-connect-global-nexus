@@ -5,6 +5,7 @@ import BusinessProfileCreator from '../BusinessProfileCreator';
 import BusinessProfileView from '../BusinessProfileView';
 import NicheSelector from '../../NicheSelector';
 import BusinessGroupList from '../BusinessGroupList';
+import EnhancedLocationSelector from '../EnhancedLocationSelector';
 
 interface BusinessStepManagerProps {
   currentStep: Step;
@@ -15,6 +16,7 @@ interface BusinessStepManagerProps {
   onStepChange: (step: Step) => void;
   onBusinessProfileSave: (data: any) => void;
   onBusinessProfileEdit: () => void;
+  onLocationSave: (data: any) => void;
   setProfileData: (data: any) => void;
 }
 
@@ -27,6 +29,7 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
   onStepChange,
   onBusinessProfileSave,
   onBusinessProfileEdit,
+  onLocationSave,
   setProfileData
 }) => {
   if (currentStep === 'business-profile') {
@@ -66,6 +69,16 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
           onStepChange('location');
         }}
         onBack={() => onStepChange('user-type')}
+      />
+    );
+  }
+
+  if (currentStep === 'location') {
+    return (
+      <EnhancedLocationSelector
+        userType="business"
+        onNext={onLocationSave}
+        onBack={() => onStepChange(userAction === 'create' ? 'business-profile' : 'business-niche')}
       />
     );
   }
