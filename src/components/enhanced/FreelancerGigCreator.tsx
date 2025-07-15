@@ -64,6 +64,9 @@ const FreelancerGigCreator: React.FC<FreelancerGigCreatorProps> = ({
 
   return (
     <div className="max-w-5xl mx-auto animate-fade-in p-4">
+      <div className="flex justify-end mb-2">
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition">Back to Home</button>
+      </div>
       <Card className="shadow-2xl border-0 bg-white overflow-hidden">
         <FreelancerGigHeader userType={userType} onBack={onBack} />
         

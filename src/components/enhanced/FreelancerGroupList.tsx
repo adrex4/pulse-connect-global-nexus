@@ -199,13 +199,16 @@ const freelancerGroups: Group[] = [
   }
 ];
 
-const FreelancerGroupList: React.FC<FreelancerGroupListProps> = ({ 
-  userType, 
-  userAction,
-  profileData, 
-  onJoinGroup, 
-  onBack 
-}) => {
+const FreelancerGroupList: React.FC<FreelancerGroupListProps> = ({ userType, userAction, profileData, onJoinGroup, onBack }) => {
+  if (!userType || !userAction || !profileData || !onJoinGroup) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-red-600">
+        <h2 className="text-2xl font-bold mb-4">Error: Missing required data</h2>
+        <p className="mb-4">Some required information is missing. Please reload the page or return to the home screen.</p>
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-red-500 text-white rounded">Reload</button>
+      </div>
+    );
+  }
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNiche, setSelectedNiche] = useState('all');
   const [selectedScope, setSelectedScope] = useState('all');

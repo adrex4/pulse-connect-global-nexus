@@ -19,7 +19,8 @@ const ConnectPulse: React.FC = () => {
   const [businessData, setBusinessData] = useState<any>(null);
   const [locationData, setLocationData] = useState<any>(null);
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
-  const [browsingFilter, setBrowsingFilter] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | null>(null);
+  // Update the useState for browsingFilter to include 'local_services'
+  const [browsingFilter, setBrowsingFilter] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null>(null);
   const [joinedGroups, setJoinedGroups] = useState<Group[]>([]);
   const [showOpportunityPosting, setShowOpportunityPosting] = useState(false);
   const [showOpportunityViewer, setShowOpportunityViewer] = useState(false);
@@ -276,34 +277,48 @@ const ConnectPulse: React.FC = () => {
     setUserAction(action);
     
     if (action === 'view') {
-      setCurrentStep('browse');
-      return;
-    }
-    
-    if (type === 'social_media_influencer' && action === 'join') {
-      console.log('Social media influencer joining - going to browse');
-      setCurrentStep('browse');
-      return;
-    }
-    
-    if (type === 'business') {
-      if (action === 'create') {
-        setCurrentStep('business-profile');
-      } else if (action === 'join') {
-        setCurrentStep('business-niche');
-      }
-    } else if (type === 'freelancer') {
-      setCurrentStep('freelancer-gig');
-    } else if (type === 'occupation_provider') {
-      if (action === 'create') {
-        setCurrentStep('service-selection');
+      // Set the correct browsing filter for each type
+      if (type === 'business') {
+        setBrowsingFilter('businesses');
+      } else if (type === 'freelancer') {
+        setBrowsingFilter('freelancers');
+      } else if (type === 'social_media_influencer') {
+        setBrowsingFilter('social_media');
+      } else if (type === 'occupation_provider') {
+        setBrowsingFilter('local_services');
       } else {
+        setBrowsingFilter('businesses');
+      }
+      setCurrentStep('browse');
+      return;
+    }
+
+    // Join Group flow for each type
+    if (action === 'join') {
+      if (type === 'business') {
+        setCurrentStep('business-niche');
+      } else if (type === 'freelancer') {
+        setCurrentStep('freelancer-gig');
+      } else if (type === 'social_media_influencer') {
+        setCurrentStep('groups'); // Go directly to group selection for join
+      } else if (type === 'occupation_provider') {
         setCurrentStep('service-selection');
       }
-    } else if (type === 'social_media_influencer') {
-      if (action === 'create') {
+      return;
+    }
+
+    // Create Profile flow for each type
+    if (action === 'create') {
+      if (type === 'business') {
+        setCurrentStep('business-profile');
+      } else if (type === 'freelancer') {
+        setCurrentStep('freelancer-gig');
+      } else if (type === 'social_media_influencer') {
         setCurrentStep('social-media-profile');
+      } else if (type === 'occupation_provider') {
+        setCurrentStep('service-selection');
       }
+      return;
     }
   };
 
@@ -428,7 +443,7 @@ const ConnectPulse: React.FC = () => {
               businessData={businessData}
               locationData={locationData}
               portfolioItems={portfolioItems}
-              browsingFilter={browsingFilter}
+              browsingFilter={browsingFilter as 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null}
               onStepChange={setCurrentStep}
               onUserTypeSelect={handleUserTypeSelect}
               onUserRegistration={handleUserRegistration}
@@ -441,7 +456,7 @@ const ConnectPulse: React.FC = () => {
               onViewOpportunities={handleViewOpportunities}
               setProfileData={setProfileData}
               setCurrentUser={setCurrentUser}
-              setBrowsingFilter={setBrowsingFilter}
+              setBrowsingFilter={setBrowsingFilter as React.Dispatch<React.SetStateAction<'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null>>}
             />
           )}
         </div>

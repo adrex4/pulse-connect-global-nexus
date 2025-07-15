@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Step, UserType, UserAction, User } from '@/types/connectPulse';
 import BusinessProfileCreator from '../BusinessProfileCreator';
 import BusinessProfileView from '../BusinessProfileView';
 import NicheSelector from '../../NicheSelector';
 import BusinessGroupList from '../BusinessGroupList';
 import EnhancedLocationSelector from '../EnhancedLocationSelector';
+import AdvancedGroupChat from '../AdvancedGroupChat';
 
 interface BusinessStepManagerProps {
   currentStep: Step;
@@ -32,6 +33,7 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
   onLocationSave,
   setProfileData
 }) => {
+  const [selectedGroup, setSelectedGroup] = useState(null);
   if (currentStep === 'business-profile') {
     return (
       <BusinessProfileCreator
@@ -98,10 +100,38 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
         userType={'business' as UserType}
         userAction={userAction as 'join' | 'create'}
         onJoinGroup={(group) => {
-          // Handle group join
+          setSelectedGroup(group);
           onStepChange('chat');
         }}
         onBack={() => onStepChange('location')}
+      />
+    );
+  }
+
+  if (currentStep === 'chat') {
+    const user = profileData || {
+      id: 'temp-business-user',
+      name: 'Business Owner',
+      niche: 'business',
+      country: locationData?.country || 'United States',
+      preferredScope: 'local' as const
+    };
+    const group = selectedGroup || {
+      id: 'demo-business-group',
+      name: 'Business Demo Group',
+      niche: user.niche || 'Business',
+      scope: 'local' as const,
+      memberCount: 100,
+      description: 'A demo group for businesses.',
+      isPublic: true
+    };
+    return (
+      <AdvancedGroupChat
+        user={user}
+        group={group}
+        messages={[]}
+        onSendMessage={() => {}}
+        onBack={() => onStepChange('business-groups')}
       />
     );
   }

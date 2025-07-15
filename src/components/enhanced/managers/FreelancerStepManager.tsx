@@ -6,6 +6,7 @@ import FreelancerLocationSelector from '../FreelancerLocationSelector';
 import FreelancerGroupList from '../FreelancerGroupList';
 import SimpleFreelancerSelector from '../SimpleFreelancerSelector';
 import { Group } from '@/types/connectPulse';
+import AdvancedGroupChat from '../AdvancedGroupChat';
 
 interface FreelancerStepManagerProps {
   currentStep: Step;
@@ -85,6 +86,28 @@ const FreelancerStepManager: React.FC<FreelancerStepManagerProps> = ({
           onStepChange('chat');
         }}
         onBack={() => onStepChange('freelancer-location')}
+      />
+    );
+  }
+
+  if (currentStep === 'chat' && profileData) {
+    // Use a placeholder group object for demo
+    const group = {
+      id: 'demo-group',
+      name: 'Freelancer Demo Group',
+      niche: profileData.niche || 'General',
+      scope: 'global' as const,
+      memberCount: 100,
+      description: 'A demo group for freelancers.',
+      isPublic: true
+    };
+    return (
+      <AdvancedGroupChat
+        user={profileData}
+        group={group}
+        messages={[]}
+        onSendMessage={() => {}}
+        onBack={() => onStepChange('freelancer-groups')}
       />
     );
   }

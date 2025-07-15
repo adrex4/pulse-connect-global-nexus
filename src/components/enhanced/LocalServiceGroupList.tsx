@@ -72,13 +72,16 @@ interface LocalServiceGroupListProps {
   onBack: () => void;
 }
 
-const LocalServiceGroupList: React.FC<LocalServiceGroupListProps> = ({ 
-  user, 
-  userType, 
-  userAction, 
-  onJoinGroup, 
-  onBack 
-}) => {
+const LocalServiceGroupList: React.FC<LocalServiceGroupListProps> = ({ user, userType, userAction, onJoinGroup, onBack }) => {
+  if (!user || !userType || !userAction || !onJoinGroup) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-red-600">
+        <h2 className="text-2xl font-bold mb-4">Error: Missing required data</h2>
+        <p className="mb-4">Some required information is missing. Please reload the page or return to the home screen.</p>
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-red-500 text-white rounded">Reload</button>
+      </div>
+    );
+  }
   const [groups] = useState(generateLocalServiceGroups(user));
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOccupation, setSelectedOccupation] = useState('');
@@ -120,6 +123,9 @@ const LocalServiceGroupList: React.FC<LocalServiceGroupListProps> = ({
 
   return (
     <div className="max-w-6xl mx-auto animate-fade-in">
+      <div className="flex justify-end mb-2">
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition">Back to Home</button>
+      </div>
       <Card className="shadow-lg border-0">
         <CardHeader className="bg-gradient-to-r from-orange-500 to-red-600 text-white">
           <div className="flex items-center gap-4">

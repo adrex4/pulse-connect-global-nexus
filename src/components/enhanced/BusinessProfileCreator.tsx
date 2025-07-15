@@ -19,6 +19,15 @@ interface BusinessProfileCreatorProps {
 }
 
 const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext, onBack }) => {
+  if (!onNext || !onBack) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-red-600">
+        <h2 className="text-2xl font-bold mb-4">Error: Missing navigation handlers</h2>
+        <p className="mb-4">Required navigation functions are missing. Please reload the page or return to the home screen.</p>
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-red-500 text-white rounded">Reload</button>
+      </div>
+    );
+  }
   const [businessName, setBusinessName] = useState('');
   const [products, setProducts] = useState('');
   const [website, setWebsite] = useState('');
@@ -81,6 +90,9 @@ const BusinessProfileCreator: React.FC<BusinessProfileCreatorProps> = ({ onNext,
 
   return (
     <div className="max-w-5xl mx-auto animate-fade-in p-4">
+      <div className="flex justify-end mb-2">
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition">Back to Home</button>
+      </div>
       <Card className="shadow-2xl border-0 bg-white overflow-hidden">
         <BusinessProfileHeader onBack={onBack} />
         

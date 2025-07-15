@@ -234,47 +234,6 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
         {/* Tabs */}
         <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
-        {/* Opportunity Highlights */}
-        <Card className="bg-gradient-to-r from-indigo-50 to-purple-50 border-0 shadow-lg">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl text-gray-800 mb-2">Discover Professional Opportunities</CardTitle>
-            <CardDescription className="text-lg text-gray-600">
-              Connect with businesses, freelancers, and service providers across different industries
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-                <Briefcase className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="font-semibold text-lg mb-2">Business Partnerships</h3>
-                <p className="text-gray-600 text-sm">Find collaboration opportunities and business partnerships</p>
-              </div>
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-                <Users className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                <h3 className="font-semibold text-lg mb-2">Freelance Projects</h3>
-                <p className="text-gray-600 text-sm">Discover freelance work and contract opportunities</p>
-              </div>
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-                <Star className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="font-semibold text-lg mb-2">Service Providers</h3>
-                <p className="text-gray-600 text-sm">Connect with local and online service professionals</p>
-              </div>
-            </div>
-            {onViewOpportunities && (
-              <div className="text-center">
-                <Button 
-                  onClick={onViewOpportunities}
-                  size="lg"
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  <Eye className="h-5 w-5 mr-2" />
-                  View All Opportunities
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
         {/* Advanced Business Browser */}
         <AdvancedBusinessBrowser onCreateBusiness={onGetStarted} />
 
@@ -311,6 +270,9 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
   // Groups tab - enhanced with group content and opportunities section
   return (
     <div className="space-y-8">
+      <div className="flex justify-end mb-2">
+        <button onClick={onGetStarted ? onGetStarted : () => window.location.reload()} className="px-4 py-2 bg-purple-600 text-white rounded shadow hover:bg-purple-700 transition">Back to Choose Your Path</button>
+      </div>
       {/* Header */}
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>

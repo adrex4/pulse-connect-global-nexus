@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Step, UserType, UserAction, User, Group, Message } from '@/types/connectPulse';
 import EnhancedLocationSelector from '../EnhancedLocationSelector';
 import ServiceSelector from '../ServiceSelector';
@@ -11,6 +11,7 @@ import GroupChat from '../../GroupChat';
 import GroupList from '../../GroupList';
 import EnhancedGroupChat from '../../EnhancedGroupChat';
 import UserProfile from '../../profile/UserProfile';
+import AdvancedGroupChat from '../AdvancedGroupChat';
 
 interface SharedStepManagerProps {
   currentStep: Step;
@@ -36,7 +37,7 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
   userType,
   userAction,
   currentUser,
-  selectedGroup,
+  selectedGroup: externalSelectedGroup,
   messages,
   portfolioItems,
   joinedGroups = [],
@@ -49,6 +50,50 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
   onUpdateUser,
   setProfileData
 }) => {
+  // Track selected group in state for influencer join flow
+  const [selectedGroup, setSelectedGroup] = useState(null);
+
+  // If social media influencer is joining a group, handle group selection and chat
+  if (userType === 'social_media_influencer' && userAction === 'join') {
+    if (currentStep === 'chat' && selectedGroup) {
+      const user = currentUser || {
+        id: 'temp-social-user',
+        name: 'Content Creator',
+        niche: 'Social Media',
+        country: 'United States',
+        preferredScope: 'global' as const
+      };
+      return (
+        <AdvancedGroupChat
+          user={user}
+          group={selectedGroup}
+          messages={messages.filter(m => m.groupId === selectedGroup.id)}
+          onSendMessage={onSendMessage}
+          onBack={() => onStepChange('groups')}
+        />
+      );
+    }
+    // Always show group selection unless in chat
+    return (
+      <SocialMediaGroupList
+        user={currentUser || {
+          id: 'temp-social-user',
+          name: 'Content Creator',
+          niche: 'Social Media',
+          country: 'United States',
+          preferredScope: 'global' as const
+        }}
+        userType={userType}
+        userAction={userAction}
+        onJoinGroup={(group) => {
+          setSelectedGroup(group);
+          onStepChange('chat');
+        }}
+        onBack={() => onStepChange('user-type')}
+      />
+    );
+  }
+
   // Handle profile step
   if (currentStep === 'profile' && currentUser && onUpdateUser) {
     return (
@@ -235,12 +280,40 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
     };
     
     return (
-      <EnhancedGroupChat
+      <AdvancedGroupChat
         user={user}
-        group={selectedGroup}
-        messages={messages.filter(m => m.groupId === selectedGroup.id)}
+        group={selectedGroup || {
+          id: 'demo-shared-group',
+          name: 'Demo Group',
+          niche: user.niche || 'General',
+          scope: 'global' as const,
+          memberCount: 100,
+          description: 'A demo group for users.',
+          isPublic: true
+        }}
+        messages={messages.filter(m => m.groupId === (selectedGroup?.id || 'demo-shared-group'))}
         onSendMessage={onSendMessage}
         onBack={() => onStepChange('groups')}
+      />
+    );
+  }
+
+  // Social media influencer: skip profile creation if joining
+  if (userType === 'social_media_influencer' && userAction === 'join' && (currentStep === 'social-media-profile' || currentStep === 'portfolio')) {
+    // Go directly to groups step
+    return (
+      <SocialMediaGroupList
+        user={currentUser || {
+          id: 'temp-social-user',
+          name: 'Content Creator',
+          niche: 'Social Media',
+          country: 'United States',
+          preferredScope: 'global' as const
+        }}
+        userType={userType}
+        userAction={userAction}
+        onJoinGroup={onGroupJoin}
+        onBack={() => onStepChange('user-type')}
       />
     );
   }
