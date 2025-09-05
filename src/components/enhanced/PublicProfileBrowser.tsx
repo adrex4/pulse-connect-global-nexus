@@ -12,6 +12,9 @@ import AdvancedBusinessBrowser from './AdvancedBusinessBrowser';
 import FreelancerMarketplace from '../FreelancerMarketplace';
 import SocialMediaBrowser from './SocialMediaBrowser';
 import LocalServicesBrowser from './LocalServicesBrowser';
+import BusinessCategoryBrowser from './BusinessCategoryBrowser';
+import { BUSINESS_SERVICE_CATEGORIES } from '@/data/businessServiceCategories';
+import * as LucideIcons from 'lucide-react';
 
 const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ 
   onGetStarted, 
@@ -28,6 +31,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('all_locations');
   const [selectedCategory, setSelectedCategory] = useState('all_categories');
+  const [selectedBusinessCategory, setSelectedBusinessCategory] = useState<string | null>(null);
 
   const {
     profiles,
@@ -219,7 +223,24 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
     );
   }
 
-  // If businesses tab is active, show the AdvancedBusinessBrowser component
+  // If a specific business category is selected, show the BusinessCategoryBrowser
+  if (selectedBusinessCategory) {
+    return (
+      <BusinessCategoryBrowser
+        categoryId={selectedBusinessCategory}
+        onBack={() => setSelectedBusinessCategory(null)}
+        onGetStarted={onGetStarted}
+      />
+    );
+  }
+
+  // Render icon helper function
+  const renderIcon = (iconName: string, className: string = "w-6 h-6") => {
+    const IconComponent = (LucideIcons as any)[iconName];
+    return IconComponent ? <IconComponent className={className} /> : <Briefcase className={className} />;
+  };
+
+  // If businesses tab is active, show the business categories
   if (activeTab === 'businesses') {
     return (
       <div className="space-y-8">
@@ -234,20 +255,73 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
         {/* Tabs */}
         <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
-        {/* Advanced Business Browser */}
-        <AdvancedBusinessBrowser onCreateBusiness={onGetStarted} />
+        {/* Business Categories Grid */}
+        <div className="space-y-8">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">Business Categories</h3>
+            <p className="text-gray-600 mb-8">Choose your industry to explore specific services and connect with relevant professionals</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {BUSINESS_SERVICE_CATEGORIES.map((category) => (
+              <Card 
+                key={category.id} 
+                className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-blue-200 overflow-hidden"
+                onClick={() => setSelectedBusinessCategory(category.id)}
+              >
+                <div className={`h-2 bg-gradient-to-r ${category.color}`}></div>
+                <CardHeader className="text-center pb-4">
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${category.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
+                    {renderIcon(category.icon, "w-8 h-8")}
+                  </div>
+                  <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+                    {category.name}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <CardDescription className="text-center text-gray-600 mb-4 line-clamp-2">
+                    {category.description}
+                  </CardDescription>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">Services:</span>
+                      <span className="font-semibold text-blue-600">{category.subServices.length}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">High Demand:</span>
+                      <span className="font-semibold text-green-600">
+                        {category.subServices.filter(s => s.demand === 'High').length}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Button 
+                    className="w-full group-hover:bg-blue-600 transition-colors"
+                    variant="outline"
+                  >
+                    Explore Services
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
 
         {/* Call to Action */}
-        <div className="text-center space-y-4 py-8">
-          <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
-          <p className="text-gray-600">Create your profile and start connecting with amazing people in your industry.</p>
+        <div className="text-center space-y-6 py-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl">
+          <h3 className="text-3xl font-bold text-gray-800">Ready to Join ConnectPulse?</h3>
+          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+            Join thousands of businesses already connecting and growing together. Choose your industry above or create your profile to get started.
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               onClick={onGetStarted}
               size="lg"
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
             >
-              Get Started Now
+              Create Business Profile
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
             {onViewOpportunities && (
