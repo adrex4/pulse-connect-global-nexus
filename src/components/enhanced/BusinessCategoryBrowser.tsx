@@ -59,23 +59,29 @@ const BusinessCategoryBrowser: React.FC<BusinessCategoryBrowserProps> = ({
         </Button>
       </div>
 
-      {/* Category Header */}
-      <div className={`text-center p-8 rounded-2xl bg-gradient-to-r ${category.color} text-white relative overflow-hidden`}>
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative z-10">
-          <div className="flex justify-center mb-4">
-            {renderIcon(category.icon, "w-16 h-16")}
-          </div>
-          <h1 className="text-4xl font-bold mb-4">{category.name}</h1>
-          <p className="text-xl opacity-90 max-w-2xl mx-auto">{category.description}</p>
-          <div className="mt-6 flex justify-center gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              <span>{category.subServices.length} Services Available</span>
+      {/* Category Header with Background Image */}
+      <div className="relative rounded-2xl overflow-hidden">
+        <div 
+          className="h-80 bg-cover bg-center relative"
+          style={{ backgroundImage: `url(${category.image})` }}
+        >
+          <div className="absolute inset-0 bg-black/40"></div>
+          <div className={`absolute inset-0 bg-gradient-to-r ${category.color} opacity-60`}></div>
+          <div className="relative z-10 h-full flex flex-col justify-center items-center text-white p-8">
+            <div className="flex justify-center mb-4">
+              {renderIcon(category.icon, "w-16 h-16")}
             </div>
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              <span>Growing Industry</span>
+            <h1 className="text-4xl font-bold mb-4 text-center">{category.name}</h1>
+            <p className="text-xl opacity-90 max-w-2xl mx-auto text-center">{category.description}</p>
+            <div className="mt-6 flex justify-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                <span>{category.subServices.length} Services Available</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" />
+                <span>Growing Industry</span>
+              </div>
             </div>
           </div>
         </div>

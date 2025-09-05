@@ -269,21 +269,28 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
                 className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-blue-200 overflow-hidden"
                 onClick={() => setSelectedBusinessCategory(category.id)}
               >
-                <div className={`h-2 bg-gradient-to-r ${category.color}`}></div>
-                <CardHeader className="text-center pb-4">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${category.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
-                    {renderIcon(category.icon, "w-8 h-8")}
+                {/* Category Image */}
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={category.image} 
+                    alt={category.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-60`}></div>
+                  <div className="absolute inset-0 bg-black/20"></div>
+                  <div className="absolute top-4 right-4">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white">
+                      {renderIcon(category.icon, "w-6 h-6")}
+                    </div>
                   </div>
-                  <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
-                    {category.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <CardDescription className="text-center text-gray-600 mb-4 line-clamp-2">
-                    {category.description}
-                  </CardDescription>
-                  
-                  <div className="space-y-2 mb-4">
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-white font-bold text-lg mb-1">{category.name}</h3>
+                    <p className="text-white/90 text-sm line-clamp-2">{category.description}</p>
+                  </div>
+                </div>
+                
+                <CardContent className="p-4">
+                  <div className="space-y-3 mb-4">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-500">Services:</span>
                       <span className="font-semibold text-blue-600">{category.subServices.length}</span>
