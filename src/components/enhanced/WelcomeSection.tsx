@@ -149,8 +149,8 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
               className="text-lg px-8 py-6"
               type="button"
             >
-              Discover Opportunities
-              <Briefcase className="ml-2 h-5 w-5" />
+              Browse Communities
+              <Users className="ml-2 h-5 w-5" />
             </Button>
 
             {/* My Profile Button in main actions - only show when onMyProfile is available */}
@@ -225,8 +225,8 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({
                 className="text-lg px-8 bg-transparent border-white text-white hover:bg-white hover:text-indigo-600"
                 type="button"
               >
-                View Opportunities
-                <Briefcase className="ml-2 h-5 w-5" />
+                Explore First
+                <Star className="ml-2 h-5 w-5" />
               </Button>
             </div>
           </CardContent>
