@@ -424,7 +424,7 @@ const ConnectPulse: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           {currentStep === 'welcome' && (
             <WelcomeSection 
-              onBrowse={() => setCurrentStep('browse')}
+              onBrowse={handleViewOpportunities}
               onGetStarted={() => setCurrentStep('user-type')}
               onMyProfile={handleNavigateToProfile}
               currentUser={currentUser}
