@@ -2,9 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRight, Eye, Briefcase, Users, Star, TrendingUp, Search } from 'lucide-react';
+import { ArrowRight, Eye, Briefcase, Users, Star, TrendingUp } from 'lucide-react';
 import { PublicProfileBrowserProps } from '@/types/publicBrowser';
 import { usePublicBrowserData } from '@/hooks/usePublicBrowserData';
 import BrowserTabs from './browser/BrowserTabs';
@@ -14,9 +12,6 @@ import AdvancedBusinessBrowser from './AdvancedBusinessBrowser';
 import FreelancerMarketplace from '../FreelancerMarketplace';
 import SocialMediaBrowser from './SocialMediaBrowser';
 import LocalServicesBrowser from './LocalServicesBrowser';
-import BusinessCategoryBrowser from './BusinessCategoryBrowser';
-import { BUSINESS_SERVICE_CATEGORIES } from '@/data/businessServiceCategories';
-import * as LucideIcons from 'lucide-react';
 
 const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ 
   onGetStarted, 
@@ -33,7 +28,6 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('all_locations');
   const [selectedCategory, setSelectedCategory] = useState('all_categories');
-  const [selectedBusinessCategory, setSelectedBusinessCategory] = useState<string | null>(null);
 
   const {
     profiles,
@@ -225,24 +219,7 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
     );
   }
 
-  // If a specific business category is selected, show the BusinessCategoryBrowser
-  if (selectedBusinessCategory) {
-    return (
-      <BusinessCategoryBrowser
-        categoryId={selectedBusinessCategory}
-        onBack={() => setSelectedBusinessCategory(null)}
-        onGetStarted={onGetStarted}
-      />
-    );
-  }
-
-  // Render icon helper function
-  const renderIcon = (iconName: string, className: string = "w-6 h-6") => {
-    const IconComponent = (LucideIcons as any)[iconName];
-    return IconComponent ? <IconComponent className={className} /> : <Briefcase className={className} />;
-  };
-
-  // If businesses tab is active, show the business categories
+  // If businesses tab is active, show the AdvancedBusinessBrowser component
   if (activeTab === 'businesses') {
     return (
       <div className="space-y-8">
@@ -257,149 +234,20 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
         {/* Tabs */}
         <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
-        {/* Business Categories Grid */}
-        <div className="space-y-8">
-          <div className="text-center space-y-4">
-            <h3 className="text-2xl font-bold text-gray-800">Business Categories</h3>
-            <p className="text-gray-600">Choose your industry to explore specific services and connect with relevant professionals</p>
-          </div>
-
-          {/* Search and Filters */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="space-y-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Input
-                  placeholder="Search businesses by name, description, or services..."
-                  className="pl-10 h-12 text-base"
-                />
-              </div>
-              
-              <div className="flex flex-wrap gap-4 items-center">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700">Country</span>
-                  <Select>
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="All Countries" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Countries</SelectItem>
-                      <SelectItem value="us">United States</SelectItem>
-                      <SelectItem value="uk">United Kingdom</SelectItem>
-                      <SelectItem value="ca">Canada</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700">Category</span>
-                  <Select>
-                    <SelectTrigger className="w-48">
-                      <SelectValue placeholder="All Categories" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      {BUSINESS_SERVICE_CATEGORIES.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700">Sort By</span>
-                  <Select>
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Highest Rated" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="rating">Highest Rated</SelectItem>
-                      <SelectItem value="newest">Newest</SelectItem>
-                      <SelectItem value="name">Name A-Z</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <Button variant="outline" className="ml-auto">
-                  Reset Filters
-                </Button>
-              </div>
-            </div>
-            
-            <div className="mt-4 text-sm text-gray-600">
-              Found {BUSINESS_SERVICE_CATEGORIES.length} categories
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {BUSINESS_SERVICE_CATEGORIES.map((category) => (
-              <Card 
-                key={category.id} 
-                className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-blue-200 overflow-hidden"
-                onClick={() => setSelectedBusinessCategory(category.id)}
-              >
-                {/* Category Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={category.image} 
-                    alt={category.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-60`}></div>
-                  <div className="absolute inset-0 bg-black/20"></div>
-                  <div className="absolute top-4 right-4">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white">
-                      {renderIcon(category.icon, "w-6 h-6")}
-                    </div>
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white font-bold text-lg mb-1">{category.name}</h3>
-                    <p className="text-white/90 text-sm line-clamp-2">{category.description}</p>
-                  </div>
-                </div>
-                
-                <CardContent className="p-4">
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">Services:</span>
-                      <span className="font-semibold text-blue-600">{category.subServices.length}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">High Demand:</span>
-                      <span className="font-semibold text-green-600">
-                        {category.subServices.filter(s => s.demand === 'High').length}
-                      </span>
-                    </div>
-                  </div>
-
-                  <Button 
-                    className="w-full group-hover:bg-blue-600 transition-colors"
-                    variant="outline"
-                  >
-                    Explore Services
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+        {/* Advanced Business Browser */}
+        <AdvancedBusinessBrowser onCreateBusiness={onGetStarted} />
 
         {/* Call to Action */}
-        <div className="text-center space-y-6 py-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl">
-          <h3 className="text-3xl font-bold text-gray-800">Ready to Join ConnectPulse?</h3>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            Join thousands of businesses already connecting and growing together. Choose your industry above or create your profile to get started.
-          </p>
+        <div className="text-center space-y-4 py-8">
+          <h3 className="text-2xl font-semibold text-gray-800">Ready to Join ConnectPulse?</h3>
+          <p className="text-gray-600">Create your profile and start connecting with amazing people in your industry.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               onClick={onGetStarted}
               size="lg"
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white font-medium"
             >
-              Create Business Profile
+              Get Started Now
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
             {onViewOpportunities && (
