@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Eye, Briefcase, Users, Star, TrendingUp } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowRight, Eye, Briefcase, Users, Star, TrendingUp, Search } from 'lucide-react';
 import { PublicProfileBrowserProps } from '@/types/publicBrowser';
 import { usePublicBrowserData } from '@/hooks/usePublicBrowserData';
 import BrowserTabs from './browser/BrowserTabs';
@@ -257,9 +259,78 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
 
         {/* Business Categories Grid */}
         <div className="space-y-8">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">Business Categories</h3>
-            <p className="text-gray-600 mb-8">Choose your industry to explore specific services and connect with relevant professionals</p>
+          <div className="text-center space-y-4">
+            <h3 className="text-2xl font-bold text-gray-800">Business Categories</h3>
+            <p className="text-gray-600">Choose your industry to explore specific services and connect with relevant professionals</p>
+          </div>
+
+          {/* Search and Filters */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="space-y-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  placeholder="Search businesses by name, description, or services..."
+                  className="pl-10 h-12 text-base"
+                />
+              </div>
+              
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-700">Country</span>
+                  <Select>
+                    <SelectTrigger className="w-40">
+                      <SelectValue placeholder="All Countries" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Countries</SelectItem>
+                      <SelectItem value="us">United States</SelectItem>
+                      <SelectItem value="uk">United Kingdom</SelectItem>
+                      <SelectItem value="ca">Canada</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-700">Category</span>
+                  <Select>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="All Categories" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      {BUSINESS_SERVICE_CATEGORIES.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-700">Sort By</span>
+                  <Select>
+                    <SelectTrigger className="w-40">
+                      <SelectValue placeholder="Highest Rated" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="rating">Highest Rated</SelectItem>
+                      <SelectItem value="newest">Newest</SelectItem>
+                      <SelectItem value="name">Name A-Z</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <Button variant="outline" className="ml-auto">
+                  Reset Filters
+                </Button>
+              </div>
+            </div>
+            
+            <div className="mt-4 text-sm text-gray-600">
+              Found {BUSINESS_SERVICE_CATEGORIES.length} categories
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

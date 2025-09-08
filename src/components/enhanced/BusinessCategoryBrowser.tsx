@@ -122,16 +122,12 @@ const BusinessCategoryBrowser: React.FC<BusinessCategoryBrowserProps> = ({
 
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                  <span>4.8+ average rating</span>
+                  <TrendingUp className="w-4 h-4" />
+                  <span>Popular service category</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Users className="w-4 h-4" />
-                  <span>500+ professionals available</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <MapPin className="w-4 h-4" />
-                  <span>Global & local options</span>
+                  <span>Professional providers available</span>
                 </div>
               </div>
 
@@ -161,12 +157,16 @@ const BusinessCategoryBrowser: React.FC<BusinessCategoryBrowserProps> = ({
               <div className="text-sm text-gray-600">High Demand Services</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">92%</div>
-              <div className="text-sm text-gray-600">Client Satisfaction Rate</div>
+              <div className="text-3xl font-bold text-green-600 mb-2">
+                {Math.round((category.subServices.filter(s => s.demand === 'High').length / category.subServices.length) * 100)}%
+              </div>
+              <div className="text-sm text-gray-600">High Growth Services</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">24h</div>
-              <div className="text-sm text-gray-600">Average Response Time</div>
+              <div className="text-3xl font-bold text-purple-600 mb-2">
+                {category.subServices.length}+
+              </div>
+              <div className="text-sm text-gray-600">Service Types Available</div>
             </div>
           </div>
         </CardContent>
@@ -239,12 +239,12 @@ const BusinessCategoryBrowser: React.FC<BusinessCategoryBrowserProps> = ({
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 mb-2">Market Demand</h4>
-                  <p className="text-blue-700">{selectedSubService.demand} demand in current market</p>
+                  <h4 className="font-semibold text-blue-800 mb-2">Service Type</h4>
+                  <p className="text-blue-700">Professional {selectedSubService.name.toLowerCase()} services</p>
                 </div>
                 <div className="p-4 bg-purple-50 rounded-lg">
-                  <h4 className="font-semibold text-purple-800 mb-2">Growth Potential</h4>
-                  <p className="text-purple-700">Excellent opportunities for expansion</p>
+                  <h4 className="font-semibold text-purple-800 mb-2">Industry Category</h4>
+                  <p className="text-purple-700">{category.name} sector</p>
                 </div>
               </div>
 
