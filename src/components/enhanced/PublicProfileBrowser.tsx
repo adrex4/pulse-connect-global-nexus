@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Eye, Briefcase, Users, Star, TrendingUp } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Eye, Briefcase, Users, Star, TrendingUp } from 'lucide-react';
 import { PublicProfileBrowserProps } from '@/types/publicBrowser';
 import { usePublicBrowserData } from '@/hooks/usePublicBrowserData';
 import BrowserTabs from './browser/BrowserTabs';
@@ -16,7 +16,8 @@ import LocalServicesBrowser from './LocalServicesBrowser';
 const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({ 
   onGetStarted, 
   initialFilter = null,
-  onViewOpportunities 
+  onViewOpportunities,
+  onBack 
 }) => {
   const [activeTab, setActiveTab] = useState<'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services'>(
     initialFilter === 'social_media' ? 'social_media' : 
@@ -74,6 +75,16 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
   if (activeTab === 'local_services') {
     return (
       <div className="space-y-8">
+        {/* Back Button */}
+        {onBack && (
+          <div className="flex justify-start mb-4">
+            <Button variant="ghost" onClick={onBack} className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
@@ -122,6 +133,16 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
   if (activeTab === 'social_media') {
     return (
       <div className="space-y-8">
+        {/* Back Button */}
+        {onBack && (
+          <div className="flex justify-start mb-4">
+            <Button variant="ghost" onClick={onBack} className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
@@ -175,6 +196,16 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
   if (activeTab === 'freelancers') {
     return (
       <div className="space-y-8">
+        {/* Back Button */}
+        {onBack && (
+          <div className="flex justify-start mb-4">
+            <Button variant="ghost" onClick={onBack} className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
@@ -223,6 +254,16 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
   if (activeTab === 'businesses') {
     return (
       <div className="space-y-8">
+        {/* Back Button */}
+        {onBack && (
+          <div className="flex justify-start mb-4">
+            <Button variant="ghost" onClick={onBack} className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>
@@ -270,9 +311,16 @@ const PublicProfileBrowser: React.FC<PublicProfileBrowserProps> = ({
   // Groups tab - enhanced with group content and opportunities section
   return (
     <div className="space-y-8">
-      <div className="flex justify-end mb-2">
-        <button onClick={onGetStarted ? onGetStarted : () => window.location.reload()} className="px-4 py-2 bg-purple-600 text-white rounded shadow hover:bg-purple-700 transition">Back to Choose Your Path</button>
-      </div>
+      {/* Back Button */}
+      {onBack && (
+        <div className="flex justify-start mb-4">
+          <Button variant="ghost" onClick={onBack} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold text-gray-800">Explore ConnectPulse Community</h2>

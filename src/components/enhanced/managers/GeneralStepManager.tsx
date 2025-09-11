@@ -3,6 +3,7 @@ import React from 'react';
 import { Step, UserType, UserAction } from '@/types/connectPulse';
 import UserTypeSelector from '../UserTypeSelector';
 import PublicProfileBrowser from '../PublicProfileBrowser';
+import OpportunityViewer from '../../OpportunityViewer';
 
 interface GeneralStepManagerProps {
   currentStep: Step;
@@ -10,6 +11,7 @@ interface GeneralStepManagerProps {
   onStepChange: (step: Step) => void;
   onUserTypeSelect: (type: UserType, action: UserAction) => void;
   setBrowsingFilter: (filter: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null) => void;
+  onViewOpportunities?: () => void;
 }
 
 const GeneralStepManager: React.FC<GeneralStepManagerProps> = ({
@@ -17,14 +19,23 @@ const GeneralStepManager: React.FC<GeneralStepManagerProps> = ({
   browsingFilter,
   onStepChange,
   onUserTypeSelect,
-  setBrowsingFilter
+  setBrowsingFilter,
+  onViewOpportunities
 }) => {
   if (currentStep === 'browse') {
     return (
       <PublicProfileBrowser 
         onGetStarted={() => onStepChange('user-type')} 
         initialFilter={browsingFilter}
+        onViewOpportunities={onViewOpportunities}
+        onBack={() => onStepChange('welcome')}
       />
+    );
+  }
+
+  if (currentStep === 'view-opportunities') {
+    return (
+      <OpportunityViewer onBack={() => onStepChange('welcome')} />
     );
   }
 

@@ -52,6 +52,7 @@ const BusinessStepManager: React.FC<BusinessStepManagerProps> = ({
         onPublish={() => onStepChange('welcome')}
         showPublishButton={true}
         publishButtonText="Return Home"
+        onBack={() => onStepChange('location')}
       />
     );
   }

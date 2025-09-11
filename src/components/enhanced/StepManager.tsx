@@ -7,6 +7,7 @@ import BusinessStepManager from './managers/BusinessStepManager';
 import FreelancerStepManager from './managers/FreelancerStepManager';
 import SharedStepManager from './managers/SharedStepManager';
 import UserTypeSelector from './UserTypeSelector';
+import GeneralStepManager from './managers/GeneralStepManager';
 
 interface StepManagerProps {
   currentStep: Step;
@@ -61,28 +62,17 @@ const StepManager: React.FC<StepManagerProps> = ({
   setCurrentUser,
   setBrowsingFilter
 }) => {
-  if (currentStep === 'user-type') {
+  // Handle general navigation steps first
+  if (currentStep === 'user-type' || currentStep === 'browse' || currentStep === 'view-opportunities') {
     return (
-      <UserTypeSelector 
-        onNext={onUserTypeSelect} 
-        onBack={() => onStepChange('browse')}
-      />
-    );
-  }
-
-  if (currentStep === 'browse') {
-    return (
-      <PublicProfileBrowser 
-        onGetStarted={() => onStepChange('user-type')} 
-        initialFilter={browsingFilter}
+      <GeneralStepManager 
+        currentStep={currentStep}
+        browsingFilter={browsingFilter}
+        onStepChange={onStepChange}
+        onUserTypeSelect={onUserTypeSelect}
+        setBrowsingFilter={setBrowsingFilter}
         onViewOpportunities={onViewOpportunities}
       />
-    );
-  }
-
-  if (currentStep === 'view-opportunities') {
-    return (
-      <OpportunityViewer onBack={() => onStepChange('browse')} />
     );
   }
 

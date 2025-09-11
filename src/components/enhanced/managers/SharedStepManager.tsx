@@ -12,6 +12,7 @@ import GroupList from '../../GroupList';
 import EnhancedGroupChat from '../../EnhancedGroupChat';
 import UserProfile from '../../profile/UserProfile';
 import AdvancedGroupChat from '../AdvancedGroupChat';
+import FreelancerProfilePreview from '../FreelancerProfilePreview';
 
 interface SharedStepManagerProps {
   currentStep: Step;
@@ -90,6 +91,21 @@ const SharedStepManager: React.FC<SharedStepManagerProps> = ({
           onStepChange('chat');
         }}
         onBack={() => onStepChange('user-type')}
+      />
+    );
+  }
+
+  // Handle freelancer profile preview
+  if (currentStep === 'freelancer-profile-preview') {
+    return (
+      <FreelancerProfilePreview
+        profileData={currentUser}
+        locationData={{}}
+        portfolioItems={portfolioItems}
+        onEdit={() => onStepChange('freelancer-gig')}
+        onPublish={() => onStepChange('welcome')}
+        onHome={() => onStepChange('welcome')}
+        onBack={() => onStepChange('location')}
       />
     );
   }

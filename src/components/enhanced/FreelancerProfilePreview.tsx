@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, MapPin, User, Briefcase, Home, Edit, Globe } from 'lucide-react';
+import { Star, MapPin, User, Briefcase, Home, Edit, Globe, ArrowLeft } from 'lucide-react';
 
 interface FreelancerProfilePreviewProps {
   profileData: any;
@@ -12,6 +12,7 @@ interface FreelancerProfilePreviewProps {
   onEdit: () => void;
   onPublish: () => void;
   onHome: () => void;
+  onBack?: () => void;
 }
 
 const FreelancerProfilePreview: React.FC<FreelancerProfilePreviewProps> = ({
@@ -20,7 +21,8 @@ const FreelancerProfilePreview: React.FC<FreelancerProfilePreviewProps> = ({
   portfolioItems,
   onEdit,
   onPublish,
-  onHome
+  onHome,
+  onBack
 }) => {
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
@@ -32,6 +34,12 @@ const FreelancerProfilePreview: React.FC<FreelancerProfilePreviewProps> = ({
               <CardTitle className="text-xl">Your Freelancer Profile</CardTitle>
             </div>
             <div className="flex gap-2">
+              {onBack && (
+                <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+              )}
               <Button variant="ghost" size="sm" onClick={onHome} className="text-white hover:bg-white/20">
                 <Home className="h-4 w-4 mr-2" />
                 Home

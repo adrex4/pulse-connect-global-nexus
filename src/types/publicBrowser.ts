@@ -2,6 +2,7 @@ export interface PublicProfileBrowserProps {
   onGetStarted: () => void;
   initialFilter?: 'businesses' | 'freelancers' | 'groups' | 'social_media' | 'local_services' | null;
   onViewOpportunities?: () => void;
+  onBack?: () => void;
 }
 
 export interface Profile {

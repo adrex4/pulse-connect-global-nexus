@@ -12,6 +12,7 @@ interface BusinessProfileViewProps {
   onPublish?: () => void;
   showPublishButton?: boolean;
   publishButtonText?: string;
+  onBack?: () => void;
 }
 
 const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({ 
@@ -20,7 +21,8 @@ const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({
   onEdit, 
   onPublish,
   showPublishButton = false,
-  publishButtonText = "Publish Profile"
+  publishButtonText = "Publish Profile",
+  onBack
 }) => {
   const isReturnHome = publishButtonText === "Return Home";
   
@@ -39,6 +41,16 @@ const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({
               </p>
             </div>
             <div className="flex gap-2">
+              {onBack && (
+                <Button 
+                  variant="ghost" 
+                  onClick={onBack}
+                  className="text-white hover:bg-white/20 border border-white/30"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+              )}
               <Button 
                 variant="ghost" 
                 onClick={onEdit}
